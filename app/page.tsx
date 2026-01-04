@@ -1414,7 +1414,7 @@ function Hero() {
         >
           <div className="tag">
             <Terminal className="w-4 h-4" />
-            Precision Window Management for macOS
+            Ultimate Window Management for macOS
           </div>
             </motion.div>
 
@@ -1891,7 +1891,7 @@ function Features() {
             transition={{ delay: 0.2 }}
             className="text-xl text-[var(--foreground-muted)] max-w-2xl mx-auto"
           >
-            Every feature designed with precision and efficiency in mind
+            Every feature designed with ultimate precision and efficiency in mind
           </motion.p>
         </motion.div>
 
@@ -2088,10 +2088,30 @@ function DownloadSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.3 }}
-          className="text-xl text-[var(--foreground-muted)] mb-10"
+          className="text-xl text-[var(--foreground-muted)] mb-6"
         >
           Download Rapto and transform your workflow today.
         </motion.p>
+
+        {/* Pricing info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.35 }}
+          className="mb-8"
+        >
+          <div className="inline-flex flex-col items-center gap-3 px-6 py-4 rounded-2xl border-2"
+            style={{ borderColor: `${ACCENT}40`, background: `${ACCENT}05` }}
+          >
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-bold" style={{ color: ACCENT }}>$14.99</span>
+              <span className="text-lg text-[var(--foreground-muted)]">one-time</span>
+            </div>
+            <p className="text-sm text-[var(--foreground-muted)]">
+              14-day free trial • No subscription • Lifetime license
+            </p>
+          </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -2105,7 +2125,7 @@ function DownloadSection() {
             whileTap={{ scale: 0.98 }}
           >
             <Download className="w-6 h-6" />
-            Download for macOS
+            Start Free Trial
           </motion.a>
         </motion.div>
 
@@ -2166,6 +2186,13 @@ function Footer() {
               {item}
             </motion.a>
           ))}
+          <motion.a
+            href="/privacy"
+            className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+            whileHover={{ y: -2 }}
+          >
+            Privacy
+          </motion.a>
         </motion.div>
 
         <motion.div

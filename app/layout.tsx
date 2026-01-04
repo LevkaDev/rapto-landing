@@ -17,12 +17,12 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Rapto — Precision Window Management for macOS",
+  title: "Rapto — Ultimate Window Management for macOS",
   description: "A powerful, native macOS tiling window manager. Organize your windows with customizable layouts, keyboard shortcuts, and seamless multi-monitor support.",
   keywords: ["macOS", "window manager", "tiling", "productivity", "window snapping", "Rapto"],
   authors: [{ name: "Levan Karamanishvili" }],
   openGraph: {
-    title: "Rapto — Precision Window Management for macOS",
+    title: "Rapto — Ultimate Window Management for macOS",
     description: "A powerful, native macOS tiling window manager with customizable layouts and keyboard shortcuts.",
     type: "website",
   },

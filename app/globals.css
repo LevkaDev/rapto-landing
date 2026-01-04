@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /* ============================================
-   PRECISION ENGINEERING THEME
-   A power-user focused aesthetic for a precision tool
+   ULTIMATE ENGINEERING THEME
+   A power-user focused aesthetic for an ultimate tool
    ============================================ */
 
 /* Dark theme (default) - The primary experience */
@@ -31,7 +31,7 @@
   --card-border: rgba(255, 255, 255, 0.06);
   --card-border-hover: rgba(255, 255, 255, 0.12);
   
-  /* Blueprint/precision elements */
+  /* Blueprint/ultimate elements */
   --ruler: rgba(255, 255, 255, 0.04);
   --ruler-accent: rgba(191, 255, 0, 0.2);
   --measurement: rgba(255, 255, 255, 0.3);
@@ -108,7 +108,7 @@ body {
    BACKGROUNDS & ATMOSPHERE
    ============================================ */
 
-/* Blueprint grid - precision aesthetic */
+/* Blueprint grid - ultimate aesthetic */
 .blueprint-grid {
   background-image: 
     linear-gradient(var(--ruler) 1px, transparent 1px),
@@ -210,7 +210,7 @@ body {
 }
 
 /* ============================================
-   PRECISION ELEMENTS
+   ULTIMATE ELEMENTS
    ============================================ */
 
 /* Measurement line - horizontal */
