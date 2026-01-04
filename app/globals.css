@@ -1,0 +1,596 @@
+@import "tailwindcss";
+
+/* ============================================
+   PRECISION ENGINEERING THEME
+   A power-user focused aesthetic for a precision tool
+   ============================================ */
+
+/* Dark theme (default) - The primary experience */
+:root {
+  /* Core palette - bold and distinctive */
+  --background: #0a0a0c;
+  --background-elevated: #111114;
+  --foreground: #fafafa;
+  --foreground-muted: #888888;
+  
+  /* Primary accent - Electric Lime (memorable, tool-like) */
+  --accent: #BFFF00;
+  --accent-dim: #9ACC00;
+  --accent-glow: rgba(191, 255, 0, 0.4);
+  --accent-subtle: rgba(191, 255, 0, 0.08);
+  
+  /* Secondary accents for feature demos */
+  --cyan: #00FFE5;
+  --violet: #A855F7;
+  --coral: #FF6B6B;
+  --amber: #FFB800;
+  
+  /* UI elements */
+  --card: rgba(17, 17, 20, 0.8);
+  --card-solid: #111114;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-border-hover: rgba(255, 255, 255, 0.12);
+  
+  /* Blueprint/precision elements */
+  --ruler: rgba(255, 255, 255, 0.04);
+  --ruler-accent: rgba(191, 255, 0, 0.2);
+  --measurement: rgba(255, 255, 255, 0.3);
+}
+
+/* Dark theme only - optimized for developer tools */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+.font-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+.font-body {
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* Gradient text with electric lime */
+.gradient-text {
+  background: linear-gradient(135deg, var(--foreground) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-animated {
+  background: linear-gradient(
+    90deg,
+    var(--foreground) 0%,
+    var(--accent) 25%,
+    var(--foreground) 50%,
+    var(--accent) 75%,
+    var(--foreground) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-flow 8s linear infinite;
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ============================================
+   BACKGROUNDS & ATMOSPHERE
+   ============================================ */
+
+/* Blueprint grid - precision aesthetic */
+.blueprint-grid {
+  background-image: 
+    linear-gradient(var(--ruler) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ruler) 1px, transparent 1px),
+    linear-gradient(var(--ruler-accent) 1px, transparent 1px),
+    linear-gradient(90deg, var(--ruler-accent) 1px, transparent 1px);
+  background-size: 
+    20px 20px,
+    20px 20px,
+    100px 100px,
+    100px 100px;
+}
+
+/* Dot grid pattern */
+.dot-grid {
+  background-image: radial-gradient(var(--measurement) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Radial glow from center */
+.radial-glow {
+  background: 
+    radial-gradient(ellipse 60% 40% at 50% 0%, var(--accent-subtle) 0%, transparent 60%),
+    var(--background);
+}
+
+/* Atmospheric gradient */
+.atmosphere {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(191, 255, 0, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 50%, rgba(0, 255, 229, 0.03) 0%, transparent 60%),
+    var(--background);
+}
+
+/* ============================================
+   CARDS & SURFACES
+   ============================================ */
+
+.card {
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--card-border-hover);
+}
+
+/* Card with accent glow on hover */
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    var(--accent-glow) 0%,
+    transparent 50%,
+    var(--accent-glow) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+/* Spotlight effect following mouse */
+.spotlight {
+  position: relative;
+}
+
+.spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+/* ============================================
+   PRECISION ELEMENTS
+   ============================================ */
+
+/* Measurement line - horizontal */
+.measure-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.measure-line::before,
+.measure-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--measurement) 20%,
+    var(--measurement) 80%,
+    transparent
+  );
+}
+
+/* Ruler marks */
+.ruler-marks {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--measurement) 0,
+    var(--measurement) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+  height: 8px;
+}
+
+/* Corner brackets for technical feel */
+.corner-brackets {
+  position: relative;
+}
+
+.corner-brackets::before,
+.corner-brackets::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--accent);
+  pointer-events: none;
+}
+
+.corner-brackets::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.corner-brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* ============================================
+   BUTTONS & INTERACTIVE
+   ============================================ */
+
+/* Primary button - bold accent */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: var(--accent);
+  color: #0a0a0c;
+  font-weight: 600;
+  font-family: var(--font-display);
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -10px var(--accent-glow);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.btn-primary:hover::after {
+  transform: translateX(100%);
+}
+
+/* Secondary button - outline */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: transparent;
+  color: var(--foreground);
+  font-weight: 500;
+  font-family: var(--font-body);
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+/* ============================================
+   SCROLL & NAVIGATION
+   ============================================ */
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform-origin: left;
+  z-index: 100;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
+  50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-subtle); }
+}
+
+@keyframes slide-up {
+  from { 
+    opacity: 0; 
+    transform: translateY(30px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.5s ease-out forwards;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* ============================================
+   NOISE TEXTURE
+   ============================================ */
+
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* ============================================
+   CURSOR EFFECTS
+   ============================================ */
+
+.cursor-glow {
+  position: fixed;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.2;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--foreground-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ============================================
+   SELECTION
+   ============================================ */
+
+::selection {
+  background: var(--accent);
+  color: #0a0a0c;
+}
+
+/* ============================================
+   WINDOW DEMOS
+   ============================================ */
+
+.demo-window {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.demo-window-bar {
+  height: 28px;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+}
+
+.demo-window-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.demo-window-dot.red { background: #FF5F56; }
+.demo-window-dot.yellow { background: #FFBD2E; }
+.demo-window-dot.green { background: #27CA40; }
+
+/* ============================================
+   FEATURE ICONS
+   ============================================ */
+
+.feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  transition: all 0.2s ease;
+}
+
+.feature-icon:hover {
+  background: var(--accent);
+  color: #0a0a0c;
+}
+
+/* ============================================
+   3D TILT EFFECT
+   ============================================ */
+
+.tilt-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.tilt-card-shine {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(191, 255, 0, 0.06),
+    transparent 40%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.tilt-card:hover .tilt-card-shine {
+  opacity: 1;
+}
+
+/* ============================================
+   TAG / BADGE
+   ============================================ */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 100px;
+  border: 1px solid rgba(191, 255, 0, 0.2);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-secondary {
+    padding: 14px 24px;
+  }
+}
