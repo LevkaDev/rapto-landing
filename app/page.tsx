@@ -2393,7 +2393,7 @@ function DownloadSection() {
           transition={{ delay: 0.4 }}
         >
           <motion.a
-            href="https://github.com/LevkaDev/rapto-releases/releases/latest/download/Rapto.dmg"
+            href="https://github.com/LevkaDev/rapto-releases/releases/download/v2.0.5/Rapto.dmg"
             className="btn-primary text-xl animate-pulse-glow"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
