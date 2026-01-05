@@ -28,6 +28,7 @@ import {
   ArrowLeftRight,
   Grip,
   ChevronDown,
+  ChevronUp,
   Check,
   Square,
   Terminal,
@@ -37,6 +38,10 @@ import {
   MoveHorizontal,
   Palette,
   ShieldCheck,
+  Mail,
+  Menu,
+  X,
+  Ban,
 } from "lucide-react";
 
 // ============================================
@@ -45,6 +50,109 @@ import {
 
 const ACCENT = "#BFFF00";
 const stagger = (index: number, base: number = 0.08) => index * base;
+
+// ============================================
+// NAVIGATION
+// ============================================
+function Navigation() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navLinks = [
+    { href: "#features", label: "Features" },
+    { href: "#faq", label: "FAQ" },
+    { href: "#download", label: "Download" },
+  ];
+
+  return (
+    <motion.nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-[var(--background)]/90 backdrop-blur-xl border-b border-[var(--card-border)]"
+          : "bg-transparent"
+      }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <motion.a
+          href="#"
+          className="flex items-center gap-3"
+          whileHover={{ scale: 1.02 }}
+        >
+          <Image src="/app-icon.png" alt="Rapto" width={36} height={36} />
+          <span className="font-display font-bold text-xl">Rapto</span>
+        </motion.a>
+
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <motion.a
+              key={link.href}
+              href={link.href}
+              className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors text-sm font-medium"
+              whileHover={{ y: -2 }}
+            >
+              {link.label}
+            </motion.a>
+          ))}
+          <motion.a
+            href="#download"
+            className="btn-primary !py-2 !px-4 text-sm"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Download className="w-4 h-4" />
+            Try Free
+          </motion.a>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden p-2 text-[var(--foreground-muted)]"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-[var(--background)]/95 backdrop-blur-xl border-b border-[var(--card-border)]"
+          >
+            <div className="px-6 py-4 flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
+  );
+}
 
 // ============================================
 // SCROLL PROGRESS
@@ -1485,7 +1593,7 @@ function Hero() {
                 whileTap={{ scale: 0.98 }}
               >
             <Download className="w-5 h-5" />
-            Download Free
+            Start Free Trial
             <ArrowRight className="w-5 h-5" />
               </motion.a>
 
@@ -1508,8 +1616,8 @@ function Hero() {
         >
           <div className="flex items-center gap-8 md:gap-16 px-8 py-6 rounded-2xl bg-[var(--card)] border border-[var(--card-border)]">
             {[
-              { value: "8+", label: "Tiling Modes" },
-              { value: "∞", label: "Custom Layouts" },
+              { value: "3", label: "Powerful Modes" },
+              { value: "∞", label: "Custom Templates" },
               { value: "100%", label: "Keyboard Driven" },
               ].map((stat, i) => (
               <div key={i} className="text-center">
@@ -2164,6 +2272,27 @@ function FAQSection() {
           })}
         </div>
       </div>
+
+        {/* Support contact */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="text-center mt-10"
+        >
+          <p className="text-[var(--foreground-muted)]">
+            Still have questions?{" "}
+            <a 
+              href="mailto:support@rapto.app" 
+              className="inline-flex items-center gap-1 hover:text-[var(--accent)] transition-colors"
+              style={{ color: ACCENT }}
+            >
+              <Mail className="w-4 h-4" />
+              support@rapto.app
+            </a>
+          </p>
+        </motion.div>
     </section>
   );
 }
@@ -2316,7 +2445,7 @@ function Footer() {
         </motion.div>
 
         <motion.div
-          className="flex items-center gap-8 text-sm"
+          className="flex items-center gap-6 md:gap-8 text-sm flex-wrap justify-center"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -2340,18 +2469,17 @@ function Footer() {
           </motion.a>
         </motion.div>
 
-        <motion.div
-          className="text-sm text-[var(--foreground-muted)] flex items-center gap-2"
+        <motion.a
+          href="mailto:support@rapto.app"
+          className="text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors flex items-center gap-2"
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
+          whileHover={{ y: -2 }}
         >
-          Made with
-          <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 1, repeat: Infinity }}>
-            ⚡
-          </motion.span>
-          for productivity
-        </motion.div>
+          <Mail className="w-4 h-4" />
+          support@rapto.app
+        </motion.a>
       </div>
     </footer>
   );
@@ -2363,6 +2491,7 @@ function Footer() {
 export default function Home() {
   return (
     <main className="overflow-hidden bg-[var(--background)]">
+      <Navigation />
       <ScrollProgress />
       <CursorGlow />
       <div className="noise-overlay" />
