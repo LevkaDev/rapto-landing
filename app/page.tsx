@@ -36,6 +36,7 @@ import {
   Undo2,
   MoveHorizontal,
   Palette,
+  ShieldCheck,
 } from "lucide-react";
 
 // ============================================
@@ -196,7 +197,7 @@ function CodeContent({ color }: { color: string }) {
       <div className="flex-1 p-1 space-y-[2px]">
         {lines.map((line, i) => (
           <div 
-            key={i} 
+          key={i}
             className="h-[8px] rounded-sm flex items-center"
             style={{ paddingLeft: line.indent * 8 }}
           >
@@ -589,25 +590,25 @@ function AutoTilingDemo() {
       {/* Render windows */}
       <AnimatePresence>
         {layout.map((win, i) => (
-          <motion.div
-            key={i}
+        <motion.div
+          key={i}
             className="absolute"
             style={{ padding: "3px", zIndex: i === 2 && windowCount === 5 ? 10 : i }}
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={{
+          animate={{
               opacity: 1,
               scale: 1,
-              left: `${win.x}%`,
-              top: `${win.y}%`,
-              width: `${win.w}%`,
-              height: `${win.h}%`,
-            }}
+            left: `${win.x}%`,
+            top: `${win.y}%`,
+            width: `${win.w}%`,
+            height: `${win.h}%`,
+          }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ type: "spring", stiffness: 300, damping: 25, delay: i === windowCount - 1 ? 0.1 : 0 }}
-          >
-            <MiniWindow color={colors[i]} className="w-full h-full" />
-          </motion.div>
-        ))}
+        >
+          <MiniWindow color={colors[i]} className="w-full h-full" />
+        </motion.div>
+      ))}
       </AnimatePresence>
       
       {/* Window count indicator */}
@@ -964,7 +965,7 @@ function DragSnapDemo() {
       {/* Snap zone preview */}
       <AnimatePresence>
         {phase === "dragging" && (
-          <motion.div
+      <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -998,19 +999,19 @@ function DragSnapDemo() {
       {/* Cursor */}
       <AnimatePresence>
         {phase === "dragging" && (
-          <motion.div
+      <motion.div
             initial={{ opacity: 0 }}
-            animate={{ 
+        animate={{
               opacity: 1,
               x: [0, -30, -60],
-            }}
+        }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2 }}
             className="absolute z-20"
             style={{ left: "60%", top: "35%" }}
-          >
+      >
             <MousePointerClick className="w-4 h-4" style={{ color: ACCENT }} />
-          </motion.div>
+      </motion.div>
         )}
       </AnimatePresence>
 
@@ -1111,7 +1112,7 @@ function ResizeAdjacentDemo() {
   return (
     <div className="relative h-24 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden flex p-1 gap-1">
       {/* Left window - resizes larger */}
-      <motion.div
+          <motion.div
         className="relative rounded-lg overflow-hidden"
         animate={{ flex: resized ? 2 : 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -1127,16 +1128,16 @@ function ResizeAdjacentDemo() {
           }}
           transition={{ duration: 1, repeat: Infinity }}
         />
-      </motion.div>
+          </motion.div>
 
       {/* Right window - shrinks */}
-      <motion.div
+            <motion.div
         className="relative rounded-lg overflow-hidden"
         animate={{ flex: resized ? 0.5 : 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
         <MiniWindow color="#00FFE5" className="w-full h-full" />
-      </motion.div>
+            </motion.div>
     </div>
   );
 }
@@ -1163,13 +1164,13 @@ function TemplateHotkeysDemo() {
       <div className="absolute left-2 top-2 bottom-2 right-[90px] rounded-lg bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden flex p-1 gap-0.5">
         <AnimatePresence mode="wait">
           {templates[active].layout.map((flex, i) => (
-            <motion.div
+          <motion.div
               key={`${active}-${i}`}
               initial={{ opacity: 0, scaleX: 0 }}
               animate={{ opacity: 1, scaleX: 1 }}
               exit={{ opacity: 0, scaleX: 0 }}
               className="rounded-sm"
-              style={{ 
+            style={{
                 flex, 
                 background: i === 0 ? `${ACCENT}60` : i === 1 ? "#00FFE540" : "#A855F740",
                 border: `1px solid ${i === 0 ? ACCENT : i === 1 ? "#00FFE5" : "#A855F7"}50`
@@ -1182,7 +1183,7 @@ function TemplateHotkeysDemo() {
       {/* Hotkey indicators */}
       <div className="absolute right-2 top-2 bottom-2 flex flex-col justify-center gap-1">
         {["⌘1", "⌘2", "⌘3"].map((key, i) => (
-          <motion.div
+            <motion.div
             key={i}
             className="px-2 py-0.5 rounded text-xs font-mono"
             animate={{
@@ -1192,8 +1193,8 @@ function TemplateHotkeysDemo() {
             }}
           >
             {key}
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
       </div>
     </div>
   );
@@ -1240,7 +1241,7 @@ function CustomTemplatesDemo() {
       {/* Zones */}
       <div className="relative w-full h-full">
         {zones.map((zone, i) => (
-          <motion.div
+      <motion.div
             key={i}
             className="absolute rounded-md"
             initial={false}
@@ -1250,14 +1251,14 @@ function CustomTemplatesDemo() {
               width: `${zone.w}%`,
               height: `${zone.h}%`,
             }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            style={{
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          style={{
               background: `${colors[i % colors.length]}30`,
               border: `2px solid ${colors[i % colors.length]}`,
             }}
           />
         ))}
-      </div>
+        </div>
 
       {/* Plus indicator */}
       <motion.div
@@ -1298,9 +1299,9 @@ function FloatingWindowsDemo() {
       </div>
 
       {/* Floating window */}
-      <motion.div
+        <motion.div
         className="absolute z-10"
-        animate={{
+            animate={{
           left: isFloating ? "20%" : "2%",
           top: isFloating ? "10%" : "4px",
           width: isFloating ? "55%" : "48%",
@@ -1311,12 +1312,12 @@ function FloatingWindowsDemo() {
         transition={{ type: "spring", stiffness: 250, damping: 25 }}
       >
         <MiniWindow color={ACCENT} className="w-full h-full" />
-      </motion.div>
+        </motion.div>
 
       {/* Float indicator */}
       <AnimatePresence>
         {isFloating && (
-          <motion.div
+      <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 5 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 5 }}
@@ -1325,7 +1326,7 @@ function FloatingWindowsDemo() {
           >
             <PinOff className="w-3 h-3" />
             Float
-          </motion.div>
+      </motion.div>
         )}
       </AnimatePresence>
     </div>
@@ -1354,19 +1355,19 @@ function FeatureCard({
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   return (
-    <motion.div
-      ref={ref}
+      <motion.div
+        ref={ref}
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className={`card spotlight p-6 flex flex-col ${large ? 'md:col-span-2 md:row-span-2' : ''}`}
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        e.currentTarget.style.setProperty("--mouse-x", `${x}%`);
-        e.currentTarget.style.setProperty("--mouse-y", `${y}%`);
-      }}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          e.currentTarget.style.setProperty("--mouse-x", `${x}%`);
+          e.currentTarget.style.setProperty("--mouse-y", `${y}%`);
+        }}
     >
       <div className="flex items-start gap-4 mb-4">
         <div className="feature-icon">
@@ -1595,7 +1596,7 @@ function OperatingModes() {
       
       <div className="max-w-6xl mx-auto relative">
         <motion.div ref={ref} className="text-center mb-16">
-          <motion.div
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             className="inline-block mb-4"
@@ -1667,7 +1668,7 @@ function OperatingModes() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-4">
                   <div
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: modes[activeMode].color }}
@@ -1727,19 +1728,19 @@ function OperatingModes() {
                   >
                     <div className="w-full h-full rounded bg-[var(--background)] relative overflow-hidden">
                       <ModePreview mode={modes[activeMode].id} color={modes[activeMode].color} />
-                    </div>
-                  </div>
+                </div>
+              </div>
                   <div className="w-8 h-1 bg-[var(--card-border)] mx-auto mt-1 rounded" />
                   <div className="w-16 h-1 bg-[var(--card-border)] mx-auto rounded" />
                   <div className="text-center mt-2 text-xs text-[var(--foreground-muted)]">
                     Main Display
-                  </div>
+              </div>
                   <div
                     className="absolute -top-2 -right-2 px-2 py-0.5 rounded text-[10px] font-mono"
                     style={{ backgroundColor: modes[activeMode].color, color: "#000" }}
                   >
                     {modes[activeMode].id}
-                  </div>
+            </div>
                 </div>
 
                 {/* Monitor 2 */}
@@ -1747,18 +1748,18 @@ function OperatingModes() {
                   <div className="w-32 h-24 rounded-lg border-2 border-[var(--card-border)] p-2">
                     <div className="w-full h-full rounded bg-[var(--background)] relative overflow-hidden">
                       <ModePreview mode="manual" color="#00FFE5" small />
-                    </div>
-                  </div>
+                </div>
+              </div>
                   <div className="w-6 h-1 bg-[var(--card-border)] mx-auto mt-1 rounded" />
                   <div className="w-12 h-1 bg-[var(--card-border)] mx-auto rounded" />
                   <div className="text-center mt-2 text-xs text-[var(--foreground-muted)]">
                     External
-                  </div>
+              </div>
                   <div className="absolute -top-2 -right-2 px-2 py-0.5 rounded text-[10px] font-mono bg-[#00FFE5] text-black">
                     manual
-                  </div>
-                </div>
+            </div>
               </div>
+            </div>
 
               {/* Independent badge */}
               <div className="flex items-center justify-center gap-2 mt-6 text-sm text-[var(--foreground-muted)]">
@@ -1767,8 +1768,8 @@ function OperatingModes() {
               </div>
             </div>
           </motion.div>
-        </div>
-      </div>
+              </div>
+            </div>
     </section>
   );
 }
@@ -1800,8 +1801,8 @@ function ModePreview({ mode, color, small = false }: { mode: string; color: stri
             animate={{ opacity: [0.6, 1, 0.6] }}
             transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
           />
-        </div>
-      </div>
+              </div>
+            </div>
     );
   }
   
@@ -1818,7 +1819,7 @@ function ModePreview({ mode, color, small = false }: { mode: string; color: stri
             transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
           />
         ))}
-      </div>
+              </div>
     );
   }
   
@@ -1850,7 +1851,7 @@ function ModePreview({ mode, color, small = false }: { mode: string; color: stri
         animate={{ opacity: [0, 0.5, 0] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
-    </div>
+              </div>
   );
 }
 
@@ -2017,6 +2018,150 @@ function Features() {
           >
             <FloatingWindowsDemo />
           </FeatureCard>
+
+          {/* App Exclusions */}
+          <FeatureCard
+            icon={ShieldCheck}
+            title="App Exclusions"
+            description="Manually exclude apps from tiling with a blacklist. Apps in the blacklist won't be tiled or managed by Rapto."
+            index={12}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
+// FAQ SECTION
+// ============================================
+function FAQSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const faqs: Array<{ q: string; a: string }> = [
+    {
+      q: "Why does Rapto need Accessibility permission?",
+      a: "Rapto uses macOS Accessibility APIs to move and resize windows, focus/raise them, and apply layouts. Without it, Rapto can’t control windows.",
+    },
+    {
+      q: "Why does Rapto ask for Screen Recording permission?",
+      a: "macOS protects on-screen window metadata. Screen Recording permission helps Rapto reliably detect windows and their titles for features like window detection and previews.",
+    },
+    {
+      q: "Does Rapto work per monitor and per Space?",
+      a: "Yes. You can set a different mode (and layout) for each display and each macOS Space. Rapto will follow your current Space on each display.",
+    },
+    {
+      q: "What’s the difference between Manual, Auto-tiling, and Drag to Snap?",
+      a: "Manual uses an overlay to assign windows into zones and apply a layout. Auto-tiling arranges windows automatically as they open/close. Drag to Snap lets you drag a window to edges/zones with a preview before snapping.",
+    },
+    {
+      q: "Can I create my own layouts (templates)?",
+      a: "Yes. Open the overlay in Manual mode, press “Custom”, and draw zones visually. You can rename or delete custom templates from the template picker.",
+    },
+    {
+      q: "How do I exclude apps or disable hotkeys in some apps?",
+      a: "Use Settings → Apps. “Ignored Apps” are never managed. “Passthrough Apps” keep Rapto’s hotkeys disabled while that app is focused.",
+    },
+    {
+      q: "Is Rapto safe? Does it record or upload my screen?",
+      a: "Rapto controls windows locally on your Mac. Screen Recording permission is used for window detection. Rapto doesn’t need to upload your screen for core features.",
+    },
+    {
+      q: "How do updates work?",
+      a: "Use “Check for Updates…” from the menu bar. Rapto supports automatic update checks (depending on your build/config).",
+    },
+    {
+      q: "How do I troubleshoot issues?",
+      a: "Enable Debug Logging in Settings → About → Troubleshooting, reproduce the issue, then open the log folder and share logs with your report.",
+    },
+  ];
+
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <section id="faq" className="py-32 px-6 relative">
+      <div className="max-w-4xl mx-auto relative">
+        <motion.div ref={ref} className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            className="inline-block mb-4"
+          >
+            <MeasurementLine width={60} label="03" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.1 }}
+            className="font-display text-5xl md:text-6xl font-bold mb-6"
+          >
+            Frequently asked <span style={{ color: ACCENT }}>questions</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-[var(--foreground-muted)] max-w-2xl mx-auto"
+          >
+            Quick answers about permissions, modes, and everyday usage.
+          </motion.p>
+        </motion.div>
+
+        <div className="space-y-3">
+          {faqs.map((item, idx) => {
+            const isOpen = openIndex === idx;
+            const contentId = `faq-item-${idx}`;
+
+            return (
+              <motion.div
+                key={item.q}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.35, delay: Math.min(0.18, idx * 0.03) }}
+                className="card overflow-hidden"
+              >
+                <button
+                  type="button"
+                  className="w-full px-6 py-5 text-left flex items-center justify-between gap-4"
+                  aria-expanded={isOpen}
+                  aria-controls={contentId}
+                  onClick={() => setOpenIndex((cur) => (cur === idx ? null : idx))}
+                >
+                  <span className="font-display text-lg font-semibold">{item.q}</span>
+                  <motion.span
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="shrink-0"
+                    style={{ color: ACCENT }}
+                  >
+                    <ChevronDown className="w-5 h-5" />
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={contentId}
+                      key={contentId}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className="px-6 pb-6"
+                      style={{ overflow: "hidden" }}
+                    >
+                      <p className="text-[var(--foreground-muted)] leading-relaxed">{item.a}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -2176,7 +2321,7 @@ function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          {["Features", "Download"].map((item) => (
+          {["Features", "FAQ", "Download"].map((item) => (
             <motion.a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -2224,6 +2369,7 @@ export default function Home() {
       <Hero />
       <OperatingModes />
       <Features />
+      <FAQSection />
       <DownloadSection />
       <Footer />
     </main>
