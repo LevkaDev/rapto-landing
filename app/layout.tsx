@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Bricolage_Grotesque } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 // Display font - distinctive, geometric, memorable
@@ -35,6 +36,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        {/* Plausible Analytics - privacy-friendly, no cookies */}
+        <Script
+          defer
+          data-domain="rapto.app"
+          src="https://plausible.io/js/script.js"
+          strategy="afterInteractive"
+        />
+      </head>
       <body
         className={`${bricolage.variable} ${dmSans.variable} antialiased`}
       >
