@@ -22,6 +22,10 @@ export const metadata: Metadata = {
   description: "A powerful, native macOS tiling window manager. Organize your windows with customizable layouts, keyboard shortcuts, and seamless multi-monitor support.",
   keywords: ["macOS", "window manager", "tiling", "productivity", "window snapping", "Rapto"],
   authors: [{ name: "Levan Karamanishvili" }],
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     title: "Rapto — Ultimate Window Management for macOS",
     description: "A powerful, native macOS tiling window manager with customizable layouts and keyboard shortcuts.",
