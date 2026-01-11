@@ -2184,6 +2184,10 @@ function FAQSection() {
       q: "How do I troubleshoot issues?",
       a: "Enable Debug Logging in Settings → About → Troubleshooting, reproduce the issue, then open the log folder and share logs with your report.",
     },
+    {
+      q: "Can I use my license on multiple devices?",
+      a: "Each license can be activated on one device at a time. If you get a new Mac or need to reinstall, go to Settings → License → Deactivate License on your old device first, then activate on the new one. You can manage activations anytime.",
+    },
   ];
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
