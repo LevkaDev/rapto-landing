@@ -68,7 +68,6 @@ function Navigation() {
 
   const navLinks = [
     { href: "#features", label: "Features" },
-    { href: "/docs", label: "Docs" },
     { href: "#faq", label: "FAQ" },
     { href: "#download", label: "Download" },
   ];
@@ -1608,6 +1607,27 @@ function Hero() {
               </motion.a>
             </motion.div>
 
+        {/* Product Hunt Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="flex justify-center mb-8"
+        >
+          <a 
+            href="https://www.producthunt.com/products/rapto-window-manager?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-rapto-window-manager" 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <img 
+              alt="Rapto — Window Manager - Tiling, snapping & layouts — per Space and per monitor. | Product Hunt" 
+              width="250" 
+              height="54" 
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1060643&theme=dark&t=1768157982183"
+            />
+          </a>
+        </motion.div>
+
         {/* Stats with measurement aesthetic */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -2465,13 +2485,6 @@ function Footer() {
               {item}
             </motion.a>
           ))}
-          <motion.a
-            href="/docs"
-            className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
-            whileHover={{ y: -2 }}
-          >
-            Docs
-          </motion.a>
           <motion.a
             href="/privacy"
             className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
