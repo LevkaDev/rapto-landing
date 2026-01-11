@@ -70,6 +70,7 @@ function Navigation() {
     { href: "#features", label: "Features" },
     { href: "#faq", label: "FAQ" },
     { href: "#download", label: "Download" },
+    { href: "/docs", label: "Docs" },
   ];
 
   return (
@@ -2485,6 +2486,13 @@ function Footer() {
               {item}
             </motion.a>
           ))}
+          <motion.a
+            href="/docs"
+            className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+            whileHover={{ y: -2 }}
+          >
+            Docs
+          </motion.a>
           <motion.a
             href="/privacy"
             className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
