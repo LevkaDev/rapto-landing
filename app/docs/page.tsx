@@ -24,6 +24,7 @@ import {
   X,
   PlayCircle,
   Zap,
+  Ban,
 } from "lucide-react";
 
 const ACCENT = "#BFFF00";
@@ -261,6 +262,38 @@ export default function DocsPage() {
 
               <InfoBox type="tip">
                 When prompted, grant the permissions and restart Rapto if needed. You can always manage permissions in System Settings → Privacy & Security.
+              </InfoBox>
+
+              <h3 className="font-display text-xl font-semibold mb-3">Disable macOS Window Tiling</h3>
+              <p className="text-[var(--foreground-muted)] mb-4">
+                macOS Sequoia and later includes built-in window tiling that can conflict with Rapto. We recommend disabling it for the best experience:
+              </p>
+              <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
+                <li>Open <strong>System Settings → Desktop & Dock</strong></li>
+                <li>Scroll down to the <strong>Windows</strong> section</li>
+                <li>Disable these options:</li>
+              </ol>
+              <ul className="space-y-2 mb-4 ml-6">
+                <li className="flex gap-3">
+                  <Ban className="w-4 h-4 mt-1 shrink-0" style={{ color: "#FFB800" }} />
+                  <span className="text-[var(--foreground-muted)]">Drag windows to left or right edge of screen to tile</span>
+                </li>
+                <li className="flex gap-3">
+                  <Ban className="w-4 h-4 mt-1 shrink-0" style={{ color: "#FFB800" }} />
+                  <span className="text-[var(--foreground-muted)]">Drag windows to menu bar to fill screen</span>
+                </li>
+                <li className="flex gap-3">
+                  <Ban className="w-4 h-4 mt-1 shrink-0" style={{ color: "#FFB800" }} />
+                  <span className="text-[var(--foreground-muted)]">Hold ⌥ key while dragging windows to tile</span>
+                </li>
+                <li className="flex gap-3">
+                  <Ban className="w-4 h-4 mt-1 shrink-0" style={{ color: "#FFB800" }} />
+                  <span className="text-[var(--foreground-muted)]">Tiled windows have margins</span>
+                </li>
+              </ul>
+
+              <InfoBox type="warning">
+                If these options remain enabled, macOS and Rapto may fight over window positions, causing unexpected behavior when dragging or snapping windows.
               </InfoBox>
 
               <h3 className="font-display text-xl font-semibold mb-3">First Launch</h3>
