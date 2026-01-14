@@ -1608,29 +1608,6 @@ function Hero() {
               </motion.a>
             </motion.div>
 
-        {/* Product Hunt Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="flex justify-center mb-12"
-        >
-          <motion.a
-            href="https://www.producthunt.com/products/rapto-window-manager?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-rapto-window-manager"
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1060643&theme=dark&t=1768157982183"
-              alt="Rapto — Window Manager - Tiling, snapping & layouts — per Space and per monitor. | Product Hunt"
-              width={250}
-              height={54}
-            />
-          </motion.a>
-        </motion.div>
-
         {/* Stats with measurement aesthetic */}
             <motion.div
               initial={{ opacity: 0 }}
