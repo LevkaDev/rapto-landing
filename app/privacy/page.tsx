@@ -122,10 +122,7 @@ export default function PrivacyPage() {
             </h2>
             <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
               <p>
-                Rapto does not integrate with third-party analytics, advertising, or tracking services. We do not use cookies, tracking pixels, or any other tracking technologies.
-              </p>
-              <p>
-                If you purchase Rapto through the Mac App Store, your purchase is subject to Apple's Privacy Policy and Terms of Service. We do not receive any personal information from Apple beyond what is necessary to process your purchase.
+                Rapto does not integrate with third-party analytics, advertising, or tracking services. We do not use cookies, tracking pixels, or any other tracking technologies. Rapto is free and does not process payments.
               </p>
             </div>
           </section>

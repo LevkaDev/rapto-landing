@@ -114,7 +114,7 @@ function Navigation() {
             whileTap={{ scale: 0.98 }}
           >
             <Download className="w-4 h-4" />
-            Try Free
+            Download
           </motion.a>
         </div>
 
@@ -1594,7 +1594,7 @@ function Hero() {
                 whileTap={{ scale: 0.98 }}
               >
             <Download className="w-5 h-5" />
-            Start Free Trial
+            Download for Mac
             <ArrowRight className="w-5 h-5" />
               </motion.a>
 
@@ -2186,8 +2186,8 @@ function FAQSection() {
       a: "Enable Debug Logging in Settings → About → Troubleshooting, reproduce the issue, then open the log folder and share logs with your report.",
     },
     {
-      q: "Can I use my license on multiple devices?",
-      a: "Each license can be activated on one device at a time. If you get a new Mac or need to reinstall, go to Settings → License → Deactivate License on your old device first, then activate on the new one. You can manage activations anytime.",
+      q: "Is Rapto free?",
+      a: "Yes. Download Rapto and use every feature right away. There is no trial, subscription, or license key.",
     },
   ];
 
@@ -2372,7 +2372,7 @@ function DownloadSection() {
           Download Rapto and transform your workflow today.
         </motion.p>
 
-        {/* Pricing info */}
+        {/* Free */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -2383,11 +2383,10 @@ function DownloadSection() {
             style={{ borderColor: `${ACCENT}40`, background: `${ACCENT}05` }}
           >
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-bold" style={{ color: ACCENT }}>$14.99</span>
-              <span className="text-lg text-[var(--foreground-muted)]">one-time</span>
+              <span className="text-4xl font-bold" style={{ color: ACCENT }}>Free</span>
             </div>
             <p className="text-sm text-[var(--foreground-muted)]">
-              14-day free trial • No subscription • Lifetime license
+              No trial, subscription, or license key
             </p>
           </div>
         </motion.div>
@@ -2404,7 +2403,7 @@ function DownloadSection() {
             whileTap={{ scale: 0.98 }}
           >
             <Download className="w-6 h-6" />
-            Start Free Trial
+            Download for Mac
           </motion.a>
         </motion.div>
 
