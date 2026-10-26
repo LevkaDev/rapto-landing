@@ -42,6 +42,11 @@ import {
   Menu,
   X,
   Ban,
+  Plus,
+  Laptop,
+  Sparkles,
+  Wifi,
+  BatteryFull,
 } from "lucide-react";
 
 // ============================================
@@ -67,6 +72,7 @@ function Navigation() {
   }, []);
 
   const navLinks = [
+    { href: "#desktops-bar", label: "Desktops Bar" },
     { href: "#features", label: "Features" },
     { href: "/docs", label: "Docs" },
     { href: "#faq", label: "FAQ" },
@@ -1654,6 +1660,486 @@ function Hero() {
 }
 
 // ============================================
+// DESKTOPS BAR SECTION
+// ============================================
+type BarApp = { id: string; icon: string; title: string; color: string };
+type BarDesk = { id: number; apps: BarApp[] };
+type BarFrame = {
+  desks: BarDesk[];
+  active: number;
+  cursor: string;
+  drag?: string;
+  hover?: string;
+  press?: boolean;
+  notch?: boolean;
+  barHidden?: boolean;
+  menu?: boolean;
+  caption: string;
+  ms: number;
+};
+
+const BAR_APPS: Record<string, BarApp> = {
+  browser: { id: "browser", icon: "🌐", title: "Browser", color: ACCENT },
+  code: { id: "code", icon: "💻", title: "Code", color: "#00FFE5" },
+  mail: { id: "mail", icon: "✉️", title: "Mail", color: "#A855F7" },
+  music: { id: "music", icon: "🎵", title: "Music", color: "#FF6B6B" },
+  files: { id: "files", icon: "📁", title: "Files", color: "#FFB800" },
+};
+
+const desks = (...lists: string[][]): BarDesk[] =>
+  lists.map((apps, i) => ({ id: i + 1, apps: apps.map((a) => BAR_APPS[a]) }));
+
+const BASE_DESKS = desks(["browser", "code", "mail"], ["music"], ["files"]);
+
+const BAR_SCENES: Array<{ id: string; label: string; frames: BarFrame[] }> = [
+  {
+    id: "switch",
+    label: "Switch",
+    frames: [
+      { desks: BASE_DESKS, active: 1, cursor: "rest", caption: "Every desktop and the apps on it, right in the menu bar", ms: 1500 },
+      { desks: BASE_DESKS, active: 1, cursor: "d-3", caption: "Click a number…", ms: 750 },
+      { desks: BASE_DESKS, active: 3, cursor: "d-3", press: true, caption: "…and you're there instantly. No slide animation", ms: 1500 },
+      { desks: BASE_DESKS, active: 3, cursor: "d-2", caption: "…and you're there instantly. No slide animation", ms: 650 },
+      { desks: BASE_DESKS, active: 2, cursor: "d-2", press: true, caption: "…and you're there instantly. No slide animation", ms: 1300 },
+      { desks: BASE_DESKS, active: 2, cursor: "d-1", caption: "…and you're there instantly. No slide animation", ms: 650 },
+      { desks: BASE_DESKS, active: 1, cursor: "d-1", press: true, caption: "…and you're there instantly. No slide animation", ms: 1300 },
+    ],
+  },
+  {
+    id: "move",
+    label: "Move a window",
+    frames: [
+      { desks: BASE_DESKS, active: 1, cursor: "rest", caption: "Drag an app icon onto another desktop", ms: 1000 },
+      { desks: BASE_DESKS, active: 1, cursor: "app-mail", caption: "Drag an app icon onto another desktop", ms: 800 },
+      { desks: BASE_DESKS, active: 1, cursor: "d-2", drag: "mail", hover: "d-2", caption: "Drag an app icon onto another desktop", ms: 1000 },
+      { desks: desks(["browser", "code"], ["music", "mail"], ["files"]), active: 1, cursor: "d-2", caption: "The window moves there, and you stay where you were", ms: 2000 },
+      { desks: desks(["browser", "code"], ["music", "mail"], ["files"]), active: 1, cursor: "rest", caption: "Hold ⌥ Option when you let go to go along with it", ms: 2200 },
+    ],
+  },
+  {
+    id: "add",
+    label: "New desktop",
+    frames: [
+      { desks: BASE_DESKS, active: 1, cursor: "rest", caption: "Drop an app on + to give it a desktop of its own", ms: 1000 },
+      { desks: BASE_DESKS, active: 1, cursor: "app-code", caption: "Drop an app on + to give it a desktop of its own", ms: 800 },
+      { desks: BASE_DESKS, active: 1, cursor: "plus", drag: "code", hover: "plus", caption: "Drop an app on + to give it a desktop of its own", ms: 1100 },
+      { desks: desks(["browser", "mail"], ["music"], ["files"], ["code"]), active: 1, cursor: "d-4", caption: "A new desktop appears, with that window already on it", ms: 2200 },
+      { desks: desks(["browser", "mail"], ["music"], ["files"], ["code"]), active: 1, cursor: "plus", caption: "Or just click + to add an empty one", ms: 1800 },
+    ],
+  },
+  {
+    id: "menu",
+    label: "Right-click",
+    frames: [
+      { desks: BASE_DESKS, active: 1, cursor: "rest", caption: "Right-click a desktop for its own mode and layout", ms: 900 },
+      { desks: BASE_DESKS, active: 1, cursor: "d-1", caption: "Right-click a desktop for its own mode and layout", ms: 700 },
+      { desks: BASE_DESKS, active: 1, cursor: "d-1", menu: true, caption: "Set the mode and layout, open the overlay or restore the layout", ms: 2800 },
+      { desks: BASE_DESKS, active: 1, cursor: "rest", caption: "Set the mode and layout, open the overlay or restore the layout", ms: 700 },
+    ],
+  },
+  {
+    id: "notch",
+    label: "MacBook notch",
+    frames: [
+      { desks: BASE_DESKS, active: 1, cursor: "rest", notch: true, barHidden: true, caption: "On a MacBook with a notch, the bar stays out of the way", ms: 1800 },
+      { desks: BASE_DESKS, active: 1, cursor: "notch", notch: true, caption: "Point at the notch and it drops down", ms: 1300 },
+      { desks: BASE_DESKS, active: 1, cursor: "d-2", notch: true, caption: "Point at the notch and it drops down", ms: 650 },
+      { desks: BASE_DESKS, active: 2, cursor: "d-2", notch: true, press: true, caption: "Use it as usual", ms: 1300 },
+      { desks: BASE_DESKS, active: 2, cursor: "rest", notch: true, barHidden: true, caption: "Move away and it hides again. It also shows for a moment when you switch desktops", ms: 2400 },
+    ],
+  },
+];
+
+function DesktopsBarDemo({ frame, frameKey }: { frame: BarFrame; frameKey: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const targets = useRef<Record<string, HTMLElement | null>>({});
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const register = (key: string) => (el: HTMLElement | null) => {
+    targets.current[key] = el;
+  };
+
+  useEffect(() => {
+    const measure = () => {
+      const box = containerRef.current?.getBoundingClientRect();
+      if (!box) return;
+      const el = targets.current[frame.cursor];
+      if (!el || frame.cursor === "rest") {
+        setCursor({ x: box.width * 0.72, y: box.height * 0.7 });
+        return;
+      }
+      const r = el.getBoundingClientRect();
+      setCursor({ x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2 + 2 });
+    };
+    // Bar segments animate their layout, so measure again once they settle.
+    const frameID = requestAnimationFrame(measure);
+    const late = setTimeout(measure, 380);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(frameID);
+      clearTimeout(late);
+      window.removeEventListener("resize", measure);
+    };
+  }, [frame.cursor, frameKey]);
+
+  const activeDesk = frame.desks.find((d) => d.id === frame.active) ?? frame.desks[0];
+  const dragged = frame.drag ? BAR_APPS[frame.drag] : undefined;
+  const barShown = !frame.barHidden;
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full max-w-[760px] h-[360px] sm:h-[420px] rounded-2xl overflow-hidden demo-window select-none"
+      style={{ background: "linear-gradient(180deg, #15151a 0%, #0a0a0c 100%)" }}
+    >
+      {/* Menu bar */}
+      <div className="absolute top-0 left-0 right-0 h-10 flex items-center justify-between px-4 text-[12px] text-white/70 bg-white/[0.04] border-b border-white/[0.05] backdrop-blur">
+        <div className="flex items-center gap-4">
+          <span className="font-semibold text-white/90">Finder</span>
+          <span className="hidden sm:inline">File</span>
+          <span className="hidden sm:inline">Edit</span>
+          <span className="hidden md:inline">View</span>
+          <span className="hidden md:inline">Window</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Wifi className="hidden sm:block w-3.5 h-3.5" />
+          <BatteryFull className="hidden sm:block w-4 h-4" />
+          <span className="font-mono">Mon 10:27</span>
+        </div>
+      </div>
+
+      {/* Notch */}
+      <AnimatePresence>
+        {frame.notch && (
+          <motion.div
+            ref={register("notch")}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-10 rounded-b-2xl bg-black z-30"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Desktops bar */}
+      <motion.div
+        className="absolute left-1/2 z-20 flex items-center gap-1 px-1 py-[3px] rounded-full bg-[#232329]/90 border border-white/[0.12] backdrop-blur-xl shadow-lg"
+        style={{ x: "-50%", pointerEvents: barShown ? "auto" : "none" }}
+        animate={{
+          top: frame.notch ? 46 : 5,
+          opacity: barShown ? 1 : 0,
+          scale: barShown ? 1 : 0.92,
+        }}
+        transition={{ duration: barShown ? 0.2 : 0.25, ease: "easeOut" }}
+      >
+        {frame.desks.map((desk) => {
+          const isActive = desk.id === frame.active;
+          const isTarget = frame.hover === `d-${desk.id}`;
+          return (
+            <motion.div
+              key={desk.id}
+              ref={register(`d-${desk.id}`)}
+              layout
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 420, damping: 30 }}
+              className="flex items-center gap-1.5 h-6 px-2 rounded-full"
+              style={{
+                background: isTarget ? "rgba(255,255,255,0.22)" : isActive ? "rgba(255,255,255,0.14)" : "transparent",
+                transition: "background 0.12s",
+              }}
+            >
+              <span className={`text-[13px] font-mono font-semibold ${isActive ? "text-white" : "text-white/50"}`}>
+                {desk.id}
+              </span>
+              {desk.apps.map((app) => (
+                <motion.span
+                  key={app.id}
+                  ref={register(`app-${app.id}`)}
+                  layout
+                  className="text-[13px] leading-none"
+                  animate={{ opacity: frame.drag === app.id ? 0.25 : 1 }}
+                >
+                  {app.icon}
+                </motion.span>
+              ))}
+            </motion.div>
+          );
+        })}
+        <motion.div
+          ref={register("plus")}
+          layout
+          className="w-5 h-5 mx-0.5 rounded-full border flex items-center justify-center text-[13px] leading-none"
+          style={{
+            borderColor: frame.hover === "plus" ? ACCENT : "rgba(255,255,255,0.45)",
+            color: frame.hover === "plus" ? ACCENT : "rgba(255,255,255,0.7)",
+            background: frame.hover === "plus" ? `${ACCENT}25` : "transparent",
+          }}
+          animate={{ scale: frame.hover === "plus" ? 1.2 : 1 }}
+        >
+          +
+        </motion.div>
+      </motion.div>
+
+      {/* Desktop content: windows of the active desktop */}
+      <div className="absolute inset-x-4 bottom-4 top-14">
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            key={activeDesk.id}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.12 }}
+            className="absolute inset-0 flex gap-2"
+          >
+            <AnimatePresence mode="popLayout">
+              {activeDesk.apps.map((app) => (
+                <motion.div
+                  key={app.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.85, y: -40 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="relative flex-1 h-full"
+                >
+                  <MiniWindow color={app.color} className="w-full h-full" />
+                  <div className="absolute inset-0 top-3 flex flex-col items-center justify-center gap-2">
+                    <span className="text-3xl">{app.icon}</span>
+                    <span className="text-xs font-mono" style={{ color: app.color }}>
+                      {app.title}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            {activeDesk.apps.length === 0 && (
+              <div className="flex-1 flex items-center justify-center text-sm text-white/30 font-mono">Empty desktop</div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-white/40">Desktop {activeDesk.id}</div>
+      </div>
+
+      {/* Context menu */}
+      <AnimatePresence>
+        {frame.menu && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.12 }}
+            className="absolute z-40 w-48 py-1 rounded-lg text-[12px] text-white/90 bg-[#2a2a30]/95 border border-white/10 shadow-2xl backdrop-blur-xl origin-top-left"
+            style={{ left: cursor.x + 4, top: cursor.y + 8 }}
+          >
+            {[
+              { label: "Manual", check: true },
+              { label: "Auto Tiling" },
+              { label: "Drag to Snap" },
+              { sep: true },
+              { label: "Layout", value: "2 + 1 ›" },
+              { label: "Open Overlay" },
+              { label: "Restore Layout" },
+              { sep: true },
+              { label: "Settings…" },
+            ].map((item, i) =>
+              item.sep ? (
+                <div key={i} className="my-1 h-px bg-white/10" />
+              ) : (
+                <div
+                  key={i}
+                  className="flex items-center justify-between px-3 py-[3px] mx-1 rounded"
+                  style={i === 0 ? { background: "#3b82f6" } : undefined}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-3 text-[10px]">{item.check ? "✓" : ""}</span>
+                    {item.label}
+                  </span>
+                  {item.value && <span className="text-white/50">{item.value}</span>}
+                </div>
+              )
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Dragged icon */}
+      <AnimatePresence>
+        {dragged && (
+          <motion.div
+            key={dragged.id}
+            className="absolute z-50 text-lg pointer-events-none"
+            initial={{ opacity: 0, scale: 0.8, left: cursor.x + 8, top: cursor.y - 4 }}
+            animate={{ opacity: 1, scale: 1.25, left: cursor.x + 8, top: cursor.y - 4 }}
+            exit={{ opacity: 0, scale: 0.6 }}
+            transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+          >
+            {dragged.icon}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Cursor */}
+      <motion.div
+        className="absolute z-50 pointer-events-none"
+        animate={{ left: cursor.x - 3, top: cursor.y - 3 }}
+        transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <AnimatePresence>
+          {(frame.press || frame.menu) && (
+            <motion.div
+              key={frameKey}
+              className="absolute -left-3 -top-3 w-7 h-7 rounded-full"
+              style={{ border: `2px solid ${ACCENT}` }}
+              initial={{ scale: 0.3, opacity: 1 }}
+              animate={{ scale: 1.4, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+          )}
+        </AnimatePresence>
+        <svg width="18" height="22" viewBox="0 0 18 22" className="drop-shadow-lg">
+          <path d="M1 1L1 17L5.5 12.5L8.5 20L11.5 18.8L8.5 11.5L15 11.5Z" fill="white" stroke="black" strokeWidth="1.2" />
+        </svg>
+      </motion.div>
+    </div>
+  );
+}
+
+function DesktopsBar() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [scene, setScene] = useState(0);
+  const [frame, setFrame] = useState(0);
+  const [pinned, setPinned] = useState(false);
+
+  const current = BAR_SCENES[scene];
+  const step = current.frames[frame];
+
+  useEffect(() => {
+    if (!isInView) return;
+    const timer = setTimeout(() => {
+      if (frame + 1 < current.frames.length) {
+        setFrame(frame + 1);
+      } else {
+        setFrame(0);
+        if (!pinned) setScene((s) => (s + 1) % BAR_SCENES.length);
+      }
+    }, step.ms);
+    return () => clearTimeout(timer);
+  }, [isInView, frame, scene, pinned, current.frames.length, step.ms]);
+
+  const highlights = [
+    { icon: MousePointerClick, title: "Instant switching", text: "Click a desktop number to jump straight there, with no slide." },
+    { icon: Grip, title: "Drag to move", text: "Drop an app icon on another desktop. You stay put, or hold ⌥ to follow." },
+    { icon: Plus, title: "New desktop in one drop", text: "The + button adds a desktop. Drop an icon on it to move that window there." },
+    { icon: LayoutDashboard, title: "Slots remembered", text: "On a Manual desktop, a returning window snaps back into its old slot." },
+    { icon: Laptop, title: "Notch friendly", text: "On MacBooks it hides under the notch and drops down when you point at it." },
+    { icon: Monitor, title: "One bar per display", text: "Every monitor gets its own bar with its own desktops." },
+  ];
+
+  return (
+    <section id="desktops-bar" className="py-24 px-6 relative overflow-hidden">
+      <div className="absolute inset-0 radial-glow" />
+
+      <div className="max-w-6xl mx-auto relative">
+        <motion.div ref={ref} className="text-center mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            className="inline-flex items-center gap-3 mb-4"
+          >
+            <MeasurementLine width={60} />
+            <span className="tag">
+              <Sparkles className="w-4 h-4" />
+              New in 5.47
+            </span>
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.1 }}
+            className="font-display text-4xl md:text-5xl font-bold mb-6"
+          >
+            Your desktops, <span style={{ color: ACCENT }}>in the menu bar</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-[var(--foreground-muted)] max-w-2xl mx-auto"
+          >
+            See every desktop and what&apos;s open on it. Switch with a click, and drag apps between desktops without leaving the one you&apos;re on
+          </motion.p>
+        </motion.div>
+
+        {/* Scene picker */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3 }}
+          className="flex flex-wrap justify-center gap-2 mb-8"
+        >
+          {BAR_SCENES.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                setScene(i);
+                setFrame(0);
+                setPinned(true);
+              }}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                scene === i
+                  ? "text-[var(--background)]"
+                  : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--card-border)]"
+              }`}
+              style={{ backgroundColor: scene === i ? ACCENT : undefined }}
+            >
+              {s.label}
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Demo */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="flex flex-col items-center"
+        >
+          <DesktopsBarDemo frame={step} frameKey={`${scene}-${frame}`} />
+          <div className="h-14 mt-5 flex items-start justify-center">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={step.caption}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className="text-center text-[var(--foreground-muted)] max-w-xl"
+              >
+                {step.caption}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Highlights */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {highlights.map((h, i) => (
+            <FeatureCard key={h.title} icon={h.icon} title={h.title} description={h.text} index={i} />
+          ))}
+        </div>
+
+        <p className="text-center text-sm text-[var(--foreground-muted)] mt-8">
+          Works on macOS 26 and later. Turn it on or off in Settings → General → Menu Bar
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
 // OPERATING MODES SECTION
 // ============================================
 function OperatingModes() {
@@ -2162,6 +2648,14 @@ function FAQSection() {
       a: "Yes. You can set a different mode (and layout) for each display and each macOS Space. Rapto will follow your current Space on each display.",
     },
     {
+      q: "What is the desktops bar?",
+      a: "A bar in the middle of the menu bar that lists your desktops and the apps open on each one. Click a number to switch instantly, drag an app icon onto another desktop to move its window there, or drop it on “+” to give it a new desktop. Hold Option when you let go to go along with the window. It works on macOS 26 and later and can be turned off in Settings → General → Menu Bar.",
+    },
+    {
+      q: "How does the desktops bar work on a MacBook with a notch, or with several monitors?",
+      a: "On a screen with a notch the bar hides and drops down below the notch when you point at it. Choose Automatic, Always or On Hover in Settings → General → Menu Bar. With several monitors, each display gets its own bar with its own desktops, as long as “Displays have separate Spaces” is on in System Settings → Desktop & Dock.",
+    },
+    {
       q: "What’s the difference between Manual, Auto-tiling, and Drag to Snap?",
       a: "Manual uses an overlay to assign windows into zones and apply a layout. Auto-tiling arranges windows automatically as they open/close. Drag to Snap lets you drag a window to edges/zones with a preview before snapping.",
     },
@@ -2507,6 +3001,7 @@ export default function Home() {
       <CursorGlow />
       <div className="noise-overlay" />
       <Hero />
+      <DesktopsBar />
       <OperatingModes />
       <Features />
       <FAQSection />
