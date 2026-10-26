@@ -73,6 +73,7 @@ function Navigation() {
 
   const navLinks = [
     { href: "#desktops-bar", label: "Desktops Bar" },
+    { href: "#layouts", label: "Layouts" },
     { href: "#features", label: "Features" },
     { href: "/docs", label: "Docs" },
     { href: "#faq", label: "FAQ" },
@@ -2369,6 +2370,581 @@ function OperatingModes() {
   );
 }
 
+// ============================================
+// LAYOUTS SECTION (overlay + zone editor)
+// ============================================
+type Rect = { x: number; y: number; w: number; h: number };
+type LayoutTemplate = { id: string; name: string; zones: Rect[] };
+type OverlayFrame = {
+  view: "desktop" | "picker" | "editor";
+  template?: string;
+  assigned?: string[];
+  applied?: boolean;
+  saved?: boolean;
+  zones?: Rect[];
+  creator?: Rect | null;
+  name?: string;
+  hotkey?: boolean;
+  cursor: string | [number, number];
+  press?: boolean;
+  caption: string;
+  ms: number;
+};
+
+const LAYOUT_TEMPLATES: LayoutTemplate[] = [
+  { id: "halves", name: "Halves", zones: [{ x: 0, y: 0, w: 50, h: 100 }, { x: 50, y: 0, w: 50, h: 100 }] },
+  { id: "thirds", name: "Thirds", zones: [{ x: 0, y: 0, w: 33.3, h: 100 }, { x: 33.3, y: 0, w: 33.4, h: 100 }, { x: 66.7, y: 0, w: 33.3, h: 100 }] },
+  { id: "split", name: "1+2 Left", zones: [{ x: 0, y: 0, w: 50, h: 100 }, { x: 50, y: 0, w: 50, h: 50 }, { x: 50, y: 50, w: 50, h: 50 }] },
+  { id: "quarters", name: "Quarters", zones: [{ x: 0, y: 0, w: 50, h: 50 }, { x: 50, y: 0, w: 50, h: 50 }, { x: 0, y: 50, w: 50, h: 50 }, { x: 50, y: 50, w: 50, h: 50 }] },
+];
+const MY_LAYOUT: LayoutTemplate = {
+  id: "mine",
+  name: "My Layout",
+  zones: [{ x: 0, y: 0, w: 60, h: 100 }, { x: 60, y: 0, w: 40, h: 50 }, { x: 60, y: 50, w: 40, h: 50 }],
+};
+const ZONE_COLORS = [ACCENT, "#00FFE5", "#A855F7", "#FFB800"];
+const LAYOUT_WINDOWS = [
+  { id: "browser", title: "Browser", icon: "🌐", color: ACCENT, loose: { x: 6, y: 12, w: 44, h: 50 } },
+  { id: "code", title: "Code", icon: "💻", color: "#00FFE5", loose: { x: 40, y: 24, w: 48, h: 56 } },
+  { id: "mail", title: "Mail", icon: "✉️", color: "#A855F7", loose: { x: 14, y: 50, w: 38, h: 42 } },
+];
+// Editor area inside the stage, in stage percent.
+const EDITOR = { x: 4, y: 22, w: 92, h: 64 };
+const inEditor = (r: Rect): Rect => ({
+  x: EDITOR.x + (r.x * EDITOR.w) / 100,
+  y: EDITOR.y + (r.y * EDITOR.h) / 100,
+  w: (r.w * EDITOR.w) / 100,
+  h: (r.h * EDITOR.h) / 100,
+});
+const editorPoint = (x: number, y: number): [number, number] => [EDITOR.x + (x * EDITOR.w) / 100, EDITOR.y + (y * EDITOR.h) / 100];
+
+const Z1 = { x: 0, y: 0, w: 60, h: 100 };
+const Z2 = { x: 60, y: 0, w: 40, h: 50 };
+const Z3 = { x: 60, y: 50, w: 40, h: 50 };
+
+const LAYOUT_SCENES: Array<{ id: string; label: string; frames: OverlayFrame[] }> = [
+  {
+    id: "apply",
+    label: "Apply a layout",
+    frames: [
+      { view: "desktop", cursor: "rest", hotkey: true, caption: "Press ⌃⌥G to open the overlay", ms: 1600 },
+      { view: "picker", cursor: "rest", caption: "Pick a layout at the top…", ms: 700 },
+      { view: "picker", cursor: "chip:split", caption: "Pick a layout at the top…", ms: 700 },
+      { view: "picker", template: "split", cursor: "chip:split", press: true, caption: "Pick a layout at the top…", ms: 800 },
+      { view: "picker", template: "split", cursor: "thumb:code", caption: "…then click windows in the order they should fill it", ms: 650 },
+      { view: "picker", template: "split", assigned: ["code"], cursor: "thumb:code", press: true, caption: "…then click windows in the order they should fill it", ms: 650 },
+      { view: "picker", template: "split", assigned: ["code"], cursor: "thumb:browser", caption: "…then click windows in the order they should fill it", ms: 600 },
+      { view: "picker", template: "split", assigned: ["code", "browser"], cursor: "thumb:browser", press: true, caption: "…then click windows in the order they should fill it", ms: 650 },
+      { view: "picker", template: "split", assigned: ["code", "browser"], cursor: "thumb:mail", caption: "…then click windows in the order they should fill it", ms: 600 },
+      { view: "picker", template: "split", assigned: ["code", "browser", "mail"], cursor: "thumb:mail", press: true, caption: "…then click windows in the order they should fill it", ms: 700 },
+      { view: "picker", template: "split", assigned: ["code", "browser", "mail"], cursor: "apply", caption: "Press Enter, and every window snaps into place", ms: 650 },
+      { view: "desktop", template: "split", assigned: ["code", "browser", "mail"], applied: true, cursor: "rest", press: true, caption: "Press Enter, and every window snaps into place", ms: 2600 },
+    ],
+  },
+  {
+    id: "draw",
+    label: "Draw your own",
+    frames: [
+      { view: "picker", cursor: "rest", caption: "Need a layout that isn't there? Click Custom", ms: 900 },
+      { view: "picker", cursor: "chip:custom", caption: "Need a layout that isn't there? Click Custom", ms: 700 },
+      { view: "editor", zones: [], creator: { x: 35, y: 30, w: 30, h: 40 }, cursor: "chip:custom", press: true, caption: "A frame appears on your screen", ms: 1000 },
+      { view: "editor", zones: [], creator: { x: 35, y: 30, w: 30, h: 40 }, cursor: editorPoint(35, 30), caption: "Drag it and pull its handles to the size you want", ms: 600 },
+      { view: "editor", zones: [], creator: { x: 0, y: 0, w: 65, h: 70 }, cursor: editorPoint(0, 0), caption: "Drag it and pull its handles to the size you want", ms: 850 },
+      { view: "editor", zones: [], creator: { x: 0, y: 0, w: 65, h: 70 }, cursor: editorPoint(65, 70), caption: "Drag it and pull its handles to the size you want", ms: 550 },
+      { view: "editor", zones: [], creator: Z1, cursor: editorPoint(60, 100), caption: "Drag it and pull its handles to the size you want", ms: 850 },
+      { view: "editor", zones: [], creator: Z1, cursor: editorPoint(30, 50), caption: "Click + to turn it into a zone", ms: 600 },
+      { view: "editor", zones: [Z1], creator: Z1, cursor: editorPoint(30, 50), press: true, caption: "Click + to turn it into a zone", ms: 800 },
+      { view: "editor", zones: [Z1], creator: Z2, cursor: editorPoint(80, 25), caption: "Place the next one, and the next", ms: 900 },
+      { view: "editor", zones: [Z1, Z2], creator: Z2, cursor: editorPoint(80, 25), press: true, caption: "Place the next one, and the next", ms: 700 },
+      { view: "editor", zones: [Z1, Z2], creator: Z3, cursor: editorPoint(80, 75), caption: "Place the next one, and the next", ms: 900 },
+      { view: "editor", zones: [Z1, Z2, Z3], creator: null, cursor: editorPoint(80, 75), press: true, caption: "Zones are numbered in the order windows fill them", ms: 1300 },
+      { view: "editor", zones: [Z1, Z2, Z3], creator: null, cursor: "name", caption: "Name it and save", ms: 650 },
+      { view: "editor", zones: [Z1, Z2, Z3], creator: null, name: "My Layout", cursor: "name", press: true, caption: "Name it and save", ms: 900 },
+      { view: "editor", zones: [Z1, Z2, Z3], creator: null, name: "My Layout", cursor: "save", caption: "Name it and save", ms: 650 },
+      { view: "picker", saved: true, template: "mine", cursor: "chip:mine", press: true, caption: "Your layout sits right next to the built-in ones", ms: 2600 },
+    ],
+  },
+];
+
+function LayoutPreview({ zones, highlight }: { zones: Rect[]; highlight?: number }) {
+  return (
+    <div className="relative w-full h-full">
+      {zones.map((z, i) => (
+        <div
+          key={i}
+          className="absolute rounded-[2px]"
+          style={{
+            left: `${z.x}%`,
+            top: `${z.y}%`,
+            width: `${z.w}%`,
+            height: `${z.h}%`,
+            padding: 1,
+          }}
+        >
+          <div
+            className="w-full h-full rounded-[2px]"
+            style={{
+              background: highlight === i ? `${ZONE_COLORS[i % 4]}90` : `${ZONE_COLORS[i % 4]}35`,
+              border: `1px solid ${ZONE_COLORS[i % 4]}80`,
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: string }) {
+  const chips = [...LAYOUT_TEMPLATES, ...(frame.saved ? [MY_LAYOUT] : [])];
+  const chipCount = chips.length + 1;
+  const chipWidth = 12;
+  const chipGap = 1.6;
+  const chipStart = 50 - (chipCount * chipWidth + (chipCount - 1) * chipGap) / 2;
+  const chipX = (i: number) => chipStart + i * (chipWidth + chipGap);
+  const thumbX: Record<string, number> = { browser: 30, code: 50, mail: 70 };
+
+  const resolve = (c: OverlayFrame["cursor"]): [number, number] => {
+    if (Array.isArray(c)) return c;
+    if (c === "rest") return [80, 74];
+    if (c === "apply") return [50, 84];
+    if (c === "name") return [22, 12];
+    if (c === "save") return [86, 12];
+    if (c.startsWith("thumb:")) return [thumbX[c.slice(6)], 52];
+    const id = c.slice(5);
+    const index = id === "custom" ? chips.length : chips.findIndex((t) => t.id === id);
+    return [chipX(Math.max(index, 0)) + chipWidth / 2, 12];
+  };
+  const [cx, cy] = resolve(frame.cursor);
+
+  const template = [...LAYOUT_TEMPLATES, MY_LAYOUT].find((t) => t.id === frame.template);
+  const assigned = frame.assigned ?? [];
+  const desktop = { x: 2, y: 4, w: 96, h: 92 };
+
+  const windowRect = (id: string, loose: Rect): Rect => {
+    const slot = assigned.indexOf(id);
+    if (!frame.applied || !template || slot < 0) return loose;
+    const z = template.zones[slot];
+    return {
+      x: desktop.x + (z.x * desktop.w) / 100 + 0.5,
+      y: desktop.y + (z.y * desktop.h) / 100 + 0.8,
+      w: (z.w * desktop.w) / 100 - 1,
+      h: (z.h * desktop.h) / 100 - 1.6,
+    };
+  };
+
+  return (
+    <div
+      className="relative w-full max-w-[760px] aspect-[16/10] rounded-2xl overflow-hidden demo-window select-none"
+      style={{ background: "linear-gradient(180deg, #15151a 0%, #0a0a0c 100%)" }}
+    >
+      {/* Windows on the desktop */}
+      {LAYOUT_WINDOWS.map((win) => {
+        const r = windowRect(win.id, win.loose);
+        return (
+          <motion.div
+            key={win.id}
+            className="absolute"
+            initial={false}
+            animate={{ left: `${r.x}%`, top: `${r.y}%`, width: `${r.w}%`, height: `${r.h}%` }}
+            transition={{ type: "spring", stiffness: 260, damping: 28 }}
+          >
+            <MiniWindow color={win.color} className="w-full h-full" />
+            <div className="absolute inset-0 top-3 flex flex-col items-center justify-center gap-1">
+              <span className="text-2xl">{win.icon}</span>
+              <span className="text-[11px] font-mono" style={{ color: win.color }}>
+                {win.title}
+              </span>
+            </div>
+          </motion.div>
+        );
+      })}
+
+      {/* Hotkey hint */}
+      <AnimatePresence>
+        {frame.hotkey && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="absolute right-4 top-4 z-30 flex items-center gap-1.5 px-3 py-2 rounded-xl bg-black/70 border border-white/10 backdrop-blur"
+          >
+            {["⌃", "⌥", "G"].map((k, i) => (
+              <motion.span
+                key={k}
+                className="min-w-7 h-7 px-1.5 rounded-md flex items-center justify-center text-sm font-mono font-semibold"
+                style={{ background: "var(--card-solid)", border: "1px solid var(--card-border)" }}
+                animate={{ color: ["#888", ACCENT, ACCENT], borderColor: ["rgba(255,255,255,0.06)", ACCENT, ACCENT] }}
+                transition={{ delay: 0.3 + i * 0.2, duration: 0.3 }}
+              >
+                {k}
+              </motion.span>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Overlay */}
+      <AnimatePresence>
+        {frame.view !== "desktop" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 z-20 bg-black/75 backdrop-blur-sm"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Picker view */}
+      <AnimatePresence>
+        {frame.view === "picker" && (
+          <motion.div
+            key="picker"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 z-30"
+          >
+            {chips.map((t, i) => (
+              <motion.div
+                key={t.id}
+                layout
+                initial={t.id === "mine" ? { opacity: 0, scale: 0.6 } : false}
+                animate={{ opacity: 1, scale: frame.template === t.id ? 1.06 : 1 }}
+                className="absolute flex flex-col items-center gap-1"
+                style={{ left: `${chipX(i)}%`, width: `${chipWidth}%`, top: "5%" }}
+              >
+                <div
+                  className="w-full aspect-[16/10] rounded-md p-1 transition-colors"
+                  style={{
+                    background: frame.template === t.id ? `${ACCENT}22` : "rgba(255,255,255,0.05)",
+                    border: `1px solid ${frame.template === t.id ? ACCENT : "rgba(255,255,255,0.12)"}`,
+                  }}
+                >
+                  <LayoutPreview zones={t.zones} />
+                </div>
+                <span className={`text-[9px] sm:text-[10px] whitespace-nowrap ${frame.template === t.id ? "text-white" : "text-white/50"}`}>
+                  {t.name}
+                </span>
+              </motion.div>
+            ))}
+            <motion.div
+              layout
+              className="absolute flex flex-col items-center gap-1"
+              style={{ left: `${chipX(chips.length)}%`, width: `${chipWidth}%`, top: "5%" }}
+            >
+              <div className="w-full aspect-[16/10] rounded-md border border-dashed border-white/25 flex items-center justify-center text-white/60">
+                <Plus className="w-4 h-4" />
+              </div>
+              <span className="text-[9px] sm:text-[10px] text-white/50">Custom</span>
+            </motion.div>
+
+            {/* Zone indicator */}
+            {template && (
+              <div className="absolute left-1/2 -translate-x-1/2 top-[28%] w-[11%] aspect-[16/10] rounded-md p-0.5 bg-white/5 border border-white/10">
+                <LayoutPreview zones={template.zones} highlight={assigned.length < template.zones.length ? assigned.length : undefined} />
+              </div>
+            )}
+
+            {/* Window thumbnails */}
+            {LAYOUT_WINDOWS.map((win) => {
+              const order = assigned.indexOf(win.id);
+              return (
+                <motion.div
+                  key={win.id}
+                  className="absolute -translate-x-1/2 -translate-y-1/2 w-[16%] aspect-[4/3]"
+                  style={{ left: `${thumbX[win.id]}%`, top: "52%" }}
+                  animate={{ scale: order >= 0 ? 0.94 : 1, opacity: order >= 0 ? 0.75 : 1 }}
+                >
+                  <MiniWindow color={win.color} className="w-full h-full" />
+                  <div className="absolute inset-0 top-3 flex flex-col items-center justify-center">
+                    <span className="text-xl">{win.icon}</span>
+                    <span className="text-[10px] font-mono" style={{ color: win.color }}>
+                      {win.title}
+                    </span>
+                  </div>
+                  <AnimatePresence>
+                    {order >= 0 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="absolute -top-2 -left-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-black"
+                        style={{ background: ZONE_COLORS[order] }}
+                      >
+                        {order + 1}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+
+            {/* Apply button */}
+            {template && assigned.length > 0 && !frame.saved && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-[84%] px-4 py-2 rounded-lg text-xs font-semibold text-white bg-[#3b82f6] whitespace-nowrap"
+              >
+                ✓ Apply Layout <span className="text-white/75">({assigned.length}/{template.zones.length})</span>
+              </motion.div>
+            )}
+            <div className="absolute left-0 right-0 top-[93%] text-center text-[10px] text-white/40">
+              Press ESC to cancel • Enter to apply
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Editor view */}
+      <AnimatePresence>
+        {frame.view === "editor" && (
+          <motion.div
+            key="editor"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0 z-30"
+          >
+            {/* Toolbar */}
+            <div className="absolute left-[4%] right-[4%] top-[6%] h-[12%] flex items-center gap-3 px-3 rounded-xl bg-white/[0.06] border border-white/10">
+              <div className="w-[34%] h-[60%] rounded-md bg-white/10 border border-white/15 flex items-center px-2 text-[11px]">
+                {frame.name ? <span className="text-white">{frame.name}</span> : <span className="text-white/35">Layout name…</span>}
+              </div>
+              <span className="text-[11px] text-white/60">
+                <span className="font-bold text-white">{frame.zones?.length ?? 0}</span> zone{frame.zones?.length === 1 ? "" : "s"}
+              </span>
+              <div className="ml-auto flex items-center gap-2 text-[11px]">
+                <span className="hidden sm:inline px-2.5 py-1 rounded-md bg-white/10 text-white/70">Cancel</span>
+                <span className="px-2.5 py-1 rounded-md bg-[#3b82f6] text-white font-semibold">✓ Save Layout</span>
+              </div>
+            </div>
+
+            {/* Editing area */}
+            <div
+              className="absolute rounded-md border border-[#60a5fa]/40"
+              style={{ left: `${EDITOR.x}%`, top: `${EDITOR.y}%`, width: `${EDITOR.w}%`, height: `${EDITOR.h}%` }}
+            />
+            {(frame.zones ?? []).map((z, i) => {
+              const r = inEditor(z);
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute"
+                  style={{ left: `${r.x}%`, top: `${r.y}%`, width: `${r.w}%`, height: `${r.h}%`, padding: 3 }}
+                >
+                  <div
+                    className="relative w-full h-full rounded-lg"
+                    style={{ background: `${ZONE_COLORS[i]}25`, border: `2px solid ${ZONE_COLORS[i]}` }}
+                  >
+                    <span
+                      className="absolute left-2 top-2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-black"
+                      style={{ background: ZONE_COLORS[i] }}
+                    >
+                      {i + 1}
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
+            <AnimatePresence>
+              {frame.creator && (
+                <motion.div
+                  key="creator"
+                  className="absolute"
+                  initial={(() => {
+                    const r = inEditor(frame.creator);
+                    return { opacity: 0, left: `${r.x}%`, top: `${r.y}%`, width: `${r.w}%`, height: `${r.h}%` };
+                  })()}
+                  animate={(() => {
+                    const r = inEditor(frame.creator);
+                    return { opacity: 1, left: `${r.x}%`, top: `${r.y}%`, width: `${r.w}%`, height: `${r.h}%` };
+                  })()}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ padding: 3 }}
+                >
+                  <div className="relative w-full h-full rounded-xl border-2 border-[#60a5fa] bg-[#3b82f6]/15 shadow-[0_0_24px_rgba(96,165,250,0.35)]">
+                    {[
+                      "left-0 top-0 -translate-x-1/2 -translate-y-1/2",
+                      "right-0 top-0 translate-x-1/2 -translate-y-1/2",
+                      "left-0 bottom-0 -translate-x-1/2 translate-y-1/2",
+                      "right-0 bottom-0 translate-x-1/2 translate-y-1/2",
+                    ].map((pos) => (
+                      <span key={pos} className={`absolute ${pos} w-2.5 h-2.5 rotate-45 bg-white border border-[#3b82f6]`} />
+                    ))}
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-gradient-to-br from-[#60a5fa] to-[#2563eb] border-2 border-white/50 flex items-center justify-center shadow-lg">
+                      <Plus className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="absolute left-1/2 -translate-x-1/2 top-[calc(50%+26px)] px-1.5 py-0.5 rounded bg-black/60 text-[9px] font-mono text-white/80 whitespace-nowrap">
+                      {Math.round((frame.creator.w / 100) * 1728)} × {Math.round((frame.creator.h / 100) * 1080)}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <div className="absolute left-0 right-0 top-[91%] text-center text-[10px] text-white/45">
+              Drag handles to resize • Click + to add zone • Double-click to delete
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Cursor */}
+      <motion.div
+        className="absolute z-50 pointer-events-none"
+        initial={false}
+        animate={{ left: `${cx}%`, top: `${cy}%` }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <AnimatePresence>
+          {frame.press && (
+            <motion.div
+              key={frameKey}
+              className="absolute -left-3.5 -top-3.5 w-7 h-7 rounded-full"
+              style={{ border: `2px solid ${ACCENT}` }}
+              initial={{ scale: 0.3, opacity: 1 }}
+              animate={{ scale: 1.4, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+          )}
+        </AnimatePresence>
+        <svg width="18" height="22" viewBox="0 0 18 22" className="-ml-[3px] -mt-[3px] drop-shadow-lg">
+          <path d="M1 1L1 17L5.5 12.5L8.5 20L11.5 18.8L8.5 11.5L15 11.5Z" fill="white" stroke="black" strokeWidth="1.2" />
+        </svg>
+      </motion.div>
+    </div>
+  );
+}
+
+function Layouts() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [scene, setScene] = useState(0);
+  const [frame, setFrame] = useState(0);
+  const [pinned, setPinned] = useState(false);
+
+  const current = LAYOUT_SCENES[scene];
+  const step = current.frames[frame];
+
+  useEffect(() => {
+    if (!isInView) return;
+    const timer = setTimeout(() => {
+      if (frame + 1 < current.frames.length) {
+        setFrame(frame + 1);
+      } else {
+        setFrame(0);
+        if (!pinned) setScene((s) => (s + 1) % LAYOUT_SCENES.length);
+      }
+    }, step.ms);
+    return () => clearTimeout(timer);
+  }, [isInView, frame, scene, pinned, current.frames.length, step.ms]);
+
+  const highlights = [
+    { icon: LayoutGrid, title: "14 built-in layouts", text: "Halves, thirds, quarters, 1 + 2, center focus and more, ready to go." },
+    { icon: MousePointerClick, title: "Click to assign", text: "Choose exactly which window goes where, in the order you click them." },
+    { icon: Grid3X3, title: "Draw your own", text: "Place, move and resize zones right on your screen, with the exact size shown." },
+    { icon: Undo2, title: "Save what you have", text: "Already arranged your windows by hand? Save Layout Snapshot in the Rapto menu turns it into a layout." },
+    { icon: Keyboard, title: "One key per layout", text: "Give any layout its own shortcut in Settings → Shortcuts → Template Shortcuts." },
+    { icon: Layers, title: "Yours to keep", text: "Right-click a custom layout in the picker to rename or delete it." },
+  ];
+
+  return (
+    <section id="layouts" className="py-24 px-6 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto relative">
+        <motion.div ref={ref} className="text-center mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            className="inline-block mb-4"
+          >
+            <MeasurementLine width={60} label="02" />
+          </motion.div>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.1 }}
+            className="font-display text-4xl md:text-5xl font-bold mb-6"
+          >
+            Any layout, <span style={{ color: ACCENT }}>in seconds</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-[var(--foreground-muted)] max-w-2xl mx-auto"
+          >
+            Open the overlay, pick a layout and click your windows into it. Or draw a layout of your own, right on your screen
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3 }}
+          className="flex flex-wrap justify-center gap-2 mb-8"
+        >
+          {LAYOUT_SCENES.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                setScene(i);
+                setFrame(0);
+                setPinned(true);
+              }}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                scene === i
+                  ? "text-[var(--background)]"
+                  : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--card-border)]"
+              }`}
+              style={{ backgroundColor: scene === i ? ACCENT : undefined }}
+            >
+              {s.label}
+            </button>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="flex flex-col items-center"
+        >
+          <OverlayDemo frame={step} frameKey={`${scene}-${frame}`} />
+          <div className="h-14 mt-5 flex items-start justify-center">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={step.caption}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className="text-center text-[var(--foreground-muted)] max-w-xl"
+              >
+                {step.caption}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {highlights.map((h, i) => (
+            <FeatureCard key={h.title} icon={h.icon} title={h.title} description={h.text} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // Mode preview for the monitor mockup
 function ModePreview({ mode, color, small = false }: { mode: string; color: string; small?: boolean }) {
   const size = small ? 0.7 : 1;
@@ -2469,7 +3045,7 @@ function Features() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             className="inline-block mb-4"
           >
-            <MeasurementLine width={60} label="02" />
+            <MeasurementLine width={60} label="03" />
           </motion.div>
           
           <motion.h2
@@ -2696,7 +3272,7 @@ function FAQSection() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             className="inline-block mb-4"
           >
-            <MeasurementLine width={60} label="03" />
+            <MeasurementLine width={60} label="04" />
           </motion.div>
 
           <motion.h2
@@ -3003,6 +3579,7 @@ export default function Home() {
       <Hero />
       <DesktopsBar />
       <OperatingModes />
+      <Layouts />
       <Features />
       <FAQSection />
       <DownloadSection />
