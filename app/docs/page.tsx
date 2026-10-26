@@ -25,6 +25,7 @@ import {
   PlayCircle,
   Zap,
   Ban,
+  PanelTop,
 } from "lucide-react";
 
 const ACCENT = "#BFFF00";
@@ -93,6 +94,7 @@ function TableOfContents() {
   const sections = [
     { id: "getting-started", title: "Getting Started", icon: PlayCircle },
     { id: "modes", title: "Operating Modes", icon: Zap },
+    { id: "desktops-bar", title: "Desktops Bar", icon: PanelTop },
     { id: "keyboard", title: "Keyboard Shortcuts", icon: Keyboard },
     { id: "templates", title: "Layout Templates", icon: Grid3X3 },
     { id: "features", title: "Features", icon: LayoutGrid },
@@ -353,8 +355,65 @@ export default function DocsPage() {
               </div>
 
               <InfoBox type="info">
-                Change modes from the menu bar icon or using Settings. Each monitor and Space can have its own mode.
+                Change modes from the menu bar icon, the Desktops Bar, or Settings. Each monitor and Space can have its own mode.
               </InfoBox>
+            </Section>
+
+            {/* Desktops Bar */}
+            <Section id="desktops-bar" title="Desktops Bar" icon={PanelTop}>
+              <p className="text-[var(--foreground-muted)] mb-6">
+                The Desktops Bar sits in the middle of the menu bar. It shows your desktops by number, with an icon for each app open on that desktop. Turn it on or off in Settings → General → Menu Bar.
+              </p>
+
+              <InfoBox type="info">
+                The Desktops Bar works on macOS 26 and later. It needs &quot;Displays have separate Spaces&quot; to be on in System Settings → Desktop &amp; Dock.
+              </InfoBox>
+
+              <h3 className="font-display text-xl font-semibold mb-3 mt-8">Switching Desktops</h3>
+              <p className="text-[var(--foreground-muted)] mb-6">
+                Click a number to go straight to that desktop, with no slide animation. Click an app icon to open that app on its desktop.
+              </p>
+
+              <h3 className="font-display text-xl font-semibold mb-3">Moving Windows Between Desktops</h3>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                Drag an app icon onto another desktop number to move that app&apos;s window there. You stay on the desktop you were on.
+              </p>
+              <ul className="space-y-2 text-[var(--foreground-muted)] mb-3">
+                <li>• Hold <Shortcut keys={["⌥"]} /> as you drop the icon to switch to that desktop along with the window.</li>
+                <li>• To make going along the default, turn on <strong>Go With Moved Window</strong> in Settings → General → Menu Bar. Then <Shortcut keys={["⌥"]} /> keeps you where you are.</li>
+                <li>• On a Manual desktop, a window that comes back snaps into the slot it had before, or into a free one. The other windows stay where they are.</li>
+              </ul>
+              <p className="text-[var(--foreground-muted)] mb-6">
+                While a window is moving, the screen may briefly flash to the other desktop and back. That&apos;s how macOS moves windows between desktops.
+              </p>
+
+              <h3 className="font-display text-xl font-semibold mb-3">Adding a Desktop</h3>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                Click the <strong>+</strong> button at the end of the bar to add a desktop. Drop an app icon on <strong>+</strong> to add a desktop and move that app&apos;s window onto it.
+              </p>
+              <InfoBox type="tip">
+                Mission Control opens for a moment while the desktop is added, then closes by itself.
+              </InfoBox>
+
+              <h3 className="font-display text-xl font-semibold mb-3 mt-8">Desktop Menu</h3>
+              <p className="text-[var(--foreground-muted)] mb-6">
+                Right-click a desktop to choose its mode (Manual, Auto Tiling or Drag to Snap) and layout, open the overlay, restore the layout, or open Settings. While the Desktops Bar is on, the Rapto menu bar icon is hidden, since the bar has the same controls. You can bring the icon back in Settings → General → Menu Bar.
+              </p>
+
+              <h3 className="font-display text-xl font-semibold mb-3">MacBooks with a Notch</h3>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                On a screen with a notch, the bar stays hidden. Point at the notch and it drops down below it. Move away and it hides again. It also shows for a moment when you switch desktops. Choose how it appears with <strong>Show Desktops Bar</strong> in Settings → General → Menu Bar:
+              </p>
+              <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
+                <li>• <strong>Automatic</strong> — Appears when you point at the notch on screens with a notch, always shown on other screens</li>
+                <li>• <strong>Always</strong> — Always shown. On screens with a notch it sits just below the menu bar</li>
+                <li>• <strong>On Hover</strong> — Appears when you point at the middle of the menu bar or the notch, on every screen</li>
+              </ul>
+
+              <h3 className="font-display text-xl font-semibold mb-3">Multiple Monitors</h3>
+              <p className="text-[var(--foreground-muted)]">
+                Each display gets its own bar with its own desktops.
+              </p>
             </Section>
 
             {/* Keyboard Shortcuts */}
@@ -623,12 +682,16 @@ export default function DocsPage() {
             {/* Settings */}
             <Section id="settings" title="Settings" icon={Settings}>
               <p className="text-[var(--foreground-muted)] mb-6">
-                Access Settings from the menu bar icon → Settings, or press <Shortcut keys={["⌘", ","]} /> when the overlay is open.
+                Access Settings from the menu bar icon → Settings, by right-clicking a desktop in the Desktops Bar, or press <Shortcut keys={["⌘", ","]} /> when the overlay is open.
               </p>
 
               <h3 className="font-display text-xl font-semibold mb-4">General</h3>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Launch at Login</strong> — Start Rapto automatically when you log in</li>
+                <li>• <strong>Desktops Bar</strong> — Show your desktops and their apps in the menu bar</li>
+                <li>• <strong>Show Desktops Bar</strong> — Automatic, Always or On Hover (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
+                <li>• <strong>Menu Bar Icon</strong> — Show the Rapto icon while the Desktops Bar is on</li>
+                <li>• <strong>Go With Moved Window</strong> — Go to the desktop you drag an app to. Hold Option to do the opposite</li>
                 <li>• <strong>Window Gap</strong> — Space between tiled windows (0-20 pixels)</li>
                 <li>• <strong>Screen Edge Gap</strong> — Space from screen edges (0-20 pixels)</li>
               </ul>
@@ -695,6 +758,13 @@ export default function DocsPage() {
                   <h4 className="font-display font-semibold mb-2">Windows jump around when switching Spaces</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
                     This can happen briefly during Space transitions. If it persists, try disabling Auto Tiling for that Space or increasing the transition delay in advanced settings.
+                  </p>
+                </div>
+
+                <div className="card p-5">
+                  <h4 className="font-display font-semibold mb-2">The Desktops Bar doesn&apos;t appear</h4>
+                  <p className="text-[var(--foreground-muted)] text-sm">
+                    Check that it&apos;s on in Settings → General → Menu Bar and that &quot;Displays have separate Spaces&quot; is on in System Settings → Desktop &amp; Dock. On a MacBook with a notch, point at the notch, or set Show Desktops Bar to Always.
                   </p>
                 </div>
 

@@ -1625,7 +1625,7 @@ function Hero() {
             {[
               { value: "3", label: "Powerful Modes" },
               { value: "∞", label: "Custom Templates" },
-              { value: "100%", label: "Keyboard Driven" },
+              { value: "40+", label: "Hotkey Actions" },
               ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="font-display text-3xl md:text-4xl font-bold" style={{ color: ACCENT }}>
@@ -2508,7 +2508,7 @@ function Features() {
           <FeatureCard
             icon={Keyboard}
             title="Keyboard First"
-            description="Control everything without touching your mouse"
+            description="Focus, move, resize and arrange windows without touching your mouse"
             index={1}
           >
             <KeyboardDemo />
