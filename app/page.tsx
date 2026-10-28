@@ -3467,7 +3467,7 @@ function DownloadSection() {
           transition={{ delay: 0.4 }}
         >
           <motion.a
-            href="https://github.com/LevkaDev/rapto-releases/releases/latest/download/Rapto.dmg"
+            href="/download"
             className="btn-primary text-xl animate-pulse-glow"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
@@ -3488,7 +3488,7 @@ function DownloadSection() {
             Apple Silicon & Intel
           </span>
           <span>•</span>
-          <span>macOS 13+</span>
+          <span>macOS 26+</span>
           <span>•</span>
           <span className="flex items-center gap-2">
             <Zap className="w-4 h-4" style={{ color: ACCENT }} />

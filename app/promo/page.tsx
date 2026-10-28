@@ -1634,7 +1634,7 @@ function Scene10_CTA({ isActive }: { isActive: boolean }) {
         <div className="flex items-center gap-8 text-2xl text-white/50">
           <span>🍎 Apple Silicon & Intel</span>
           <span className="w-2 h-2 rounded-full bg-white/30" />
-          <span>macOS 13+</span>
+          <span>macOS 26+</span>
           <span className="w-2 h-2 rounded-full bg-white/30" />
           <span>⚡ 100% Swift</span>
         </div>
