@@ -597,9 +597,18 @@ export default function DocsPage() {
                     <Layers className="w-5 h-5" style={{ color: ACCENT }} />
                     <h3 className="font-display text-xl font-semibold">Window Groups</h3>
                   </div>
-                  <p className="text-[var(--foreground-muted)]">
+                  <p className="text-[var(--foreground-muted)] mb-2">
                     Place multiple windows in the same zone. They stack on top of each other, and you can cycle through them with a keyboard shortcut. Great for keeping related windows together.
                   </p>
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    A zone with stacked windows shows a group badge in its corner, with one icon for each window.
+                  </p>
+                  <ul className="space-y-1 text-[var(--foreground-muted)]">
+                    <li>• <strong>Click an icon</strong> to switch straight to that window. Icons stay in place and the active one is highlighted.</li>
+                    <li>• <strong>Scroll over the badge</strong> to move through the windows: up goes to the window on the left, down to the one on the right. Turn this off with <strong>Scroll to Cycle</strong> in Settings.</li>
+                    <li>• <strong>Drag the badge aside</strong> if it covers buttons in your window. It slides back to its corner a couple of seconds after you move the pointer away.</li>
+                    <li>• To hide all badges at once, use the <strong>Toggle Group Indicators</strong> shortcut in Settings → Shortcuts.</li>
+                  </ul>
                 </div>
 
                 {/* Window Swap */}

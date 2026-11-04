@@ -10,6 +10,8 @@ import {
   useTransform,
   useMotionValue,
   useInView,
+  useDragControls,
+  animate as animateValue,
 } from "framer-motion";
 import {
   Grid3X3,
@@ -863,77 +865,154 @@ function MultiMonitorDemo() {
   );
 }
 
+const GROUP_AUTOPLAY_INTERVAL = 1800;
+const GROUP_AUTOPLAY_PAUSE_AFTER_INTERACTION = 6000;
+const GROUP_BADGE_RETURN_DELAY = 2000;
+
 function WindowGroupsDemo() {
   const [active, setActive] = useState(0);
-  const [showIndicator, setShowIndicator] = useState(false);
-
-  useEffect(() => {
-    const sequence = async () => {
-      setShowIndicator(true);
-      await new Promise((r) => setTimeout(r, 600));
-      setActive(1);
-      await new Promise((r) => setTimeout(r, 900));
-      setActive(2);
-      await new Promise((r) => setTimeout(r, 900));
-      setActive(0);
-      await new Promise((r) => setTimeout(r, 900));
-      setShowIndicator(false);
-      await new Promise((r) => setTimeout(r, 1200));
-    };
-
-    sequence();
-    const interval = setInterval(sequence, 5200);
-    return () => clearInterval(interval);
-  }, []);
+  const [isDisplaced, setIsDisplaced] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lastInteraction = useRef(0);
+  const pointerDownAt = useRef<{ x: number; y: number } | null>(null);
+  const returnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const badgeX = useMotionValue(0);
+  const badgeY = useMotionValue(0);
+  const dragControls = useDragControls();
 
   const windows = [
-    { color: ACCENT, icon: "🌐" },
-    { color: "#00FFE5", icon: "💻" },
-    { color: "#A855F7", icon: "📁" },
+    { color: ACCENT, icon: "🌐", name: "Browser" },
+    { color: "#00FFE5", icon: "💻", name: "Terminal" },
+    { color: "#A855F7", icon: "📁", name: "Files" },
   ];
 
+  const markInteraction = () => {
+    lastInteraction.current = Date.now();
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (Date.now() - lastInteraction.current < GROUP_AUTOPLAY_PAUSE_AFTER_INTERACTION) return;
+      setActive((a) => (a + 1) % windows.length);
+    }, GROUP_AUTOPLAY_INTERVAL);
+    return () => clearInterval(interval);
+  }, [windows.length]);
+
+  const cancelReturn = () => {
+    if (returnTimer.current) clearTimeout(returnTimer.current);
+    returnTimer.current = null;
+  };
+
+  // Like the app: the badge slides back once the pointer has been away from it for a moment
+  const scheduleReturn = () => {
+    cancelReturn();
+    returnTimer.current = setTimeout(() => {
+      const spring = { type: "spring" as const, stiffness: 260, damping: 26 };
+      animateValue(badgeX, 0, spring);
+      animateValue(badgeY, 0, spring);
+      setIsDisplaced(false);
+    }, GROUP_BADGE_RETURN_DELAY);
+  };
+
+  useEffect(() => cancelReturn, []);
+
   return (
-    <div className="relative h-24">
-      <div className="absolute left-4 top-3 w-28 h-20">
+    <div className="relative h-28 select-none">
+      <div ref={containerRef} className="absolute inset-x-3 top-2 bottom-6">
         {windows.map((win, i) => (
           <motion.div
             key={i}
             className="absolute inset-0"
             animate={{
               opacity: i === active ? 1 : 0,
-              scale: i === active ? 1 : 0.92,
-              y: i === active ? 0 : 5,
+              scale: i === active ? 1 : 0.96,
+              y: i === active ? 0 : 4,
             }}
+            transition={{ duration: 0.25 }}
           >
             <MiniWindow color={win.color} className="w-full h-full" />
+            {/* Window toolbar buttons that the badge covers until it is dragged aside */}
+            <div className="absolute right-2 top-4 flex gap-1">
+              {[0, 1, 2].map((b) => (
+                <div
+                  key={b}
+                  className="w-6 h-4 rounded"
+                  style={{ background: `${win.color}35`, border: `1px solid ${win.color}50` }}
+                />
+              ))}
+            </div>
+            <div className="absolute left-2 bottom-2 text-[10px] font-medium text-white/60">
+              {win.name}
+            </div>
           </motion.div>
         ))}
+
+        <motion.div
+          drag
+          // The built-in listener ignores presses that start on a <button>, i.e. on the icons
+          dragListener={false}
+          dragControls={dragControls}
+          dragConstraints={containerRef}
+          dragElastic={0.08}
+          dragMomentum={false}
+          style={{ x: badgeX, y: badgeY, touchAction: "none" }}
+          onPointerDown={(e) => {
+            pointerDownAt.current = { x: e.clientX, y: e.clientY };
+            dragControls.start(e);
+          }}
+          onDragStart={() => {
+            cancelReturn();
+            markInteraction();
+            setIsDragging(true);
+            setIsDisplaced(true);
+          }}
+          onDragEnd={() => {
+            setIsDragging(false);
+            scheduleReturn();
+          }}
+          onPointerEnter={() => {
+            if (isDisplaced && !isDragging) cancelReturn();
+          }}
+          onPointerLeave={() => {
+            if (isDisplaced && !isDragging) scheduleReturn();
+          }}
+          whileDrag={{ scale: 1.06 }}
+          className={`absolute right-1 top-3.5 z-10 flex gap-1 px-1.5 py-1 rounded-full bg-[var(--card-solid)]/90 backdrop-blur border border-white/20 shadow-lg ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
+          aria-label="Window group badge. Click an icon to switch windows, drag to move it aside"
+        >
+          {windows.map((win, i) => (
+            <motion.button
+              key={i}
+              type="button"
+              onClick={(e) => {
+                const down = pointerDownAt.current;
+                // A click that ends a drag is not a selection
+                // (detail is 0 for keyboard activation, which has no pointer position)
+                if (e.detail !== 0 && down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return;
+                markInteraction();
+                setActive(i);
+              }}
+              className="w-6 h-6 rounded-full flex items-center justify-center text-xs cursor-pointer"
+              style={{
+                background: i === active ? `${win.color}40` : "transparent",
+                border: i === active ? `1px solid ${win.color}` : "1px solid transparent",
+              }}
+              animate={{ opacity: i === active ? 1 : 0.5, scale: i === active ? 1.1 : 1 }}
+              aria-label={`Switch to ${win.name}`}
+              aria-pressed={i === active}
+            >
+              {win.icon}
+            </motion.button>
+          ))}
+        </motion.div>
       </div>
 
-      <AnimatePresence>
-        {showIndicator && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.9 }}
-            className="absolute right-3 top-2 flex gap-1 px-2 py-1.5 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)]"
-          >
-            {windows.map((win, i) => (
-              <motion.div
-                key={i}
-                className="w-6 h-6 rounded-lg flex items-center justify-center text-xs cursor-pointer"
-                style={{
-                  background: i === active ? `${win.color}40` : "transparent",
-                  border: i === active ? `1px solid ${win.color}` : "1px solid transparent",
-                }}
-                animate={{ scale: i === active ? 1.15 : 1 }}
-              >
-                {win.icon}
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="absolute inset-x-3 bottom-0 text-[11px] text-[var(--foreground-muted)] text-center">
+        Click an icon to switch · drag the badge aside
+      </div>
     </div>
   );
 }
@@ -3104,7 +3183,7 @@ function Features() {
           <FeatureCard
             icon={Layers}
             title="Window Groups"
-            description="Stack multiple windows in one slot and cycle through them"
+            description="Stack windows in one slot. Click an icon in the badge to switch, or drag the badge out of the way"
             index={3}
           >
             <WindowGroupsDemo />
