@@ -27,6 +27,7 @@ import {
   Ban,
   PanelTop,
   Search,
+  Briefcase,
 } from "lucide-react";
 
 const ACCENT = "#BFFF00";
@@ -600,6 +601,27 @@ export default function DocsPage() {
                   </ul>
                   <p className="text-[var(--foreground-muted)]">
                     Change the shortcut to any key combination you like in Settings → Shortcuts → Window Focus. Minimized windows and windows of hidden apps are not listed.
+                  </p>
+                </div>
+
+                {/* Workspaces */}
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Briefcase className="w-5 h-5" style={{ color: ACCENT }} />
+                    <h3 className="font-display text-xl font-semibold">Workspaces</h3>
+                  </div>
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    A workspace remembers the apps you use for one task and where each window goes, on every display. Arrange them once, save, and bring the whole set back whenever you need it.
+                  </p>
+                  <ul className="space-y-1 text-[var(--foreground-muted)] mb-2">
+                    <li>• <strong>Save:</strong> right-click the desktop in the desktops bar and choose <strong>Workspaces → Save as Workspace…</strong>, then give it a name like “Work”. Saving again with the same name replaces it.</li>
+                    <li>• <strong>Open:</strong> pick the workspace in the same menu. Apps that are closed are launched, and every window moves into its place, minimized ones too. A desktop in a layout switches to Manual mode with that layout.</li>
+                    <li>• <strong>Open in New Desktop</strong> creates a fresh desktop and opens the workspace there. If the desktop you are on already has other windows, Rapto asks whether to open the workspace in a new desktop instead, separately for each display.</li>
+                    <li>• <strong>Close Workspace</strong> closes all of its windows at once, even on another desktop, so you can move on to the next task. Unsaved work asks to be saved first.</li>
+                    <li>• <strong>A display is missing?</strong> If a workspace was saved with a display that is not connected now, Rapto asks whether to open those apps on the display you have or to leave them out.</li>
+                  </ul>
+                  <p className="text-[var(--foreground-muted)]">
+                    Rename, delete and open workspaces in Settings → Workspaces or from the Rapto menu. Apps that already have windows on another desktop stay there, and apps open with their usual window: tabs and documents are not reopened.
                   </p>
                 </div>
 

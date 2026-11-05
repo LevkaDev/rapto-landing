@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -14,6 +14,7 @@ import {
   animate as animateValue,
 } from "framer-motion";
 import {
+  Briefcase,
   Grid3X3,
   LayoutGrid,
   Monitor,
@@ -77,6 +78,7 @@ function Navigation() {
   const navLinks = [
     { href: "#desktops-bar", label: "Desktops Bar" },
     { href: "#layouts", label: "Layouts" },
+    { href: "#workspaces", label: "Workspaces" },
     { href: "#features", label: "Features" },
     { href: "/docs", label: "Docs" },
     { href: "#faq", label: "FAQ" },
@@ -769,8 +771,7 @@ const SWITCHER_WINDOWS: Array<{ app: string; title: string; icon: SwitcherApp; d
   { app: "Notes", title: "Shopping list", icon: "notes", desktop: 2 },
 ];
 
-function SwitcherAppIcon({ app }: { app: SwitcherApp }) {
-  const size = 18;
+function SwitcherAppIcon({ app, size = 18 }: { app: SwitcherApp; size?: number }) {
   switch (app) {
     case "tradingview":
       return (
@@ -3305,6 +3306,622 @@ function Layouts() {
   );
 }
 
+// ============================================
+// WORKSPACES SECTION
+// ============================================
+type WsWindow = { icon: SwitcherApp; title: string; frame: [number, number, number, number] };
+
+type WsFrame = {
+  desks: SwitcherApp[][];
+  active: number;
+  windows: WsWindow[];
+  cursor: string;
+  menu?: boolean;
+  hl?: string;
+  hl2?: string;
+  dialog?: { title: string; text: string; field?: string; buttons: string[] };
+  press?: boolean;
+  note?: string;
+  caption: string;
+  ms: number;
+};
+
+const WS_TINT: Record<SwitcherApp, string> = {
+  vscode: "#2F9AF2",
+  terminal: "#A855F7",
+  safari: "#00FFE5",
+  tradingview: ACCENT,
+  telegram: "#2AABEE",
+  notes: "#FFB800",
+};
+
+const WS_WORK: WsWindow[] = [
+  { icon: "vscode", title: "main.swift", frame: [0, 0, 58, 100] },
+  { icon: "terminal", title: "~/projects", frame: [58, 0, 42, 50] },
+  { icon: "safari", title: "GitHub", frame: [58, 50, 42, 50] },
+];
+
+const WS_TRADING: WsWindow[] = [
+  { icon: "tradingview", title: "BTCUSD", frame: [0, 0, 66, 100] },
+  { icon: "safari", title: "Calendar", frame: [66, 0, 34, 55] },
+  { icon: "terminal", title: "bot.py", frame: [66, 55, 34, 45] },
+];
+
+const WS_BUSY: WsWindow[] = [
+  { icon: "telegram", title: "Family", frame: [0, 0, 50, 100] },
+  { icon: "notes", title: "Shopping list", frame: [50, 0, 50, 100] },
+];
+
+const wsIcons = (windows: WsWindow[]) => windows.map((w) => w.icon);
+
+// Right-click → Workspaces → pick an item, shared by every scene
+const wsPick = (base: Omit<WsFrame, "cursor" | "caption" | "ms">, desk: number, item: string, caption: string): WsFrame[] => [
+  { ...base, cursor: `d-${desk}`, caption, ms: 700 },
+  { ...base, cursor: "m-Workspaces", menu: true, caption, ms: 750 },
+  { ...base, cursor: `m-${item}`, menu: true, hl: item, caption, ms: 750 },
+  { ...base, cursor: `m-${item}`, menu: true, hl: item, press: true, caption, ms: 250 },
+];
+
+const WS_SCENES: Array<{ id: string; label: string; frames: WsFrame[] }> = (() => {
+  const save = { desks: [wsIcons(WS_WORK), ["telegram" as SwitcherApp]], active: 1, windows: WS_WORK };
+  const saveDialog = (field: string) => ({
+    title: "Save as Workspace",
+    text: "Saves the apps on this desktop and where they are",
+    field,
+    buttons: ["Save", "Cancel"],
+  });
+
+  const open = { desks: [["telegram" as SwitcherApp], []], active: 2, windows: [] };
+  const opened = { desks: [["telegram" as SwitcherApp], wsIcons(WS_WORK)], active: 2, windows: WS_WORK };
+
+  const busy = { desks: [wsIcons(WS_BUSY)], active: 1, windows: WS_BUSY };
+  const newDialog = {
+    title: "This Desktop Has Other Windows",
+    text: "Open “Trading” in a new desktop to keep it separate, or open it here next to them",
+    buttons: ["Open in New Desktop", "Open Here", "Cancel"],
+  };
+
+  const closeDialog = {
+    title: "Close “Work”?",
+    text: "Closes 3 windows: VS Code, Terminal, Safari.",
+    buttons: ["Close", "Cancel"],
+  };
+  const cleared = { desks: [["telegram" as SwitcherApp], []], active: 2, windows: [] };
+
+  const laptop = { desks: [[]], active: 1, windows: [], note: "Built-in Display only" };
+  const missingDialog = {
+    title: "A Display Is Not Connected",
+    text: "“Work” also uses LG UltraFine, with Safari. Open these apps on “Built-in Display”, or open the workspace without them",
+    buttons: ["Open on This Display", "Open Without Them", "Cancel"],
+  };
+
+  return [
+    {
+      id: "save",
+      label: "Save",
+      frames: [
+        { ...save, cursor: "rest", caption: "Arrange the apps for one task the way you like", ms: 1600 },
+        ...wsPick(save, 1, "Save as Workspace…", "Right-click its desktop in the bar → Workspaces → Save as Workspace…"),
+        { ...save, cursor: "field", dialog: saveDialog("W"), caption: "Give it a name", ms: 350 },
+        { ...save, cursor: "field", dialog: saveDialog("Wor"), caption: "Give it a name", ms: 300 },
+        { ...save, cursor: "field", dialog: saveDialog("Work"), caption: "Give it a name", ms: 800 },
+        { ...save, cursor: "b-0", dialog: saveDialog("Work"), caption: "Give it a name", ms: 700 },
+        { ...save, cursor: "b-0", dialog: saveDialog("Work"), press: true, caption: "Give it a name", ms: 250 },
+        { ...save, cursor: "rest", caption: "Saved. “Work” is now in the menu of every desktop", ms: 2200 },
+      ],
+    },
+    {
+      id: "open",
+      label: "Open",
+      frames: [
+        { ...open, cursor: "rest", caption: "Go to a free desktop. The apps don’t even need to be running", ms: 1700 },
+        ...wsPick(open, 2, "Work", "Right-click it and pick the workspace"),
+        { ...opened, cursor: "rest", caption: "Closed apps start up, and every window goes into its place", ms: 2600 },
+      ],
+    },
+    {
+      id: "new",
+      label: "New Desktop",
+      frames: [
+        { ...busy, cursor: "rest", caption: "This desktop is already busy with something else", ms: 1600 },
+        ...wsPick(busy, 1, "Trading", "Open a workspace from its menu"),
+        { ...busy, cursor: "rest", dialog: newDialog, caption: "Rapto asks before mixing two tasks", ms: 1800 },
+        { ...busy, cursor: "b-0", dialog: newDialog, caption: "Rapto asks before mixing two tasks", ms: 700 },
+        { ...busy, cursor: "b-0", dialog: newDialog, press: true, caption: "Rapto asks before mixing two tasks", ms: 250 },
+        { desks: [wsIcons(WS_BUSY), []], active: 2, windows: [], cursor: "rest", caption: "A new desktop is added…", ms: 800 },
+        {
+          desks: [wsIcons(WS_BUSY), wsIcons(WS_TRADING)],
+          active: 2,
+          windows: WS_TRADING,
+          cursor: "rest",
+          caption: "…and the workspace opens there. The busy desktop stays as it was",
+          ms: 2600,
+        },
+      ],
+    },
+    {
+      id: "close",
+      label: "Close",
+      frames: [
+        { ...opened, cursor: "rest", caption: "Done with this task?", ms: 1300 },
+        { ...opened, cursor: "d-2", caption: "Workspaces → Close Workspace", ms: 700 },
+        { ...opened, cursor: "m-Workspaces", menu: true, caption: "Workspaces → Close Workspace", ms: 750 },
+        { ...opened, cursor: "m-Close Workspace", menu: true, hl: "Close Workspace", caption: "Workspaces → Close Workspace", ms: 750 },
+        { ...opened, cursor: "s-Work", menu: true, hl: "Close Workspace", hl2: "Work", caption: "Workspaces → Close Workspace", ms: 700 },
+        { ...opened, cursor: "s-Work", menu: true, hl: "Close Workspace", hl2: "Work", press: true, caption: "Workspaces → Close Workspace", ms: 250 },
+        { ...opened, cursor: "rest", dialog: closeDialog, caption: "All its windows close at once, even on another desktop", ms: 1800 },
+        { ...opened, cursor: "b-0", dialog: closeDialog, caption: "All its windows close at once, even on another desktop", ms: 700 },
+        { ...opened, cursor: "b-0", dialog: closeDialog, press: true, caption: "All its windows close at once, even on another desktop", ms: 250 },
+        { ...cleared, cursor: "rest", caption: "The desktop is free for the next task", ms: 1400 },
+        ...wsPick(cleared, 2, "Trading", "Open the next one in its place"),
+        {
+          desks: [["telegram"], wsIcons(WS_TRADING)],
+          active: 2,
+          windows: WS_TRADING,
+          cursor: "rest",
+          caption: "Open the next one in its place",
+          ms: 2400,
+        },
+      ],
+    },
+    {
+      id: "display",
+      label: "Missing display",
+      frames: [
+        { ...laptop, cursor: "rest", caption: "“Work” was saved at the office, with a second display", ms: 1800 },
+        ...wsPick(laptop, 1, "Work", "Now open it on the laptop alone"),
+        { ...laptop, cursor: "rest", dialog: missingDialog, caption: "Rapto tells you what’s missing and lets you choose", ms: 2200 },
+        { ...laptop, cursor: "b-0", dialog: missingDialog, caption: "Rapto tells you what’s missing and lets you choose", ms: 700 },
+        { ...laptop, cursor: "b-0", dialog: missingDialog, press: true, caption: "Rapto tells you what’s missing and lets you choose", ms: 250 },
+        {
+          ...laptop,
+          desks: [wsIcons(WS_WORK)],
+          windows: WS_WORK,
+          cursor: "rest",
+          caption: "Everything opens on the display you have",
+          ms: 2400,
+        },
+      ],
+    },
+  ];
+})();
+
+const WS_ROOT_MENU = [
+  { label: "Manual", check: true },
+  { label: "Auto Tiling" },
+  { label: "Drag to Snap" },
+  { sep: true },
+  { label: "Layout", value: "›" },
+  { label: "Workspaces", value: "›" },
+  { sep: true },
+  { label: "Settings…" },
+];
+
+const WS_SUB_MENU = [
+  { label: "Save as Workspace…" },
+  { sep: true },
+  { label: "Work" },
+  { label: "Trading" },
+  { label: "Open in New Desktop", value: "›" },
+  { label: "Close Workspace", value: "›" },
+  { sep: true },
+  { label: "Rename Workspace", value: "›" },
+  { label: "Delete Workspace", value: "›" },
+];
+
+function WorkspacesDemo({ frame, frameKey }: { frame: WsFrame; frameKey: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const targets = useRef<Record<string, HTMLElement | null>>({});
+  const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const [menuAt, setMenuAt] = useState({ x: 0, y: 0 });
+  const register = (key: string) => (el: HTMLElement | null) => {
+    targets.current[key] = el;
+  };
+
+  useEffect(() => {
+    const measure = () => {
+      const box = containerRef.current?.getBoundingClientRect();
+      if (!box) return;
+      const desk = targets.current[`d-${frame.active}`];
+      if (desk) {
+        const r = desk.getBoundingClientRect();
+        // Room for the menu and both submenus to the right
+        setMenuAt({ x: Math.max(8, Math.min(r.left - box.left, box.width - 500)), y: r.bottom - box.top + 6 });
+      }
+      const el = targets.current[frame.cursor];
+      if (!el || frame.cursor === "rest") {
+        setCursor({ x: box.width * 0.9, y: box.height * 0.9 });
+        return;
+      }
+      const r = el.getBoundingClientRect();
+      setCursor({ x: r.left - box.left + Math.min(r.width / 2, 40), y: r.top - box.top + r.height / 2 + 2 });
+    };
+    const frameID = requestAnimationFrame(measure);
+    const late = setTimeout(measure, 300);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(frameID);
+      clearTimeout(late);
+      window.removeEventListener("resize", measure);
+    };
+  }, [frame.cursor, frame.active, frame.menu, frame.hl, frameKey]);
+
+  const menuItem = (
+    item: { label?: string; value?: string; check?: boolean; sep?: boolean },
+    i: number,
+    prefix: string,
+    highlighted?: string
+  ) =>
+    item.sep ? (
+      <div key={i} className="my-1 h-px bg-white/10" />
+    ) : (
+      <div
+        key={i}
+        ref={register(`${prefix}-${item.label}`)}
+        className="flex items-center justify-between px-2.5 py-[3px] mx-1 rounded"
+        style={item.label === highlighted ? { background: "#3b82f6" } : undefined}
+      >
+        <span className="flex items-center gap-1">
+          {prefix === "r" && <span className="w-3 text-[9px]">{item.check ? "✓" : ""}</span>}
+          {item.label}
+        </span>
+        {item.value && <span className="text-white/50">{item.value}</span>}
+      </div>
+    );
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full max-w-[760px] h-[380px] sm:h-[440px] rounded-2xl overflow-hidden demo-window select-none"
+      style={{ background: "linear-gradient(180deg, #15151a 0%, #0a0a0c 100%)" }}
+    >
+      {/* Menu bar */}
+      <div className="absolute top-0 left-0 right-0 h-10 flex items-center justify-between px-4 text-[12px] text-white/70 bg-white/[0.04] border-b border-white/[0.05] backdrop-blur">
+        <div className="flex items-center gap-4">
+          <span className="font-semibold text-white/90">Finder</span>
+          <span className="hidden sm:inline">File</span>
+          <span className="hidden sm:inline">Edit</span>
+          <span className="hidden md:inline">View</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Wifi className="hidden sm:block w-3.5 h-3.5" />
+          <BatteryFull className="hidden sm:block w-4 h-4" />
+          <span className="font-mono">Mon 09:41</span>
+        </div>
+      </div>
+
+      {/* Desktops bar */}
+      <div
+        className="absolute left-1/2 top-[5px] z-20 flex items-center gap-1 px-1 py-[3px] rounded-full bg-[#232329]/90 border border-white/[0.12] backdrop-blur-xl shadow-lg"
+        style={{ transform: "translateX(-50%)" }}
+      >
+        {frame.desks.map((apps, i) => {
+          const id = i + 1;
+          const isActive = id === frame.active;
+          return (
+            <motion.div
+              key={id}
+              ref={register(`d-${id}`)}
+              layout
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 420, damping: 30 }}
+              className="flex items-center gap-1.5 h-6 px-2 rounded-full"
+              style={{ background: isActive ? "rgba(255,255,255,0.14)" : "transparent" }}
+            >
+              <span className={`text-[13px] font-mono font-semibold ${isActive ? "text-white" : "text-white/50"}`}>{id}</span>
+              <AnimatePresence mode="popLayout">
+                {apps.map((app) => (
+                  <motion.span
+                    key={app}
+                    layout
+                    initial={{ opacity: 0, scale: 0.4 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.4 }}
+                    className="flex"
+                  >
+                    <SwitcherAppIcon app={app} size={13} />
+                  </motion.span>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          );
+        })}
+        <div className="w-5 h-5 mx-0.5 rounded-full border border-white/45 text-white/70 flex items-center justify-center text-[13px] leading-none">
+          +
+        </div>
+      </div>
+
+      {/* Windows of the active desktop */}
+      <div className="absolute inset-x-4 bottom-4 top-14">
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            key={frame.active}
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -40 }}
+            transition={{ duration: 0.25 }}
+            className="absolute inset-0"
+          >
+            <AnimatePresence>
+              {frame.windows.map((win, i) => {
+                const [x, y, w, h] = win.frame;
+                return (
+                  <motion.div
+                    key={`${win.icon}-${win.title}`}
+                    className="absolute p-1"
+                    style={{ left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%` }}
+                    initial={{ opacity: 0, scale: 0.6, y: 40 }}
+                    animate={{ opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 240, damping: 24, delay: 0.1 + i * 0.18 } }}
+                    exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.2, delay: i * 0.06 } }}
+                  >
+                    <div className="relative w-full h-full">
+                      <MiniWindow color={WS_TINT[win.icon]} className="w-full h-full" />
+                      <div className="absolute inset-0 top-3 flex flex-col items-center justify-center gap-2">
+                        <SwitcherAppIcon app={win.icon} size={30} />
+                        <span className="text-xs font-mono" style={{ color: WS_TINT[win.icon] }}>
+                          {win.title}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+            {frame.windows.length === 0 && (
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-white/30 font-mono">Empty desktop</div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-white/40">Desktop {frame.active}</div>
+        {frame.note && (
+          <div className="absolute bottom-2 right-3 flex items-center gap-1.5 text-[10px] font-mono text-white/40">
+            <Laptop className="w-3 h-3" />
+            {frame.note}
+          </div>
+        )}
+      </div>
+
+      {/* Context menu with the Workspaces submenu */}
+      <AnimatePresence>
+        {frame.menu && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.12 }}
+            className="absolute z-40 flex items-start text-[11px] text-white/90 origin-top-left"
+            style={{ left: menuAt.x, top: menuAt.y }}
+          >
+            <div className="w-40 py-1 rounded-lg bg-[#2a2a30]/95 border border-white/10 shadow-2xl backdrop-blur-xl">
+              {WS_ROOT_MENU.map((item, i) => menuItem(item, i, "r", "Workspaces"))}
+            </div>
+            <div className="w-48 py-1 -ml-1 mt-[99px] rounded-lg bg-[#2a2a30]/95 border border-white/10 shadow-2xl backdrop-blur-xl">
+              {WS_SUB_MENU.map((item, i) => menuItem(item, i, "m", frame.hl))}
+            </div>
+            {frame.hl === "Close Workspace" && (
+              <div className="w-28 py-1 -ml-1 mt-[198px] rounded-lg bg-[#2a2a30]/95 border border-white/10 shadow-2xl backdrop-blur-xl">
+                {menuItem({ label: "Work" }, 0, "s", frame.hl2)}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Alert */}
+      <AnimatePresence>
+        {frame.dialog && (
+          <motion.div
+            className="absolute inset-0 z-40 flex items-center justify-center bg-black/30"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <motion.div
+              initial={{ scale: 0.92 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="w-[260px] p-4 rounded-2xl bg-[#2a2a30]/95 border border-white/10 shadow-2xl backdrop-blur-xl text-center"
+            >
+              <Image src="/app-icon.png" alt="" width={40} height={40} className="mx-auto mb-2" />
+              <p className="text-[13px] font-semibold text-white mb-1">{frame.dialog.title}</p>
+              <p className="text-[11px] leading-snug text-white/60 mb-3">{frame.dialog.text}</p>
+              {frame.dialog.field !== undefined && (
+                <div
+                  ref={register("field")}
+                  className="mb-3 h-7 px-2 flex items-center rounded-md bg-black/30 border text-left text-[12px] text-white"
+                  style={{ borderColor: "#3b82f6" }}
+                >
+                  {frame.dialog.field}
+                  <span className="ml-px w-px h-3.5 bg-white animate-pulse" />
+                </div>
+              )}
+              <div className="flex flex-col gap-1.5">
+                {frame.dialog.buttons.map((label, i) => (
+                  <div
+                    key={label}
+                    ref={register(`b-${i}`)}
+                    className="h-7 rounded-md flex items-center justify-center text-[12px] font-medium"
+                    style={i === 0 ? { background: "#3b82f6", color: "white" } : { background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.85)" }}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Cursor */}
+      <motion.div
+        className="absolute z-50 pointer-events-none"
+        animate={{ left: cursor.x - 3, top: cursor.y - 3 }}
+        transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <AnimatePresence>
+          {frame.press && (
+            <motion.div
+              key={frameKey}
+              className="absolute -left-3 -top-3 w-7 h-7 rounded-full"
+              style={{ border: `2px solid ${ACCENT}` }}
+              initial={{ scale: 0.3, opacity: 1 }}
+              animate={{ scale: 1.4, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+          )}
+        </AnimatePresence>
+        <svg width="18" height="22" viewBox="0 0 18 22" className="drop-shadow-lg">
+          <path d="M1 1L1 17L5.5 12.5L8.5 20L11.5 18.8L8.5 11.5L15 11.5Z" fill="white" stroke="black" strokeWidth="1.2" />
+        </svg>
+      </motion.div>
+    </div>
+  );
+}
+
+function Workspaces() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [scene, setScene] = useState(0);
+  const [frame, setFrame] = useState(0);
+  const [pinned, setPinned] = useState(false);
+
+  const current = WS_SCENES[scene];
+  const step = current.frames[frame];
+
+  useEffect(() => {
+    if (!isInView) return;
+    const timer = setTimeout(() => {
+      if (frame + 1 < current.frames.length) {
+        setFrame(frame + 1);
+      } else {
+        setFrame(0);
+        if (!pinned) setScene((s) => (s + 1) % WS_SCENES.length);
+      }
+    }, step.ms);
+    return () => clearTimeout(timer);
+  }, [isInView, frame, scene, pinned, current.frames.length, step.ms]);
+
+  const highlights = [
+    { icon: Briefcase, title: "Save a desktop", text: "Right-click a desktop in the bar and save its apps and where each window goes, under a name you choose." },
+    { icon: Zap, title: "Everything comes back", text: "Closed apps start up, minimized windows return, and each one lands in its place. A desktop in a layout keeps that layout." },
+    { icon: Plus, title: "Here or in a new desktop", text: "Open in New Desktop gives a workspace a desktop of its own. On a busy desktop Rapto asks first." },
+    { icon: X, title: "Close in one click", text: "Close Workspace closes all of its windows at once, even on another desktop. Unsaved work asks to be saved first." },
+    { icon: Monitor, title: "Every display", text: "A workspace remembers each display. If one isn’t connected, you choose where its apps go." },
+    { icon: Layers, title: "Easy to manage", text: "Rename, delete or open workspaces in Settings → Workspaces, the Rapto menu or the desktops bar." },
+  ];
+
+  return (
+    <section id="workspaces" className="py-24 px-6 relative overflow-hidden">
+      <div className="absolute inset-0 radial-glow" />
+
+      <div className="max-w-6xl mx-auto relative">
+        <motion.div ref={ref} className="text-center mb-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            className="inline-flex items-center gap-3 mb-4"
+          >
+            <MeasurementLine width={60} />
+            <span className="tag">
+              <Sparkles className="w-4 h-4" />
+              New in 5.55
+            </span>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.05 }}
+            className="flex items-center justify-center gap-2 font-display text-xl md:text-2xl font-semibold text-[var(--foreground-muted)] mb-3"
+          >
+            <Briefcase className="w-5 h-5 md:w-6 md:h-6" style={{ color: ACCENT }} />
+            Introducing <span className="text-[var(--foreground)]">Workspaces</span>
+          </motion.p>
+
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.1 }}
+            className="font-display text-4xl md:text-5xl font-bold mb-6"
+          >
+            One task, <span style={{ color: ACCENT }}>one click</span>
+          </motion.h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.2 }}
+            className="text-lg text-[var(--foreground-muted)] max-w-2xl mx-auto"
+          >
+            A workspace saves the apps you use for a task and where each window goes. Bring them all back when you need them, and close them all when you&apos;re done
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3 }}
+          className="flex flex-wrap justify-center gap-2 mb-8"
+        >
+          {WS_SCENES.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                setScene(i);
+                setFrame(0);
+                setPinned(true);
+              }}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+                scene === i
+                  ? "text-[var(--background)]"
+                  : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--card-border)]"
+              }`}
+              style={{ backgroundColor: scene === i ? ACCENT : undefined }}
+            >
+              {s.label}
+            </button>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="flex flex-col items-center"
+        >
+          <WorkspacesDemo frame={step} frameKey={`${scene}-${frame}`} />
+          <div className="h-14 mt-5 flex items-start justify-center">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={step.caption}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className="text-center text-[var(--foreground-muted)] max-w-xl"
+              >
+                {step.caption}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {highlights.map((h, i) => (
+            <FeatureCard key={h.title} icon={h.icon} title={h.title} description={h.text} index={i} />
+          ))}
+        </div>
+
+        <p className="text-center text-sm text-[var(--foreground-muted)] mt-8 max-w-2xl mx-auto">
+          Apps that already have windows on another desktop stay where they are. Apps open with their usual window: tabs and documents aren&apos;t reopened
+        </p>
+      </div>
+    </section>
+  );
+}
+
 // Mode preview for the monitor mockup
 function ModePreview({ mode, color, small = false }: { mode: string; color: string; small?: boolean }) {
   const size = small ? 0.7 : 1;
@@ -3950,6 +4567,7 @@ export default function Home() {
       <DesktopsBar />
       <OperatingModes />
       <Layouts />
+      <Workspaces />
       <Features />
       <FAQSection />
       <DownloadSection />
