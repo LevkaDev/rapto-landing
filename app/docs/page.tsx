@@ -26,6 +26,7 @@ import {
   Zap,
   Ban,
   PanelTop,
+  Search,
 } from "lucide-react";
 
 const ACCENT = "#BFFF00";
@@ -448,6 +449,10 @@ export default function DocsPage() {
                   <Shortcut keys={["⌃", "⌥", "G"]} />
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-[var(--card-border)]">
+                  <span>Window Switcher</span>
+                  <Shortcut keys={["⌃", "⌥", "W"]} />
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-[var(--card-border)]">
                   <span>Focus Window (expand/restore)</span>
                   <Shortcut keys={["⌃", "⌥", "F"]} />
                 </div>
@@ -577,6 +582,27 @@ export default function DocsPage() {
             {/* Features */}
             <Section id="features" title="Features" icon={LayoutGrid}>
               <div className="space-y-8">
+                {/* Window Switcher */}
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Search className="w-5 h-5" style={{ color: ACCENT }} />
+                    <h3 className="font-display text-xl font-semibold">Window Switcher</h3>
+                  </div>
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    Press <Shortcut keys={["⌃", "⌥", "W"]} /> (<Shortcut keys={["⌥", "W"]} /> in Vim Style) to open a search box with every open window on every desktop and display, the most recently used at the top. Start typing and the list narrows with each letter.
+                  </p>
+                  <ul className="space-y-1 text-[var(--foreground-muted)] mb-2">
+                    <li>• <strong>One letter is enough.</strong> Type <strong>t</strong> to see Telegram, Terminal and any window whose title has a word starting with T. App names come first, then window titles.</li>
+                    <li>• <strong>Shortcuts for long names.</strong> <strong>tg</strong> finds Telegram, <strong>vsc</strong> finds Visual Studio Code.</li>
+                    <li>• <strong>Pick a window</strong> with <Shortcut keys={["↑ / ↓"]} /> or <Shortcut keys={["Tab"]} /> and press <Shortcut keys={["Return"]} />, press <Shortcut keys={["⌘", "1-9"]} /> for that row, or click it.</li>
+                    <li>• <strong>Back to the last window:</strong> right after opening, the previous window is already selected, so <Shortcut keys={["Return"]} /> takes you back to it.</li>
+                    <li>• If the window is on another desktop, Rapto switches there for you. <Shortcut keys={["Esc"]} /> closes the search.</li>
+                  </ul>
+                  <p className="text-[var(--foreground-muted)]">
+                    Change the shortcut to any key combination you like in Settings → Shortcuts → Window Focus. Minimized windows and windows of hidden apps are not listed.
+                  </p>
+                </div>
+
                 {/* Multi-Monitor */}
                 <div>
                   <div className="flex items-center gap-3 mb-3">
@@ -714,7 +740,7 @@ export default function DocsPage() {
               <h3 className="font-display text-xl font-semibold mb-4">Hotkeys</h3>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Preset</strong> — Choose between Rapto Style (arrows) or Vim Style (HJKL)</li>
-                <li>• <strong>Custom Bindings</strong> — Override any shortcut with your preferred key combination</li>
+                <li>• <strong>Custom Bindings</strong> — Override any shortcut with your preferred key combination. Any key works, including F1–F12 (these can be used on their own, without a modifier) and keypad keys, on any keyboard layout</li>
                 <li>• <strong>Focus Slots 1-9</strong> — Quickly jump to windows in specific grid positions</li>
               </ul>
 

@@ -49,6 +49,7 @@ import {
   Sparkles,
   Wifi,
   BatteryFull,
+  Search,
 } from "lucide-react";
 
 // ============================================
@@ -753,6 +754,286 @@ function AutoTilingDemo() {
       >
         {windowCount} {windowCount === 1 ? "window" : "windows"}
       </motion.div>
+    </div>
+  );
+}
+
+type SwitcherApp = "tradingview" | "safari" | "telegram" | "terminal" | "vscode" | "notes";
+
+const SWITCHER_WINDOWS: Array<{ app: string; title: string; icon: SwitcherApp; desktop: number }> = [
+  { app: "TradingView", title: "BTCUSD", icon: "tradingview", desktop: 1 },
+  { app: "Safari", title: "GitHub", icon: "safari", desktop: 1 },
+  { app: "Telegram", title: "Chats", icon: "telegram", desktop: 2 },
+  { app: "Terminal", title: "~/projects", icon: "terminal", desktop: 1 },
+  { app: "Visual Studio Code", title: "main.swift", icon: "vscode", desktop: 3 },
+  { app: "Notes", title: "Shopping list", icon: "notes", desktop: 2 },
+];
+
+function SwitcherAppIcon({ app }: { app: SwitcherApp }) {
+  const size = 18;
+  switch (app) {
+    case "tradingview":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+          <rect width="24" height="24" rx="5.5" fill="#000" />
+          <g transform="translate(3.6 3.6) scale(0.7)">
+            <path
+              fill="#fff"
+              d="M15.8654 8.2789c0 1.3541-1.0978 2.4519-2.452 2.4519-1.354 0-2.4519-1.0978-2.4519-2.452 0-1.354 1.0978-2.4518 2.452-2.4518 1.354 0 2.4519 1.0977 2.4519 2.4519zM9.75 6H0v4.9038h4.8462v7.2692H9.75Zm8.5962 0H24l-5.1058 12.173h-5.6538z"
+            />
+          </g>
+        </svg>
+      );
+    case "telegram":
+      return (
+        <svg width={size} height={size} viewBox="0 0 240 240" aria-hidden>
+          <defs>
+            <linearGradient id="switcher-tg" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop offset="0" stopColor="#2AABEE" />
+              <stop offset="1" stopColor="#229ED9" />
+            </linearGradient>
+          </defs>
+          <circle cx="120" cy="120" r="120" fill="url(#switcher-tg)" />
+          <path
+            fill="#fff"
+            d="M54.3 118.8c35-15.2 58.3-25.3 70-30.2 33.3-13.9 40.3-16.3 44.8-16.4 1 0 3.2.2 4.7 1.4 1.2 1 1.5 2.3 1.7 3.3s.4 3.1.2 4.7c-1.8 19-9.6 65.1-13.6 86.3-1.7 9-5 12-8.2 12.3-7 .6-12.3-4.6-19-9-10.6-6.9-16.5-11.2-26.8-18-11.9-7.8-4.2-12.1 2.6-19.1 1.8-1.8 32.5-29.8 33.1-32.3.1-.3.1-1.5-.6-2.1-.7-.6-1.7-.4-2.5-.2-1.1.2-17.9 11.4-50.6 33.5-4.8 3.3-9.1 4.9-13 4.8-4.3-.1-12.5-2.4-18.7-4.4-7.5-2.4-13.5-3.7-13-7.9.3-2.2 3.3-4.4 8.9-6.7z"
+          />
+        </svg>
+      );
+    case "vscode":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+          <path
+            fill="#2F9AF2"
+            d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"
+          />
+        </svg>
+      );
+    case "safari":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+          <defs>
+            <linearGradient id="switcher-safari" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop offset="0" stopColor="#1AD6FD" />
+              <stop offset="1" stopColor="#1D62F0" />
+            </linearGradient>
+          </defs>
+          <rect width="24" height="24" rx="5.5" fill="#fff" />
+          <circle cx="12" cy="12" r="10" fill="url(#switcher-safari)" />
+          <g stroke="#fff" strokeOpacity="0.7" strokeWidth="0.6">
+            {Array.from({ length: 12 }, (_, i) => (
+              <line key={i} x1="12" y1="2.8" x2="12" y2="4" transform={`rotate(${i * 30} 12 12)`} />
+            ))}
+          </g>
+          <g transform="rotate(45 12 12)">
+            <path d="M12 4.5 L14 12 L10 12 Z" fill="#FF3B30" />
+            <path d="M12 19.5 L10 12 L14 12 Z" fill="#fff" />
+          </g>
+        </svg>
+      );
+    case "terminal":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+          <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" fill="#D9D9DE" />
+          <rect x="2.5" y="2.5" width="19" height="19" rx="3.5" fill="#1C1C1E" />
+          <path d="M6 8.5 L9.5 11.5 L6 14.5" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M11 15 H16.5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      );
+    case "notes":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+          <clipPath id="switcher-notes">
+            <rect width="24" height="24" rx="5.5" />
+          </clipPath>
+          <g clipPath="url(#switcher-notes)">
+            <rect width="24" height="24" fill="#FFFFFF" />
+            <rect width="24" height="7" fill="#FFCC33" />
+            <g stroke="#C7C7CC" strokeWidth="0.8">
+              <line x1="3" y1="11" x2="21" y2="11" />
+              <line x1="3" y1="15" x2="21" y2="15" />
+              <line x1="3" y1="19" x2="21" y2="19" />
+            </g>
+          </g>
+        </svg>
+      );
+  }
+}
+const SWITCHER_AUTOPLAY = ["", "t", "te", "tel", "tel", "", "v", "vs", "vsc", "vsc"];
+const SWITCHER_AUTOPLAY_INTERVAL = 650;
+const SWITCHER_PAUSE_AFTER_INTERACTION = 6000;
+const SWITCHER_VISIBLE_ROWS = 3;
+
+// Same ranking as the app: app name, then words and initials, then the window title
+function switcherScore(query: string, app: string, title: string): number | null {
+  const normalize = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const tokens = normalize(query).split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return 0;
+  const a = normalize(app);
+  const t = normalize(title);
+  const appWords = a.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const titleWords = t.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  const appInitials = appWords.map((w) => w[0]).join("");
+  const titleInitials = titleWords.map((w) => w[0]).join("");
+  const isSubsequence = (needle: string, hay: string) => {
+    let i = 0;
+    for (const c of hay) if (c === needle[i]) i++;
+    return i === needle.length;
+  };
+  let total = 0;
+  for (const token of tokens) {
+    const long = token.length > 1;
+    let best: number;
+    if (a.startsWith(token)) best = 1000;
+    else if (appWords.some((w) => w.startsWith(token))) best = 900;
+    else if (long && appInitials.startsWith(token)) best = 800;
+    else if (titleWords.some((w) => w.startsWith(token))) best = 700;
+    else if (long && a.includes(token)) best = 600;
+    else if (long && t.includes(token)) best = 500;
+    else if (long && titleInitials.startsWith(token)) best = 400;
+    else if (long && a[0] === token[0] && isSubsequence(token, a)) best = 300;
+    else return null;
+    total += best;
+  }
+  return total;
+}
+
+function WindowSwitcherDemo() {
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState(0);
+  const [switchedTo, setSwitchedTo] = useState<string | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const lastInteraction = useRef(0);
+  const step = useRef(0);
+  const queryIsAutoplay = useRef(true);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const switchedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const results = SWITCHER_WINDOWS.map((w, index) => ({ w, index, score: switcherScore(query, w.app, w.title) }))
+    .filter((r): r is { w: (typeof SWITCHER_WINDOWS)[number]; index: number; score: number } => r.score !== null)
+    .sort((x, y) => y.score - x.score || x.index - y.index)
+    .map((r) => r.w);
+  const selection = Math.min(selected, Math.max(0, results.length - 1));
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isFocused || document.activeElement === inputRef.current) return;
+      if (Date.now() - lastInteraction.current < SWITCHER_PAUSE_AFTER_INTERACTION) return;
+      step.current = (step.current + 1) % SWITCHER_AUTOPLAY.length;
+      queryIsAutoplay.current = true;
+      setQuery(SWITCHER_AUTOPLAY[step.current]);
+      setSelected(0);
+    }, SWITCHER_AUTOPLAY_INTERVAL);
+    return () => clearInterval(interval);
+  }, [isFocused]);
+
+  useEffect(() => () => {
+    if (switchedTimer.current) clearTimeout(switchedTimer.current);
+  }, []);
+
+  const markInteraction = () => {
+    lastInteraction.current = Date.now();
+  };
+
+  const switchTo = (win: (typeof SWITCHER_WINDOWS)[number]) => {
+    markInteraction();
+    setSwitchedTo(`${win.app} · Desktop ${win.desktop}`);
+    if (switchedTimer.current) clearTimeout(switchedTimer.current);
+    switchedTimer.current = setTimeout(() => setSwitchedTo(null), 1400);
+  };
+
+  return (
+    <div className="relative select-none">
+      <div className="rounded-xl bg-[var(--card-solid)] border border-white/15 shadow-lg overflow-hidden">
+        <div className="flex items-center gap-2 px-3 h-9 border-b border-white/10">
+          <Search className="w-3.5 h-3.5 text-[var(--foreground-muted)]" />
+          <input
+            ref={inputRef}
+            value={query}
+            onChange={(e) => {
+              markInteraction();
+              let next = e.target.value;
+              // Typing over the autoplay text starts a new query instead of adding to it
+              if (queryIsAutoplay.current && next.startsWith(query)) next = next.slice(query.length);
+              queryIsAutoplay.current = false;
+              setQuery(next);
+              setSelected(0);
+            }}
+            onFocus={() => {
+              setIsFocused(true);
+              if (queryIsAutoplay.current) {
+                queryIsAutoplay.current = false;
+                setQuery("");
+                setSelected(0);
+              }
+            }}
+            onBlur={() => {
+              setIsFocused(false);
+              markInteraction();
+            }}
+            onKeyDown={(e) => {
+              if (results.length === 0) return;
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setSelected((selection + 1) % results.length);
+              } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setSelected((selection - 1 + results.length) % results.length);
+              } else if (e.key === "Enter") {
+                e.preventDefault();
+                switchTo(results[selection]);
+              }
+            }}
+            placeholder="Type to search, try “t”"
+            aria-label="Try the window switcher: type an app or window name"
+            className="flex-1 bg-transparent text-xs text-white placeholder:text-[var(--foreground-muted)] outline-none"
+          />
+        </div>
+        <div className="p-1" style={{ height: SWITCHER_VISIBLE_ROWS * 28 + 8 }}>
+          {results.length === 0 ? (
+            <div className="h-full flex items-center justify-center text-[11px] text-[var(--foreground-muted)]">
+              No matching windows
+            </div>
+          ) : (
+            results.slice(0, SWITCHER_VISIBLE_ROWS).map((win, i) => (
+              <button
+                key={win.app}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => {
+                  setSelected(i);
+                  switchTo(win);
+                }}
+                className="w-full h-7 flex items-center gap-2 px-2 rounded-md text-left transition-colors"
+                style={{ background: i === selection ? `${ACCENT}26` : "transparent" }}
+              >
+                <span className="shrink-0 flex">
+                  <SwitcherAppIcon app={win.icon} />
+                </span>
+                <span className="flex-1 min-w-0 truncate text-[11px]">
+                  <span className="text-white font-medium">{win.title}</span>
+                  <span className="text-[var(--foreground-muted)]"> · {win.app} · Desktop {win.desktop}</span>
+                </span>
+                <span className="text-[10px] text-[var(--foreground-muted)]">⌘{i + 1}</span>
+              </button>
+            ))
+          )}
+        </div>
+      </div>
+      <div className="mt-2 h-4 text-[11px] text-center text-[var(--foreground-muted)]">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={switchedTo ?? "hint"}
+            initial={{ opacity: 0, y: 3 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -3 }}
+            transition={{ duration: 0.15 }}
+            style={switchedTo ? { color: ACCENT } : undefined}
+          >
+            {switchedTo ? `Switched to ${switchedTo}` : "⌃⌥W in Rapto · ↑↓ and Return to pick"}
+          </motion.span>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
@@ -3167,6 +3448,16 @@ function Features() {
             index={1}
           >
             <KeyboardDemo />
+          </FeatureCard>
+
+          {/* Window Switcher */}
+          <FeatureCard
+            icon={Search}
+            title="Window Switcher"
+            description="Type the first letters of an app or window name and jump to it, on any desktop or display"
+            index={2}
+          >
+            <WindowSwitcherDemo />
           </FeatureCard>
 
           {/* Multi-Monitor */}
