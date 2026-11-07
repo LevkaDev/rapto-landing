@@ -4219,6 +4219,10 @@ function FAQSection() {
       a: "On a screen with a notch the bar hides and drops down below the notch when you point at it. Choose Automatic, Always or On Hover in Settings → General → Menu Bar. With several monitors, each display gets its own bar with its own desktops, as long as “Displays have separate Spaces” is on in System Settings → Desktop & Dock.",
     },
     {
+      q: "Why did my desktops change their order?",
+      a: "macOS does this, not Rapto. By default it moves the desktop you used last next to the one you are on, so the numbers in the desktops bar change too. Each desktop keeps its mode and layout wherever it moves. To keep a fixed order, turn off “Automatically rearrange Spaces based on most recent use” in System Settings → Desktop & Dock → Mission Control.",
+    },
+    {
       q: "What’s the difference between Manual, Auto-tiling, and Drag to Snap?",
       a: "Manual uses an overlay to assign windows into zones and apply a layout. Auto-tiling arranges windows automatically as they open/close. Drag to Snap lets you drag a window to edges/zones with a preview before snapping.",
     },

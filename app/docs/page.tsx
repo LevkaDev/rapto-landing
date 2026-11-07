@@ -376,7 +376,15 @@ export default function DocsPage() {
                 Click a number to go straight to that desktop, with no slide animation. Click an app icon to open that app on its desktop.
               </p>
 
-              <h3 className="font-display text-xl font-semibold mb-3">Moving Windows Between Desktops</h3>
+              <h3 className="font-display text-xl font-semibold mb-3">Desktop Order</h3>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                By default, macOS moves the desktop you used last next to the one you are on. For example, after you open a notification that takes you to desktop 1, the desktop you just left can become desktop 2, and the others shift to the right. The Desktops Bar shows the order macOS uses, so the numbers change too. Each desktop keeps its mode and layout wherever it moves.
+              </p>
+              <InfoBox type="tip">
+                To keep your desktops in a fixed order, turn off &quot;Automatically rearrange Spaces based on most recent use&quot; in System Settings → Desktop &amp; Dock → Mission Control.
+              </InfoBox>
+
+              <h3 className="font-display text-xl font-semibold mb-3 mt-8">Moving Windows Between Desktops</h3>
               <p className="text-[var(--foreground-muted)] mb-3">
                 Drag an app icon onto another desktop number to move that app&apos;s window there. You stay on the desktop you were on.
               </p>
@@ -822,6 +830,13 @@ export default function DocsPage() {
                   <h4 className="font-display font-semibold mb-2">The Desktops Bar doesn&apos;t appear</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
                     Check that it&apos;s on in Settings → General → Menu Bar and that &quot;Displays have separate Spaces&quot; is on in System Settings → Desktop &amp; Dock. On a MacBook with a notch, point at the notch, or set Show Desktops Bar to Always.
+                  </p>
+                </div>
+
+                <div className="card p-5">
+                  <h4 className="font-display font-semibold mb-2">My desktops changed their order</h4>
+                  <p className="text-[var(--foreground-muted)] text-sm">
+                    macOS does this, not Rapto: it moves recently used desktops closer to the one you are on. Turn off &quot;Automatically rearrange Spaces based on most recent use&quot; in System Settings → Desktop &amp; Dock → Mission Control. Rapto keeps each desktop&apos;s mode and layout either way.
                   </p>
                 </div>
 
