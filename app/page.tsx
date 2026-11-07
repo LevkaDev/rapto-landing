@@ -4236,7 +4236,7 @@ function FAQSection() {
     },
     {
       q: "Is Rapto safe? Does it record or upload my screen?",
-      a: "Rapto controls windows locally on your Mac. Screen Recording permission is used for window detection. Rapto doesn’t need to upload your screen for core features.",
+      a: "Yes. Rapto works entirely on your Mac and never records, saves or uploads your screen. Screen Recording permission only lets it read window titles and positions. Rapto has no servers and no accounts, and it collects no usage data, analytics or crash reports. The only time it goes online is to check for updates: when it starts, once a day, and when you choose “Check for Updates…”. You can turn automatic checks off in Settings.",
     },
     {
       q: "How do updates work?",
