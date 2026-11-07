@@ -350,6 +350,15 @@ export default function DocsPage() {
                   <p className="text-[var(--foreground-muted)] mb-3">
                     Drag a window to the edge of the screen to snap it into position. A preview zone appears before you release, showing where the window will go.
                   </p>
+                  <ul className="text-[var(--foreground-muted)] mb-3 space-y-1">
+                    <li>• <strong>Left or right edge</strong> — half of the screen</li>
+                    <li>• <strong>Top edge</strong> — full screen</li>
+                    <li>• <strong>Corners</strong> — a quarter of the screen</li>
+                    <li>• <strong>Bottom edge</strong> — the left, center or right third, depending on where you drop</li>
+                  </ul>
+                  <p className="text-[var(--foreground-muted)] mb-3">
+                    Hold <Shortcut keys={["⌥"]} /> while dragging to see all zones of your layout and drop the window into any of them. Choose the layout for each desktop by right-clicking it in the Desktops Bar, or in the menu bar menu. Drag a snapped window away and it gets back its previous size.
+                  </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> Users who prefer mouse-based interaction, similar to Rectangle or Magnet.
                   </p>

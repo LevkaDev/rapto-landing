@@ -1,10 +1,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Shield, Lock, Eye, FileText } from "lucide-react";
+import { ArrowLeft, Shield, Lock, Eye, FileText, RefreshCw, Globe, Trash2, Mail } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 const ACCENT = "#BFFF00";
+
+function Section({ icon: Icon, title, children }: { icon: typeof Shield; title: string; children: ReactNode }) {
+  return (
+    <section>
+      <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
+        <Icon className="w-6 h-6" style={{ color: ACCENT }} />
+        {title}
+      </h2>
+      <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
+        {children}
+      </div>
+    </section>
+  );
+}
 
 export default function PrivacyPage() {
   return (
@@ -44,7 +59,7 @@ export default function PrivacyPage() {
             </h1>
           </div>
           <p className="text-xl text-[var(--foreground-muted)]">
-            Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            Last updated: November 7, 2026
           </p>
         </motion.div>
 
@@ -55,131 +70,66 @@ export default function PrivacyPage() {
           transition={{ delay: 0.1 }}
           className="space-y-12"
         >
-          {/* Introduction */}
-          <section>
-            <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
-              <FileText className="w-6 h-6" style={{ color: ACCENT }} />
-              Introduction
-            </h2>
-            <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
-              <p>
-                Rapto ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our macOS window management application.
-              </p>
-              <p>
-                By using Rapto, you agree to the collection and use of information in accordance with this policy.
-              </p>
-            </div>
-          </section>
+          <Section icon={FileText} title="The Short Version">
+            <p>
+              Rapto works entirely on your Mac. It has no servers and no accounts, and it collects no personal data, usage data, analytics or crash reports. It never records, saves or uploads your screen. The only time the app goes online is to check for updates.
+            </p>
+          </Section>
 
-          {/* Data Collection */}
-          <section>
-            <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
-              <Eye className="w-6 h-6" style={{ color: ACCENT }} />
-              Data Collection
-            </h2>
-            <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
-              <p className="font-semibold text-white">Rapto collects minimal data:</p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li><strong>Window information:</strong> Rapto accesses window titles, positions, and sizes to provide window management functionality. This data is processed locally on your device and never transmitted to external servers.</li>
-                <li><strong>Screen configuration:</strong> Information about your display setup (resolution, arrangement) is used to optimize window layouts. This data remains on your device.</li>
-                <li><strong>User preferences:</strong> Your custom templates, hotkey configurations, and settings are stored locally in your macOS preferences.</li>
-              </ul>
-              <p className="font-semibold text-white mt-6">We do NOT collect:</p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Personal information (name, email, address)</li>
-                <li>Browsing history or web activity</li>
-                <li>File contents or document data</li>
-                <li>Location data</li>
-                <li>Any data that leaves your device</li>
-              </ul>
-            </div>
-          </section>
+          <Section icon={Eye} title="What the App Uses on Your Mac">
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li><strong>Window information.</strong> Rapto reads window titles, positions and sizes so it can arrange your windows. This is only used on your Mac and never leaves it.</li>
+              <li><strong>Display setup.</strong> Rapto reads the size and arrangement of your displays and desktops to place windows correctly.</li>
+              <li><strong>Your settings.</strong> Your layouts, shortcuts and preferences are saved in the standard macOS settings of your user account.</li>
+              <li><strong>Diagnostic log (off by default).</strong> If you turn on file logging in Settings, Rapto keeps a log on your Mac that may include app names and window titles. It is never sent anywhere. You only share it if you choose to send it to us yourself.</li>
+            </ul>
+          </Section>
 
-          {/* Data Storage */}
-          <section>
-            <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
-              <Lock className="w-6 h-6" style={{ color: ACCENT }} />
-              Data Storage & Security
-            </h2>
-            <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
-              <p>
-                All data collected by Rapto is stored locally on your macOS device using Apple's standard UserDefaults and Core Data frameworks. This data is:
-              </p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Encrypted by macOS system-level security</li>
-                <li>Accessible only to the Rapto application</li>
-                <li>Never transmitted over the network</li>
-                <li>Automatically deleted when you uninstall Rapto</li>
-              </ul>
-            </div>
-          </section>
+          <Section icon={Lock} title="Permissions">
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li><strong>Accessibility</strong> lets Rapto move and resize windows.</li>
+              <li><strong>Screen Recording</strong> only lets Rapto read window titles and positions. Rapto never captures, saves or uploads what is on your screen.</li>
+            </ul>
+          </Section>
 
-          {/* Third-Party Services */}
-          <section>
-            <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
-              <Shield className="w-6 h-6" style={{ color: ACCENT }} />
-              Third-Party Services
-            </h2>
-            <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
-              <p>
-                Rapto does not integrate with third-party analytics, advertising, or tracking services. We do not use cookies, tracking pixels, or any other tracking technologies. Rapto is free and does not process payments.
-              </p>
-            </div>
-          </section>
+          <Section icon={RefreshCw} title="Update Checks">
+            <p>
+              Rapto checks for new versions when it starts, once a day, and when you choose &ldquo;Check for Updates…&rdquo;. To do this it downloads a small update file from GitHub, where Rapto&rsquo;s updates are published. Like any website, GitHub can see your IP address when this happens. Rapto sends no information about you, your Mac or how you use the app. You can turn automatic checks off in Settings.
+            </p>
+          </Section>
 
-          {/* Your Rights */}
-          <section>
-            <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
-              <FileText className="w-6 h-6" style={{ color: ACCENT }} />
-              Your Rights
-            </h2>
-            <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
-              <p>You have the right to:</p>
-              <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>Access all data stored by Rapto (stored in your macOS preferences)</li>
-                <li>Delete all Rapto data by uninstalling the application</li>
-                <li>Modify your preferences at any time through the application settings</li>
-                <li>Request information about data collection by contacting us</li>
-              </ul>
-            </div>
-          </section>
+          <Section icon={Globe} title="This Website">
+            <p>
+              rapto.app uses Plausible Analytics to count visits and downloads. Plausible uses no cookies and collects no personal data, and visitors can&rsquo;t be identified or tracked across other websites. The site is hosted on Cloudflare, which may keep standard technical logs to deliver and protect the site.
+            </p>
+          </Section>
 
-          {/* Changes to Policy */}
-          <section>
-            <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
-              <FileText className="w-6 h-6" style={{ color: ACCENT }} />
-              Changes to This Policy
-            </h2>
-            <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
-              <p>
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
-              </p>
-              <p>
-                You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.
-              </p>
-            </div>
-          </section>
+          <Section icon={Trash2} title="Removing Your Data">
+            <p>
+              Everything Rapto stores is on your Mac. To remove it completely, quit Rapto, delete it from Applications, and delete these items if they exist:
+            </p>
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li><code>~/Library/Preferences/app.rapto.mac.plist</code></li>
+              <li><code>~/Library/Application Support/Rapto</code></li>
+              <li><code>~/Library/Caches/app.rapto.mac</code></li>
+              <li><code>~/Library/Logs/Rapto</code></li>
+            </ul>
+          </Section>
 
-          {/* Contact */}
-          <section>
-            <h2 className="font-display text-3xl font-bold mb-4 flex items-center gap-3">
-              <FileText className="w-6 h-6" style={{ color: ACCENT }} />
-              Contact Us
-            </h2>
-            <div className="prose prose-invert max-w-none text-[var(--foreground-muted)] space-y-4">
-              <p>
-                If you have any questions about this Privacy Policy, please contact us:
-              </p>
-              <p>
-                <strong>Email:</strong> levan@hey.com
-              </p>
-            </div>
-          </section>
+          <Section icon={FileText} title="Changes to This Policy">
+            <p>
+              If this policy changes, the new version will be posted on this page with a new date.
+            </p>
+          </Section>
+
+          <Section icon={Mail} title="Contact">
+            <p>
+              Questions about privacy:{" "}
+              <a href="mailto:support@rapto.app" style={{ color: ACCENT }}>support@rapto.app</a>
+            </p>
+          </Section>
         </motion.div>
       </div>
     </main>
   );
 }
-
-
-
