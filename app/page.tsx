@@ -2515,7 +2515,7 @@ function OperatingModes() {
       id: "auto",
       title: "Auto Tiling",
       subtitle: "Automatic window arrangement",
-      description: "Windows automatically arrange into your chosen layout as they open. Set maximum tiling depth (2-8 windows) per screen.",
+      description: "Rapto picks the layout for you and rearranges windows as they open and close. Set the maximum number of tiled windows (2-8) per screen.",
       color: ACCENT,
       features: ["Configurable max depth", "Smart window insertion", "Automatic reflow on close"],
     },
@@ -2523,7 +2523,7 @@ function OperatingModes() {
       id: "manual",
       title: "Manual Mode",
       subtitle: "Full control with smart assistance",
-      description: "Assign windows to zones manually via overlay. Auto window grouping stacks multiple windows in the same slot.",
+      description: "Pick a layout or create your own, and Rapto does the rest: it places the windows, stacks windows of the same app in one slot, and lets you move any window to another slot from the overlay.",
       color: "#00FFE5",
       features: ["Visual zone picker", "Auto window groups", "One-click layout apply"],
     },
@@ -4224,7 +4224,7 @@ function FAQSection() {
     },
     {
       q: "What’s the difference between Manual, Auto-tiling, and Drag to Snap?",
-      a: "Manual uses an overlay to assign windows into zones and apply a layout. Auto-tiling arranges windows automatically as they open/close. Drag to Snap lets you drag a window to edges/zones with a preview before snapping.",
+      a: "In Manual you pick a layout or create your own, and Rapto places the windows into it. In Auto-tiling Rapto also picks the layout, and rearranges windows as they open and close. Drag to Snap lets you drag a window to an edge or a zone, with a preview before it snaps.",
     },
     {
       q: "Can I create my own layouts (templates)?",
