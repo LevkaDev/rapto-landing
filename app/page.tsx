@@ -2523,7 +2523,7 @@ function OperatingModes() {
       id: "manual",
       title: "Manual Mode",
       subtitle: "Full control with smart assistance",
-      description: "Pick a layout or create your own, and Rapto does the rest: it places the windows, stacks windows of the same app in one slot, and lets you move any window to another slot from the overlay.",
+      description: "Pick a layout or create your own, and Rapto does the rest: it places the windows and stacks windows of the same app in one slot. To move a window to another slot, just drag it there.",
       color: "#00FFE5",
       features: ["Visual zone picker", "Auto window groups", "One-click layout apply"],
     },

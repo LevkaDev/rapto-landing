@@ -320,7 +320,7 @@ export default function DocsPage() {
                     <h4 className="font-display text-lg font-semibold">Manual Mode</h4>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Pick a layout or create your own, and Rapto does the rest. Choose a layout from the menu bar or the Desktops Bar, or draw one in the overlay, and your windows move into its slots. Want a window in a different slot? Press the hotkey to open the overlay and move it there.
+                    Pick a layout or create your own, and Rapto does the rest. Choose a layout from the menu bar or the Desktops Bar, or draw one in the overlay, and your windows move into its slots. Want a window in a different slot? Drag it onto another window to swap them, drop it into an empty slot, or use the Swap hotkeys.
                   </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> People who want to choose or design the layout themselves and let Rapto do the arranging.
