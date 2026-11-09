@@ -2531,9 +2531,9 @@ function OperatingModes() {
       id: "drag",
       title: "Drag to Snap",
       subtitle: "Intuitive drag and drop",
-      description: "Drag windows to screen edges or zones. Preview appears before you release. Works alongside other modes.",
+      description: "Drag windows to screen edges, or into the zones of your own layout. Preview appears before you release. Drop windows into one zone to group them.",
       color: "#A855F7",
-      features: ["Edge snapping", "Zone preview on drag", "Modifier key zones"],
+      features: ["Edge snapping", "Layout zones", "Window groups"],
     },
   ];
 
@@ -4121,7 +4121,7 @@ function Features() {
           <FeatureCard
             icon={MousePointerClick}
             title="Drag to Snap"
-            description="Drag windows to screen edges to snap them into zones"
+            description="Drag windows to screen edges or into your layout's zones to snap them"
             index={6}
           >
             <DragSnapDemo />
@@ -4141,7 +4141,7 @@ function Features() {
           <FeatureCard
             icon={MoveHorizontal}
             title="Resize Adjacent"
-            description="Resize one window and neighbors automatically adjust"
+            description="Resize one window and neighbors follow, keeping the spacing and each app's minimum size"
             index={8}
           >
             <ResizeAdjacentDemo />
@@ -4224,7 +4224,7 @@ function FAQSection() {
     },
     {
       q: "What’s the difference between Manual, Auto-tiling, and Drag to Snap?",
-      a: "In Manual you pick a layout or create your own, and Rapto places the windows into it. In Auto-tiling Rapto also picks the layout, and rearranges windows as they open and close. Drag to Snap lets you drag a window to an edge or a zone, with a preview before it snaps.",
+      a: "In Manual you pick a layout or create your own, and Rapto places the windows into it. In Auto-tiling Rapto also picks the layout, and rearranges windows as they open and close. Drag to Snap lets you drag a window to an edge, or into a zone of the layout you chose for it, with a preview before it snaps.",
     },
     {
       q: "Can I create my own layouts (templates)?",

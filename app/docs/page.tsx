@@ -348,7 +348,10 @@ export default function DocsPage() {
                     <h4 className="font-display text-lg font-semibold">Drag to Snap</h4>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Drag a window to the edge of the screen to snap it into position. A preview zone appears before you release, showing where the window will go.
+                    Drag a window and drop it into a zone. A preview appears before you release, showing where the window will go. Each desktop has its own Drag to Snap layout, separate from Manual: choose it by right-clicking the desktop in the Desktops Bar, or in the menu bar menu.
+                  </p>
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    <strong>Standard Zones</strong> (the default) snap at the screen edges:
                   </p>
                   <ul className="text-[var(--foreground-muted)] mb-3 space-y-1">
                     <li>• <strong>Left or right edge</strong> — half of the screen</li>
@@ -357,7 +360,13 @@ export default function DocsPage() {
                     <li>• <strong>Bottom edge</strong> — the left, center or right third, depending on where you drop</li>
                   </ul>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Hold <Shortcut keys={["⌥"]} /> while dragging to see all zones of your layout and drop the window into any of them. Choose the layout for each desktop by right-clicking it in the Desktops Bar, or in the menu bar menu. Drag a snapped window away and it gets back its previous size.
+                    <strong>With a layout</strong>, its zones work as in Manual mode: all zones show up while you drag, and the window goes into the zone under the pointer, anywhere on the screen.
+                  </p>
+                  <p className="text-[var(--foreground-muted)] mb-3">
+                    Hold <Shortcut keys={["⌥"]} /> while dragging to move the window freely without snapping, with Standard Zones and with a layout.
+                  </p>
+                  <p className="text-[var(--foreground-muted)] mb-3">
+                    Drop a window into a zone that already has a snapped window, and they become a group with a badge, just like in Manual mode. Resize one window of the group and the others take the same size. Drag a snapped window away and it gets back its previous size.
                   </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> Users who prefer mouse-based interaction, similar to Rectangle or Magnet.
@@ -663,7 +672,7 @@ export default function DocsPage() {
                     <h3 className="font-display text-xl font-semibold">Window Groups</h3>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-2">
-                    Place multiple windows in the same zone. They stack on top of each other, and you can cycle through them with a keyboard shortcut. Great for keeping related windows together.
+                    Place multiple windows in the same zone. They stack on top of each other, and you can cycle through them with a keyboard shortcut. Great for keeping related windows together. Groups work in Manual mode and in Drag to Snap, where you build them by dropping windows into the same zone.
                   </p>
                   <p className="text-[var(--foreground-muted)] mb-2">
                     A zone with stacked windows shows a group badge in its corner, with one icon for each window.
@@ -721,9 +730,14 @@ export default function DocsPage() {
                     <MoveHorizontal className="w-5 h-5" style={{ color: ACCENT }} />
                     <h3 className="font-display text-xl font-semibold">Resize Adjacent</h3>
                   </div>
-                  <p className="text-[var(--foreground-muted)]">
-                    When you resize one window, neighboring windows automatically adjust to fill the space. No gaps, no overlaps.
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    In Manual mode, drag the edge of a window and its neighbors follow as you drag, filling the space. No overlaps.
                   </p>
+                  <ul className="space-y-1 text-[var(--foreground-muted)]">
+                    <li>• <strong>The whole slot resizes</strong>, including the windows of a group hidden behind the front one.</li>
+                    <li>• <strong>Spacing stays the same</strong>: the gap between windows is kept, including the spacing drawn in your own layouts.</li>
+                    <li>• <strong>Windows don&apos;t get smaller than their app allows.</strong> Some apps have a minimum window size. When a window in a slot, or any window of its group, reaches it, the edge stops there. The first time, the edge goes back to where the window fits when you let go; after that it stops right at that size. This works both horizontally and vertically.</li>
+                  </ul>
                 </div>
 
                 {/* Floating Windows */}
