@@ -7,12 +7,13 @@ import {
   AnimatePresence,
   useScroll,
   useSpring,
-  useTransform,
   useMotionValue,
   useInView,
   useDragControls,
   animate as animateValue,
+  MotionConfig,
 } from "framer-motion";
+import { HeroAnimation } from "./HeroAnimation";
 import {
   Briefcase,
   Grid3X3,
@@ -77,12 +78,12 @@ function Navigation() {
 
   const navLinks = [
     { href: "#desktops-bar", label: "Desktops Bar" },
+    { href: "#modes", label: "Modes" },
     { href: "#layouts", label: "Layouts" },
     { href: "#workspaces", label: "Workspaces" },
     { href: "#features", label: "Features" },
     { href: "/docs", label: "Docs" },
     { href: "#faq", label: "FAQ" },
-    { href: "#download", label: "Download" },
   ];
 
   return (
@@ -108,7 +109,7 @@ function Navigation() {
         </motion.a>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
             <motion.a
               key={link.href}
@@ -132,8 +133,10 @@ function Navigation() {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2 text-[var(--foreground-muted)]"
+          className="lg:hidden p-2 text-[var(--foreground-muted)]"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isMobileMenuOpen}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -146,7 +149,7 @@ function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[var(--background)]/95 backdrop-blur-xl border-b border-[var(--card-border)]"
+            className="lg:hidden bg-[var(--background)]/95 backdrop-blur-xl border-b border-[var(--card-border)]"
           >
             <div className="px-6 py-4 flex flex-col gap-4">
               {navLinks.map((link) => (
@@ -159,6 +162,14 @@ function Navigation() {
                   {link.label}
                 </a>
               ))}
+              <a
+                href="#download"
+                className="btn-primary justify-center !py-3 text-sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </a>
             </div>
           </motion.div>
         )}
@@ -233,368 +244,8 @@ function MeasurementLine({ width = 100, label }: { width?: number; label?: strin
 }
 
 // ============================================
-// ANIMATED COUNTER
-// ============================================
-function AnimatedCounter({ value, suffix = "" }: { value: string; suffix?: string }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  return (
-    <motion.span
-      ref={ref}
-      className="font-display text-5xl md:text-6xl font-bold"
-      style={{ color: ACCENT }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5 }}
-    >
-      {value}{suffix}
-    </motion.span>
-  );
-}
-
-// ============================================
 // WINDOW CONTENT COMPONENTS
 // ============================================
-
-// Browser window content
-function BrowserContent({ color }: { color: string }) {
-  return (
-    <div className="flex flex-col h-full">
-      {/* URL bar */}
-      <div className="flex items-center gap-2 px-2 py-1.5 bg-black/20 mx-2 mt-1 rounded-md">
-        <div className="w-3 h-3 rounded-full bg-white/10 flex items-center justify-center">
-          <span className="text-[6px]">🔒</span>
-        </div>
-        <div className="flex-1 h-3 bg-white/10 rounded text-[7px] text-white/40 flex items-center px-1.5">
-          rapto.app/features
-        </div>
-      </div>
-      {/* Page content */}
-      <div className="flex-1 p-2 space-y-2">
-        <div className="h-4 bg-white/8 rounded w-3/4" />
-        <div className="flex gap-2">
-          <div className="w-12 h-12 bg-white/6 rounded" />
-          <div className="flex-1 space-y-1">
-            <div className="h-2 bg-white/10 rounded w-full" />
-            <div className="h-2 bg-white/6 rounded w-4/5" />
-            <div className="h-2 bg-white/6 rounded w-3/5" />
-          </div>
-        </div>
-        <div className="space-y-1">
-          <div className="h-2 bg-white/6 rounded w-full" />
-          <div className="h-2 bg-white/6 rounded w-11/12" />
-          <div className="h-2 bg-white/6 rounded w-4/5" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Code editor content
-function CodeContent({ color }: { color: string }) {
-  const lines = [
-    { indent: 0, width: "60%", keyword: true },
-    { indent: 1, width: "75%", keyword: false },
-    { indent: 1, width: "50%", keyword: false },
-    { indent: 2, width: "85%", keyword: false },
-    { indent: 2, width: "40%", keyword: false },
-    { indent: 1, width: "30%", keyword: true },
-    { indent: 0, width: "20%", keyword: true },
-    { indent: 0, width: "0%", keyword: false },
-    { indent: 0, width: "55%", keyword: true },
-    { indent: 1, width: "70%", keyword: false },
-  ];
-  
-  return (
-    <div className="flex h-full text-[7px] font-mono">
-      {/* Line numbers */}
-      <div className="w-5 bg-black/20 flex flex-col items-end pr-1 py-1 text-white/20">
-        {lines.map((_, i) => (
-          <div key={i} className="leading-[10px]">{i + 1}</div>
-        ))}
-      </div>
-      {/* Code */}
-      <div className="flex-1 p-1 space-y-[2px]">
-        {lines.map((line, i) => (
-          <div 
-          key={i}
-            className="h-[8px] rounded-sm flex items-center"
-            style={{ paddingLeft: line.indent * 8 }}
-          >
-            {line.width !== "0%" && (
-              <div 
-                className="h-[6px] rounded-sm"
-                style={{ 
-                  width: line.width, 
-                  background: line.keyword ? `${color}40` : 'rgba(255,255,255,0.12)'
-                }}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Terminal content
-function TerminalContent({ color }: { color: string }) {
-  return (
-    <div className="p-2 font-mono text-[7px] space-y-1">
-      <div className="flex gap-1">
-        <span style={{ color }}>❯</span>
-        <span className="text-white/70">npm run build</span>
-      </div>
-      <div className="text-white/40 pl-2">✓ Compiled successfully</div>
-      <div className="text-white/40 pl-2">✓ 42 modules transformed</div>
-      <div className="flex gap-1">
-        <span style={{ color }}>❯</span>
-        <span className="text-white/70">rapto --version</span>
-      </div>
-      <div className="text-white/50 pl-2">v2.1.0</div>
-      <div className="flex gap-1 items-center">
-        <span style={{ color }}>❯</span>
-        <div className="w-1 h-2.5 bg-white/60 animate-pulse" />
-      </div>
-    </div>
-  );
-}
-
-// Notes content
-function NotesContent({ color }: { color: string }) {
-  return (
-    <div className="p-2 space-y-2">
-      <div className="flex items-center gap-1">
-        <div className="w-2 h-2 rounded" style={{ background: color }} />
-        <div className="h-2.5 bg-white/15 rounded w-20 text-[7px] text-white/60 flex items-center px-1">
-          Project Ideas
-        </div>
-      </div>
-      <div className="space-y-1 pl-3">
-        <div className="flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-sm border border-white/30" />
-          <div className="h-2 bg-white/8 rounded w-16" />
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-sm bg-white/30" />
-          <div className="h-2 bg-white/6 rounded w-20 line-through opacity-50" />
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-1.5 h-1.5 rounded-sm border border-white/30" />
-          <div className="h-2 bg-white/8 rounded w-14" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================
-// INTERACTIVE WINDOW DEMO
-// ============================================
-function InteractiveWindowDemo() {
-  // Larger container: 580x420
-  const [windows, setWindows] = useState([
-    { id: 1, x: 25, y: 25, w: 260, h: 175, color: ACCENT, title: "Browser", icon: "🌐", content: "browser" },
-    { id: 2, x: 300, y: 20, w: 250, h: 220, color: "#00FFE5", title: "Code", icon: "💻", content: "code" },
-    { id: 3, x: 30, y: 215, w: 255, h: 175, color: "#A855F7", title: "Terminal", icon: "⌨️", content: "terminal" },
-    { id: 4, x: 310, y: 260, w: 240, h: 130, color: "#FFB800", title: "Notes", icon: "📝", content: "notes" },
-  ]);
-  const [activeWindow, setActiveWindow] = useState<number | null>(null);
-  const [isSnapping, setIsSnapping] = useState(false);
-  const [isSnapped, setIsSnapped] = useState(false);
-
-  const snapToGrid = () => {
-    setIsSnapping(true);
-    setIsSnapped(true);
-    setWindows([
-      { id: 1, x: 8, y: 8, w: 278, h: 193, color: ACCENT, title: "Browser", icon: "🌐", content: "browser" },
-      { id: 2, x: 294, y: 8, w: 278, h: 193, color: "#00FFE5", title: "Code", icon: "💻", content: "code" },
-      { id: 3, x: 8, y: 209, w: 278, h: 180, color: "#A855F7", title: "Terminal", icon: "⌨️", content: "terminal" },
-      { id: 4, x: 294, y: 209, w: 278, h: 180, color: "#FFB800", title: "Notes", icon: "📝", content: "notes" },
-    ]);
-    setTimeout(() => setIsSnapping(false), 600);
-  };
-
-  const scatterWindows = () => {
-    setIsSnapped(false);
-    setWindows([
-      { id: 1, x: 40, y: 50, w: 260, h: 170, color: ACCENT, title: "Browser", icon: "🌐", content: "browser" },
-      { id: 2, x: 260, y: 15, w: 250, h: 230, color: "#00FFE5", title: "Code", icon: "💻", content: "code" },
-      { id: 3, x: 60, y: 230, w: 255, h: 165, color: "#A855F7", title: "Terminal", icon: "⌨️", content: "terminal" },
-      { id: 4, x: 330, y: 270, w: 230, h: 120, color: "#FFB800", title: "Notes", icon: "📝", content: "notes" },
-    ]);
-  };
-
-  const renderContent = (content: string, color: string) => {
-    switch (content) {
-      case "browser": return <BrowserContent color={color} />;
-      case "code": return <CodeContent color={color} />;
-      case "terminal": return <TerminalContent color={color} />;
-      case "notes": return <NotesContent color={color} />;
-      default: return null;
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="relative"
-    >
-      {/* Glow behind demo */}
-      <div 
-        className="absolute -inset-16 rounded-full blur-3xl opacity-30 pointer-events-none"
-        style={{ background: `radial-gradient(circle, ${ACCENT}40 0%, transparent 70%)` }}
-      />
-      
-      {/* Corner brackets */}
-      <div className="absolute -inset-5 pointer-events-none">
-        <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2" style={{ borderColor: ACCENT }} />
-        <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2" style={{ borderColor: ACCENT }} />
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2" style={{ borderColor: ACCENT }} />
-        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2" style={{ borderColor: ACCENT }} />
-      </div>
-
-      <div
-        className="relative w-[580px] h-[400px] rounded-2xl overflow-hidden demo-window"
-        style={{
-          background: "linear-gradient(180deg, #111114 0%, #0a0a0c 100%)",
-        }}
-      >
-        {/* Menu bar */}
-        <div className="demo-window-bar h-7">
-          <div className="demo-window-dot red" />
-          <div className="demo-window-dot yellow" />
-          <div className="demo-window-dot green" />
-          <span className="text-[11px] text-[var(--foreground-muted)] ml-4 font-mono">Desktop 1</span>
-        </div>
-
-        {/* Grid overlay when snapping */}
-        <AnimatePresence>
-          {isSnapping && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 pointer-events-none z-20"
-            >
-              <svg className="w-full h-full">
-                <motion.line
-                  x1="290" y1="28" x2="290" y2="400"
-                  stroke={ACCENT}
-                  strokeWidth="2"
-                  strokeDasharray="4 4"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <motion.line
-                  x1="0" y1="205" x2="580" y2="205"
-                  stroke={ACCENT}
-                  strokeWidth="2"
-                  strokeDasharray="4 4"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                />
-              </svg>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Windows */}
-        {windows.map((win, index) => (
-          <motion.div
-            key={win.id}
-            className="absolute cursor-grab active:cursor-grabbing"
-            style={{ zIndex: activeWindow === win.id ? 10 : win.id }}
-            initial={false}
-            animate={{ x: win.x, y: win.y, width: win.w, height: win.h }}
-            transition={{
-              type: "spring",
-              stiffness: isSnapping ? 400 : 500,
-              damping: isSnapping ? 30 : 35,
-              delay: isSnapping ? index * 0.05 : 0,
-            }}
-            onMouseDown={() => setActiveWindow(win.id)}
-            whileHover={{ scale: 1.01, zIndex: 20 }}
-          >
-            <motion.div
-              className="w-full h-full rounded-xl overflow-hidden flex flex-col"
-              style={{
-                background: `linear-gradient(160deg, ${win.color}18 0%, ${win.color}05 100%)`,
-                border: `1px solid ${win.color}35`,
-                boxShadow: `0 12px 40px ${win.color}15, inset 0 1px 0 ${win.color}20`,
-              }}
-            >
-              {/* Window title bar */}
-              <div
-                className="h-7 flex items-center gap-2 px-3 shrink-0"
-                style={{ background: `${win.color}20` }}
-              >
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/15 hover:bg-red-400/80 transition-colors" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/15 hover:bg-yellow-400/80 transition-colors" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/15 hover:bg-green-400/80 transition-colors" />
-                </div>
-                <span className="text-[11px] text-white/70 ml-1 font-medium">
-                  {win.icon} {win.title}
-                </span>
-              </div>
-              {/* Window content */}
-              <div className="flex-1 overflow-hidden">
-                {renderContent(win.content, win.color)}
-              </div>
-            </motion.div>
-          </motion.div>
-        ))}
-
-        {/* Dock */}
-        <motion.div
-          className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 px-4 py-2 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.8 }}
-        >
-          {["🔍", "📁", "🌐", "💻", "🎵", "⚙️"].map((emoji, i) => (
-            <motion.div
-              key={i}
-              className="w-8 h-8 flex items-center justify-center text-base rounded-xl hover:bg-white/10 cursor-pointer"
-              whileHover={{ scale: 1.2, y: -4 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              {emoji}
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Control buttons */}
-      <div className="flex gap-4 mt-10 justify-center">
-        <motion.button
-          onClick={scatterWindows}
-          className="btn-secondary"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Scatter
-        </motion.button>
-        <motion.button
-          onClick={snapToGrid}
-          className="btn-primary"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <Grip className="w-5 h-5" />
-          Snap to Grid
-          {isSnapped && <Check className="w-5 h-5 ml-1" />}
-        </motion.button>
-      </div>
-    </motion.div>
-  );
-}
 
 // ============================================
 // MINI WINDOW
@@ -633,132 +284,6 @@ function MiniWindow({
 // ============================================
 // FEATURE DEMOS
 // ============================================
-
-function AutoTilingDemo() {
-  const [windowCount, setWindowCount] = useState(1);
-  
-  // Progressive layouts as windows are added
-  const getLayout = (count: number) => {
-    switch (count) {
-      case 1:
-        // 1 window: centered, large but not fullscreen
-        return [
-          { x: 15, y: 10, w: 70, h: 80, visible: true },
-        ];
-      case 2:
-        // 2 windows: split vertically (halves)
-        return [
-          { x: 0, y: 0, w: 50, h: 100, visible: true },
-          { x: 50, y: 0, w: 50, h: 100, visible: true },
-        ];
-      case 3:
-        // 3 windows: one large left, two stacked on right
-        return [
-          { x: 0, y: 0, w: 60, h: 100, visible: true },
-          { x: 60, y: 0, w: 40, h: 50, visible: true },
-          { x: 60, y: 50, w: 40, h: 50, visible: true },
-        ];
-      case 4:
-        // 4 windows: quarters
-        return [
-          { x: 0, y: 0, w: 50, h: 50, visible: true },
-          { x: 50, y: 0, w: 50, h: 50, visible: true },
-          { x: 0, y: 50, w: 50, h: 50, visible: true },
-          { x: 50, y: 50, w: 50, h: 50, visible: true },
-        ];
-      case 5:
-        // 5 windows: center large + 2 stacked on each side
-        return [
-          { x: 0, y: 0, w: 20, h: 50, visible: true },
-          { x: 0, y: 50, w: 20, h: 50, visible: true },
-          { x: 20, y: 0, w: 60, h: 100, visible: true },
-          { x: 80, y: 0, w: 20, h: 50, visible: true },
-          { x: 80, y: 50, w: 20, h: 50, visible: true },
-        ];
-      default:
-        return [];
-    }
-  };
-
-  useEffect(() => {
-    const sequence = async () => {
-      // Reset to 1 window
-      setWindowCount(1);
-      await new Promise(r => setTimeout(r, 2000));
-      
-      // Add windows one by one
-      for (let i = 2; i <= 5; i++) {
-        setWindowCount(i);
-        await new Promise(r => setTimeout(r, 2000));
-      }
-      
-      // Hold final state
-      await new Promise(r => setTimeout(r, 2500));
-    };
-
-    sequence();
-    const interval = setInterval(sequence, 12500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const colors = [ACCENT, "#00FFE5", "#A855F7", "#FFB800", "#FF6B6B"];
-  const layout = getLayout(windowCount);
-
-  return (
-    <div className="relative w-full h-full min-h-[200px] rounded-xl overflow-hidden bg-[var(--card-solid)] border border-[var(--card-border)]">
-      <div className="absolute inset-0 dot-grid opacity-50" />
-      
-      {/* Render windows */}
-      <AnimatePresence>
-        {layout.map((win, i) => (
-        <motion.div
-          key={i}
-            className="absolute"
-            style={{ padding: "3px", zIndex: i === 2 && windowCount === 5 ? 10 : i }}
-            initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-              opacity: 1,
-              scale: 1,
-            left: `${win.x}%`,
-            top: `${win.y}%`,
-            width: `${win.w}%`,
-            height: `${win.h}%`,
-          }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25, delay: i === windowCount - 1 ? 0.1 : 0 }}
-        >
-          <MiniWindow color={colors[i]} className="w-full h-full" />
-        </motion.div>
-      ))}
-      </AnimatePresence>
-      
-      {/* Window count indicator */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-        {[1, 2, 3, 4, 5].map((count) => (
-          <motion.div
-            key={count}
-            className="w-2 h-2 rounded-full"
-            animate={{
-              backgroundColor: windowCount >= count ? colors[count - 1] : "rgba(255,255,255,0.15)",
-              scale: windowCount === count ? 1.4 : 1,
-            }}
-          />
-        ))}
-      </div>
-      
-      {/* Window count label */}
-      <motion.div 
-        className="absolute top-3 right-3 z-20 px-2 py-1 rounded-md text-xs font-mono"
-        style={{ background: "rgba(0,0,0,0.6)", color: ACCENT }}
-        key={windowCount}
-        initial={{ opacity: 0, y: -5 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        {windowCount} {windowCount === 1 ? "window" : "windows"}
-      </motion.div>
-    </div>
-  );
-}
 
 type SwitcherApp = "tradingview" | "safari" | "telegram" | "terminal" | "vscode" | "notes";
 
@@ -946,7 +471,7 @@ function WindowSwitcherDemo() {
   return (
     <div className="relative select-none">
       <div className="rounded-xl bg-[var(--card-solid)] border border-white/15 shadow-lg overflow-hidden">
-        <div className="flex items-center gap-2 px-3 h-9 border-b border-white/10">
+        <div className="flex items-center gap-2 px-3 h-9 border-b border-white/10 focus-within:shadow-[inset_0_0_0_2px_var(--accent)] rounded-t-xl">
           <Search className="w-3.5 h-3.5 text-[var(--foreground-muted)]" />
           <input
             ref={inputRef}
@@ -992,7 +517,7 @@ function WindowSwitcherDemo() {
         </div>
         <div className="p-1" style={{ height: SWITCHER_VISIBLE_ROWS * 28 + 8 }}>
           {results.length === 0 ? (
-            <div className="h-full flex items-center justify-center text-[11px] text-[var(--foreground-muted)]">
+            <div className="h-full flex items-center justify-center text-xs text-[var(--foreground-muted)]">
               No matching windows
             </div>
           ) : (
@@ -1011,17 +536,17 @@ function WindowSwitcherDemo() {
                 <span className="shrink-0 flex">
                   <SwitcherAppIcon app={win.icon} />
                 </span>
-                <span className="flex-1 min-w-0 truncate text-[11px]">
+                <span className="flex-1 min-w-0 truncate text-xs">
                   <span className="text-white font-medium">{win.title}</span>
                   <span className="text-[var(--foreground-muted)]"> · {win.app} · Desktop {win.desktop}</span>
                 </span>
-                <span className="text-[10px] text-[var(--foreground-muted)]">⌘{i + 1}</span>
+                <span className="text-[11px] text-[var(--foreground-muted)]">⌘{i + 1}</span>
               </button>
             ))
           )}
         </div>
       </div>
-      <div className="mt-2 h-4 text-[11px] text-center text-[var(--foreground-muted)]">
+      <div className="mt-2 h-4 text-xs text-center text-[var(--foreground-muted)]">
         <AnimatePresence mode="wait">
           <motion.span
             key={switchedTo ?? "hint"}
@@ -1224,7 +749,7 @@ function WindowGroupsDemo() {
                 />
               ))}
             </div>
-            <div className="absolute left-2 bottom-2 text-[10px] font-medium text-white/60">
+            <div className="absolute left-2 bottom-2 text-[11px] font-medium text-white/70">
               {win.name}
             </div>
           </motion.div>
@@ -1292,7 +817,7 @@ function WindowGroupsDemo() {
         </motion.div>
       </div>
 
-      <div className="absolute inset-x-3 bottom-0 text-[11px] text-[var(--foreground-muted)] text-center">
+      <div className="absolute inset-x-3 bottom-0 text-xs text-[var(--foreground-muted)] text-center">
         Click an icon to switch · drag the badge aside
       </div>
     </div>
@@ -1414,93 +939,6 @@ function FocusWindowDemo() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-// Drag to Snap Demo - shows dragging window to edge
-function DragSnapDemo() {
-  const [phase, setPhase] = useState<"idle" | "dragging" | "snapped">("idle");
-
-  useEffect(() => {
-    const sequence = async () => {
-      setPhase("idle");
-      await new Promise((r) => setTimeout(r, 800));
-      setPhase("dragging");
-      await new Promise((r) => setTimeout(r, 1200));
-      setPhase("snapped");
-      await new Promise((r) => setTimeout(r, 2000));
-    };
-
-    sequence();
-    const interval = setInterval(sequence, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="relative h-24 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden">
-      {/* Snap zone preview */}
-      <AnimatePresence>
-        {phase === "dragging" && (
-      <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute left-1 top-1 bottom-1 w-[48%] rounded-lg"
-            style={{ 
-              background: `${ACCENT}15`, 
-              border: `2px dashed ${ACCENT}60` 
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Dragged window */}
-      <motion.div
-        className="absolute z-10"
-        style={{ 
-          width: phase === "snapped" ? "48%" : "40%", 
-          height: phase === "snapped" ? "calc(100% - 8px)" : "60%",
-        }}
-        animate={{
-          left: phase === "idle" ? "45%" : phase === "dragging" ? "15%" : "1%",
-          top: phase === "snapped" ? 4 : 20,
-          width: phase === "snapped" ? "48%" : "40%",
-          height: phase === "snapped" ? "calc(100% - 8px)" : "60%",
-        }}
-        transition={{ type: "spring", stiffness: 250, damping: 25 }}
-      >
-        <MiniWindow color={ACCENT} className="w-full h-full" />
-      </motion.div>
-
-      {/* Cursor */}
-      <AnimatePresence>
-        {phase === "dragging" && (
-      <motion.div
-            initial={{ opacity: 0 }}
-        animate={{
-              opacity: 1,
-              x: [0, -30, -60],
-        }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.2 }}
-            className="absolute z-20"
-            style={{ left: "60%", top: "35%" }}
-      >
-            <MousePointerClick className="w-4 h-4" style={{ color: ACCENT }} />
-      </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Edge indicator */}
-      <motion.div
-        className="absolute left-0 top-1 bottom-1 w-1 rounded-r-sm"
-        style={{ background: ACCENT }}
-        animate={{
-          opacity: phase === "dragging" ? [0.5, 1, 0.5] : phase === "snapped" ? 1 : 0.2,
-        }}
-        transition={{ duration: 0.5, repeat: phase === "dragging" ? Infinity : 0 }}
-      />
     </div>
   );
 }
@@ -1677,79 +1115,6 @@ function TemplateHotkeysDemo() {
   );
 }
 
-// Custom Templates Demo - shows visual zone editor
-function CustomTemplatesDemo() {
-  const [zones, setZones] = useState([
-    { x: 0, y: 0, w: 50, h: 100 },
-    { x: 50, y: 0, w: 50, h: 50 },
-    { x: 50, y: 50, w: 50, h: 50 },
-  ]);
-  const [phase, setPhase] = useState(0);
-
-  useEffect(() => {
-    const layouts = [
-      [{ x: 0, y: 0, w: 50, h: 100 }, { x: 50, y: 0, w: 50, h: 50 }, { x: 50, y: 50, w: 50, h: 50 }],
-      [{ x: 0, y: 0, w: 60, h: 100 }, { x: 60, y: 0, w: 40, h: 100 }],
-      [{ x: 0, y: 0, w: 33, h: 100 }, { x: 33, y: 0, w: 34, h: 100 }, { x: 67, y: 0, w: 33, h: 100 }],
-    ];
-
-    const interval = setInterval(() => {
-      setPhase((p) => {
-        const next = (p + 1) % layouts.length;
-        setZones(layouts[next]);
-        return next;
-      });
-    }, 2500);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const colors = [ACCENT, "#00FFE5", "#A855F7"];
-
-  return (
-    <div className="relative h-20 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden p-2">
-      {/* Grid background */}
-      <div className="absolute inset-2 grid grid-cols-6 grid-rows-4 gap-px opacity-20">
-        {Array.from({ length: 24 }).map((_, i) => (
-          <div key={i} className="border border-[var(--card-border)]" />
-        ))}
-      </div>
-
-      {/* Zones */}
-      <div className="relative w-full h-full">
-        {zones.map((zone, i) => (
-      <motion.div
-            key={i}
-            className="absolute rounded-md"
-            initial={false}
-            animate={{
-              left: `${zone.x}%`,
-              top: `${zone.y}%`,
-              width: `${zone.w}%`,
-              height: `${zone.h}%`,
-            }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          style={{
-              background: `${colors[i % colors.length]}30`,
-              border: `2px solid ${colors[i % colors.length]}`,
-            }}
-          />
-        ))}
-        </div>
-
-      {/* Plus indicator */}
-      <motion.div
-        className="absolute bottom-1 right-1 w-5 h-5 rounded-md flex items-center justify-center text-xs"
-        style={{ background: `${ACCENT}30`, color: ACCENT }}
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
-        +
-      </motion.div>
-    </div>
-  );
-}
-
 // Floating Windows Demo - shows window being excluded from tiling
 function FloatingWindowsDemo() {
   const [isFloating, setIsFloating] = useState(false);
@@ -1820,6 +1185,7 @@ function FeatureCard({
   children,
   index = 0,
   large = false,
+  wide = false,
 }: {
   icon: React.ElementType;
   title: string;
@@ -1827,6 +1193,7 @@ function FeatureCard({
   children?: React.ReactNode;
   index?: number;
   large?: boolean;
+  wide?: boolean;
 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -1836,8 +1203,8 @@ function FeatureCard({
         ref={ref}
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`card spotlight p-6 flex flex-col ${large ? 'md:col-span-2 md:row-span-2' : ''}`}
+      transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
+      className={`card spotlight p-6 flex flex-col ${large ? 'md:col-span-2 md:row-span-2' : ''} ${wide ? 'md:col-span-2' : ''}`}
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -1864,159 +1231,132 @@ function FeatureCard({
 // HERO SECTION
 // ============================================
 function Hero() {
-  const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
-  const y = useTransform(scrollY, [0, 400], [0, 100]);
-
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+    <section className="relative overflow-hidden">
       {/* Background layers */}
       <div className="absolute inset-0 atmosphere" />
       <div className="absolute inset-0 blueprint-grid opacity-30" />
-      
+
       {/* Accent glow */}
       <motion.div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-3xl opacity-20 pointer-events-none"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] max-w-full h-[400px] rounded-full blur-3xl opacity-20 pointer-events-none"
         style={{ background: `radial-gradient(ellipse, ${ACCENT} 0%, transparent 70%)` }}
         animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] }}
         transition={{ duration: 8, repeat: Infinity }}
       />
 
-      <motion.div className="relative z-10 max-w-7xl mx-auto px-6 py-20" style={{ opacity, y }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-28 md:pt-32 pb-20">
         {/* Top tag */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-          className="flex justify-center mb-12"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center mb-6"
         >
           <div className="tag">
             <Terminal className="w-4 h-4" />
-            Ultimate Window Management for macOS
+            Rapto · Window manager for macOS
           </div>
-            </motion.div>
+        </motion.div>
 
-        {/* Main heading - asymmetric layout */}
-        <div className="text-center mb-16">
-          <motion.div
+        {/* Heading: the benefit, not the name */}
+        <div className="text-center mb-8">
+          <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="flex items-center justify-center gap-6 mb-6"
+            className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-5"
           >
-            {/* Icon with glow */}
-              <motion.div
-                className="relative"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              >
-                <motion.div
-                className="absolute -inset-4 rounded-3xl blur-xl"
-                style={{ background: ACCENT }}
-                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                />
-                <Image
-                  src="/app-icon.png"
-                  alt="Rapto"
-                  width={80}
-                  height={80}
-                  className="relative drop-shadow-2xl"
-                />
-              </motion.div>
+            Stop wrestling with <span style={{ color: ACCENT }}>windows</span>
+          </motion.h1>
 
-            <h1 className="font-display text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight gradient-text">
-              Rapto
-                </h1>
-          </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-xl md:text-2xl text-[var(--foreground-muted)] max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl text-[var(--foreground-muted)] max-w-2xl mx-auto leading-relaxed"
           >
-            Stop wrestling with windows. Organize your workspace with{" "}
-            <span style={{ color: ACCENT }}>customizable layouts</span>,{" "}
-            <span style={{ color: "#00FFE5" }}>keyboard shortcuts</span>, and{" "}
-            <span style={{ color: "#A855F7" }}>intelligent tiling</span>.
-            </motion.p>
+            Rapto puts every window in its place with ready-made and custom layouts,
+            keyboard shortcuts and automatic tiling.
+          </motion.p>
         </div>
 
-        {/* Interactive Demo - Center stage */}
-        <div className="flex justify-center mb-16">
-          <InteractiveWindowDemo />
-        </div>
-
-        {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-wrap gap-4 justify-center mb-20"
-            >
-              <motion.a
-                href="#download"
+        {/* CTA Buttons, above the demo so they are on the first screen */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex flex-wrap gap-4 justify-center mb-4"
+        >
+          <motion.a
+            href="#download"
             className="btn-primary text-lg"
             whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
+            whileTap={{ scale: 0.98 }}
+          >
             <Download className="w-5 h-5" />
             Download for Mac
             <ArrowRight className="w-5 h-5" />
-              </motion.a>
+          </motion.a>
 
-              <motion.a
-                href="#features"
+          <motion.a
+            href="#features"
             className="btn-secondary text-lg"
             whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
+            whileTap={{ scale: 0.98 }}
+          >
             Explore Features
-              </motion.a>
-            </motion.div>
+          </motion.a>
+        </motion.div>
 
-        {/* Stats with measurement aesthetic */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="text-center text-sm text-[var(--foreground-muted)] mb-12"
+        >
+          Free · macOS 26+ · Apple Silicon & Intel
+        </motion.p>
+
+        {/* Product animation */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="relative mx-auto max-w-5xl mb-16"
+        >
+          <div
+            className="absolute -inset-10 rounded-full blur-3xl opacity-30 pointer-events-none"
+            style={{ background: `radial-gradient(circle, ${ACCENT}40 0%, transparent 70%)` }}
+          />
+          <div className="relative rounded-xl md:rounded-2xl overflow-hidden border border-[var(--card-border-hover)] shadow-2xl aspect-video bg-[var(--card-solid)]">
+            <HeroAnimation />
+          </div>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.7 }}
           className="flex justify-center"
         >
-          <div className="flex items-center gap-8 md:gap-16 px-8 py-6 rounded-2xl bg-[var(--card)] border border-[var(--card-border)]">
+          <div className="flex items-start gap-6 sm:gap-8 md:gap-16 px-5 sm:px-8 py-6 rounded-2xl bg-[var(--card)] border border-[var(--card-border)]">
             {[
-              { value: "3", label: "Powerful Modes" },
-              { value: "∞", label: "Custom Templates" },
-              { value: "40+", label: "Hotkey Actions" },
-              ].map((stat, i) => (
+              { value: "3", label: "Tiling modes" },
+              { value: "14", label: "Built-in layouts" },
+              { value: "40+", label: "Hotkey actions" },
+            ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="font-display text-3xl md:text-4xl font-bold" style={{ color: ACCENT }}>
-                    {stat.value}
-                  </div>
+                  {stat.value}
+                </div>
                 <div className="text-sm text-[var(--foreground-muted)] mt-1">{stat.label}</div>
               </div>
-              ))}
+            ))}
           </div>
-          </motion.div>
-      </motion.div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-      >
-        <motion.div
-          className="flex flex-col items-center gap-2 cursor-pointer"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          onClick={() => document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })}
-        >
-          <span className="text-xs text-[var(--foreground-muted)] font-mono">scroll</span>
-          <ChevronDown className="w-5 h-5 text-[var(--foreground-muted)]" />
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -2279,7 +1619,7 @@ function DesktopsBarDemo({ frame, frameKey }: { frame: BarFrame; frameKey: strin
             )}
           </motion.div>
         </AnimatePresence>
-        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-white/40">Desktop {activeDesk.id}</div>
+        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-white/60">Desktop {activeDesk.id}</div>
       </div>
 
       {/* Context menu */}
@@ -2547,7 +1887,7 @@ function OperatingModes() {
   }, [userInteracted]);
 
   return (
-    <section className="py-24 px-6 relative overflow-hidden">
+    <section id="modes" className="py-24 px-6 relative overflow-hidden scroll-mt-16">
       {/* Background effect */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--accent-subtle)] to-transparent opacity-50" />
       
@@ -2567,7 +1907,7 @@ function OperatingModes() {
             transition={{ delay: 0.1 }}
             className="font-display text-4xl md:text-5xl font-bold mb-6"
           >
-            Three powerful <span style={{ color: ACCENT }}>modes</span>
+            Three <span style={{ color: ACCENT }}>modes</span>
           </motion.h2>
           
           <motion.p
@@ -2986,7 +2326,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
                 >
                   <LayoutPreview zones={t.zones} />
                 </div>
-                <span className={`text-[9px] sm:text-[10px] whitespace-nowrap ${frame.template === t.id ? "text-white" : "text-white/50"}`}>
+                <span className={`text-[10px] sm:text-[11px] whitespace-nowrap ${frame.template === t.id ? "text-white" : "text-white/50"}`}>
                   {t.name}
                 </span>
               </motion.div>
@@ -2999,7 +2339,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
               <div className="w-full aspect-[16/10] rounded-md border border-dashed border-white/25 flex items-center justify-center text-white/60">
                 <Plus className="w-4 h-4" />
               </div>
-              <span className="text-[9px] sm:text-[10px] text-white/50">Custom</span>
+              <span className="text-[10px] sm:text-[11px] text-white/50">Custom</span>
             </motion.div>
 
             {/* Zone indicator */}
@@ -3053,7 +2393,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
                 ✓ Apply Layout <span className="text-white/75">({assigned.length}/{template.zones.length})</span>
               </motion.div>
             )}
-            <div className="absolute left-0 right-0 top-[93%] text-center text-[10px] text-white/40">
+            <div className="absolute left-0 right-0 top-[93%] text-center text-[11px] text-white/60">
               Press ESC to cancel • Enter to apply
             </div>
           </motion.div>
@@ -3143,14 +2483,14 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
                     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-gradient-to-br from-[#60a5fa] to-[#2563eb] border-2 border-white/50 flex items-center justify-center shadow-lg">
                       <Plus className="w-5 h-5 text-white" />
                     </div>
-                    <span className="absolute left-1/2 -translate-x-1/2 top-[calc(50%+26px)] px-1.5 py-0.5 rounded bg-black/60 text-[9px] font-mono text-white/80 whitespace-nowrap">
+                    <span className="absolute left-1/2 -translate-x-1/2 top-[calc(50%+26px)] px-1.5 py-0.5 rounded bg-black/60 text-[10px] font-mono text-white/80 whitespace-nowrap">
                       {Math.round((frame.creator.w / 100) * 1728)} × {Math.round((frame.creator.h / 100) * 1080)}
                     </span>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
-            <div className="absolute left-0 right-0 top-[91%] text-center text-[10px] text-white/45">
+            <div className="absolute left-0 right-0 top-[91%] text-center text-[11px] text-white/60">
               Drag handles to resize • Click + to add zone • Double-click to delete
             </div>
           </motion.div>
@@ -3562,7 +2902,7 @@ function WorkspacesDemo({ frame, frameKey }: { frame: WsFrame; frameKey: string 
         style={item.label === highlighted ? { background: "#3b82f6" } : undefined}
       >
         <span className="flex items-center gap-1">
-          {prefix === "r" && <span className="w-3 text-[9px]">{item.check ? "✓" : ""}</span>}
+          {prefix === "r" && <span className="w-3 text-[10px]">{item.check ? "✓" : ""}</span>}
           {item.label}
         </span>
         {item.value && <span className="text-white/50">{item.value}</span>}
@@ -3673,9 +3013,9 @@ function WorkspacesDemo({ frame, frameKey }: { frame: WsFrame; frameKey: string 
             )}
           </motion.div>
         </AnimatePresence>
-        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-white/40">Desktop {frame.active}</div>
+        <div className="absolute bottom-2 left-3 text-[10px] font-mono text-white/60">Desktop {frame.active}</div>
         {frame.note && (
-          <div className="absolute bottom-2 right-3 flex items-center gap-1.5 text-[10px] font-mono text-white/40">
+          <div className="absolute bottom-2 right-3 flex items-center gap-1.5 text-[10px] font-mono text-white/60">
             <Laptop className="w-3 h-3" />
             {frame.note}
           </div>
@@ -4040,21 +3380,23 @@ function Features() {
             transition={{ delay: 0.2 }}
             className="text-xl text-[var(--foreground-muted)] max-w-2xl mx-auto"
           >
-            Every feature designed with ultimate precision and efficiency in mind
+            Shortcuts, window groups and multi-display control for people who keep a lot of windows open
           </motion.p>
         </motion.div>
 
         {/* Feature grid - asymmetric */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Auto Tiling - Large */}
+          {/* Window Switcher - wide lead card */}
           <FeatureCard
-            icon={LayoutGrid}
-            title="Auto Tiling"
-            description="Windows automatically arrange themselves into your chosen layout"
+            icon={Search}
+            title="Window Switcher"
+            description="Type the first letters of an app or window name and jump to it, on any desktop or display"
             index={0}
-            large
+            wide
           >
-            <AutoTilingDemo />
+            <div className="max-w-md mx-auto">
+              <WindowSwitcherDemo />
+            </div>
           </FeatureCard>
 
           {/* Keyboard First */}
@@ -4067,15 +3409,6 @@ function Features() {
             <KeyboardDemo />
           </FeatureCard>
 
-          {/* Window Switcher */}
-          <FeatureCard
-            icon={Search}
-            title="Window Switcher"
-            description="Type the first letters of an app or window name and jump to it, on any desktop or display"
-            index={2}
-          >
-            <WindowSwitcherDemo />
-          </FeatureCard>
 
           {/* Multi-Monitor */}
           <FeatureCard
@@ -4117,16 +3450,6 @@ function Features() {
             <FocusWindowDemo />
           </FeatureCard>
 
-          {/* Drag to Snap */}
-          <FeatureCard
-            icon={MousePointerClick}
-            title="Drag to Snap"
-            description="Drag windows to screen edges or into your layout's zones to snap them"
-            index={6}
-          >
-            <DragSnapDemo />
-          </FeatureCard>
-
           {/* Snap Back */}
           <FeatureCard
             icon={Undo2}
@@ -4155,16 +3478,6 @@ function Features() {
             index={9}
           >
             <TemplateHotkeysDemo />
-          </FeatureCard>
-
-          {/* Custom Templates */}
-          <FeatureCard
-            icon={Grid3X3}
-            title="Custom Templates"
-            description="Create your own layouts with the visual zone editor"
-            index={10}
-          >
-            <CustomTemplatesDemo />
           </FeatureCard>
 
           {/* Floating Windows */}
@@ -4430,7 +3743,7 @@ function DownloadSection() {
           transition={{ delay: 0.3 }}
           className="text-xl text-[var(--foreground-muted)] mb-6"
         >
-          Download Rapto and transform your workflow today.
+          Download Rapto and put every window in its place.
         </motion.p>
 
         {/* Free */}
@@ -4562,6 +3875,7 @@ function Footer() {
 // ============================================
 export default function Home() {
   return (
+    <MotionConfig reducedMotion="user">
     <main className="overflow-hidden bg-[var(--background)]">
       <Navigation />
       <ScrollProgress />
@@ -4577,5 +3891,6 @@ export default function Home() {
       <DownloadSection />
       <Footer />
     </main>
+    </MotionConfig>
   );
 }
