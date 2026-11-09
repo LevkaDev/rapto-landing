@@ -334,7 +334,7 @@ export default function DocsPage() {
                     <h4 className="font-display text-lg font-semibold">Auto Tiling</h4>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Windows automatically arrange themselves as you open or close them. The layout adapts based on how many windows you have. You can set the maximum number of tiled windows (2-8).
+                    Windows automatically arrange themselves as you open or close them. The layout adapts based on how many windows you have. You can set the maximum number of tiled windows (2-8). When there are more windows than that, the extra ones stack into a group: a window joins the slot of its own app, or the last slot if its app has none.
                   </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> Users who want hands-off window management, similar to i3 or yabai.
@@ -672,7 +672,7 @@ export default function DocsPage() {
                     <h3 className="font-display text-xl font-semibold">Window Groups</h3>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-2">
-                    Place multiple windows in the same zone. They stack on top of each other, and you can cycle through them with a keyboard shortcut. Great for keeping related windows together. Groups work in Manual mode and in Drag to Snap, where you build them by dropping windows into the same zone.
+                    Place multiple windows in the same zone. They stack on top of each other, and you can cycle through them with a keyboard shortcut. Great for keeping related windows together. Groups work in every mode. In Manual mode, place windows in one slot. In Drag to Snap, drop a window into a zone that already has one. In Auto Tiling, windows beyond the maximum join the slot of their app, or the last slot.
                   </p>
                   <p className="text-[var(--foreground-muted)] mb-2">
                     A zone with stacked windows shows a group badge in its corner, with one icon for each window.

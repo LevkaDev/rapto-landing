@@ -2515,9 +2515,9 @@ function OperatingModes() {
       id: "auto",
       title: "Auto Tiling",
       subtitle: "Automatic window arrangement",
-      description: "Rapto picks the layout for you and rearranges windows as they open and close. Set the maximum number of tiled windows (2-8) per screen.",
+      description: "Rapto picks the layout for you and rearranges windows as they open and close. Set the maximum number of tiled windows (2-8) per screen; extra windows stack into a group with their app.",
       color: ACCENT,
-      features: ["Configurable max depth", "Smart window insertion", "Automatic reflow on close"],
+      features: ["Configurable max depth", "Smart window insertion", "Groups beyond the max"],
     },
     {
       id: "manual",
@@ -4091,7 +4091,7 @@ function Features() {
           <FeatureCard
             icon={Layers}
             title="Window Groups"
-            description="Stack windows in one slot. Click an icon in the badge to switch, or drag the badge out of the way"
+            description="Stack windows in one slot, in every mode. Click an icon in the badge to switch, or drag the badge out of the way"
             index={3}
           >
             <WindowGroupsDemo />
