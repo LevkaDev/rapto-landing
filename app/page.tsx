@@ -13,7 +13,10 @@ import {
   animate as animateValue,
   MotionConfig,
 } from "framer-motion";
-import { HeroAnimation } from "./HeroAnimation";
+import { HeroPlayground } from "./HeroPlayground";
+import { loopOr, PauseToggle, usePaused } from "./motion-pause";
+import { CardActiveContext, DemoStage, ModeScenario, useCardLoop, useNoHover } from "./demo-parts";
+import { SwitcherAppIcon, type SwitcherApp } from "./AppIcons";
 import {
   Briefcase,
   Grid3X3,
@@ -52,6 +55,7 @@ import {
   Wifi,
   BatteryFull,
   Search,
+  Play,
 } from "lucide-react";
 
 // ============================================
@@ -76,6 +80,16 @@ function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Escape closes the mobile menu
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isMobileMenuOpen]);
+
   const navLinks = [
     { href: "#desktops-bar", label: "Desktops Bar" },
     { href: "#modes", label: "Modes" },
@@ -88,6 +102,7 @@ function Navigation() {
 
   return (
     <motion.nav
+      aria-label="Main"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-[var(--background)]/90 backdrop-blur-xl border-b border-[var(--card-border)]"
@@ -104,7 +119,7 @@ function Navigation() {
           className="flex items-center gap-3"
           whileHover={{ scale: 1.02 }}
         >
-          <Image src="/app-icon.png" alt="Rapto" width={36} height={36} />
+          <Image src="/app-icon.png" alt="" width={36} height={36} />
           <span className="font-display font-bold text-xl">Rapto</span>
         </motion.a>
 
@@ -133,7 +148,7 @@ function Navigation() {
 
         {/* Mobile Menu Button */}
         <button
-          className="lg:hidden p-2 text-[var(--foreground-muted)]"
+          className="lg:hidden p-2.5 text-[var(--foreground-muted)]"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMobileMenuOpen}
@@ -285,7 +300,6 @@ function MiniWindow({
 // FEATURE DEMOS
 // ============================================
 
-type SwitcherApp = "tradingview" | "safari" | "telegram" | "terminal" | "vscode" | "notes";
 
 const SWITCHER_WINDOWS: Array<{ app: string; title: string; icon: SwitcherApp; desktop: number }> = [
   { app: "TradingView", title: "BTCUSD", icon: "tradingview", desktop: 1 },
@@ -296,95 +310,6 @@ const SWITCHER_WINDOWS: Array<{ app: string; title: string; icon: SwitcherApp; d
   { app: "Notes", title: "Shopping list", icon: "notes", desktop: 2 },
 ];
 
-function SwitcherAppIcon({ app, size = 18 }: { app: SwitcherApp; size?: number }) {
-  switch (app) {
-    case "tradingview":
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-          <rect width="24" height="24" rx="5.5" fill="#000" />
-          <g transform="translate(3.6 3.6) scale(0.7)">
-            <path
-              fill="#fff"
-              d="M15.8654 8.2789c0 1.3541-1.0978 2.4519-2.452 2.4519-1.354 0-2.4519-1.0978-2.4519-2.452 0-1.354 1.0978-2.4518 2.452-2.4518 1.354 0 2.4519 1.0977 2.4519 2.4519zM9.75 6H0v4.9038h4.8462v7.2692H9.75Zm8.5962 0H24l-5.1058 12.173h-5.6538z"
-            />
-          </g>
-        </svg>
-      );
-    case "telegram":
-      return (
-        <svg width={size} height={size} viewBox="0 0 240 240" aria-hidden>
-          <defs>
-            <linearGradient id="switcher-tg" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0" stopColor="#2AABEE" />
-              <stop offset="1" stopColor="#229ED9" />
-            </linearGradient>
-          </defs>
-          <circle cx="120" cy="120" r="120" fill="url(#switcher-tg)" />
-          <path
-            fill="#fff"
-            d="M54.3 118.8c35-15.2 58.3-25.3 70-30.2 33.3-13.9 40.3-16.3 44.8-16.4 1 0 3.2.2 4.7 1.4 1.2 1 1.5 2.3 1.7 3.3s.4 3.1.2 4.7c-1.8 19-9.6 65.1-13.6 86.3-1.7 9-5 12-8.2 12.3-7 .6-12.3-4.6-19-9-10.6-6.9-16.5-11.2-26.8-18-11.9-7.8-4.2-12.1 2.6-19.1 1.8-1.8 32.5-29.8 33.1-32.3.1-.3.1-1.5-.6-2.1-.7-.6-1.7-.4-2.5-.2-1.1.2-17.9 11.4-50.6 33.5-4.8 3.3-9.1 4.9-13 4.8-4.3-.1-12.5-2.4-18.7-4.4-7.5-2.4-13.5-3.7-13-7.9.3-2.2 3.3-4.4 8.9-6.7z"
-          />
-        </svg>
-      );
-    case "vscode":
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-          <path
-            fill="#2F9AF2"
-            d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"
-          />
-        </svg>
-      );
-    case "safari":
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-          <defs>
-            <linearGradient id="switcher-safari" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0" stopColor="#1AD6FD" />
-              <stop offset="1" stopColor="#1D62F0" />
-            </linearGradient>
-          </defs>
-          <rect width="24" height="24" rx="5.5" fill="#fff" />
-          <circle cx="12" cy="12" r="10" fill="url(#switcher-safari)" />
-          <g stroke="#fff" strokeOpacity="0.7" strokeWidth="0.6">
-            {Array.from({ length: 12 }, (_, i) => (
-              <line key={i} x1="12" y1="2.8" x2="12" y2="4" transform={`rotate(${i * 30} 12 12)`} />
-            ))}
-          </g>
-          <g transform="rotate(45 12 12)">
-            <path d="M12 4.5 L14 12 L10 12 Z" fill="#FF3B30" />
-            <path d="M12 19.5 L10 12 L14 12 Z" fill="#fff" />
-          </g>
-        </svg>
-      );
-    case "terminal":
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-          <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" fill="#D9D9DE" />
-          <rect x="2.5" y="2.5" width="19" height="19" rx="3.5" fill="#1C1C1E" />
-          <path d="M6 8.5 L9.5 11.5 L6 14.5" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M11 15 H16.5" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
-        </svg>
-      );
-    case "notes":
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-          <clipPath id="switcher-notes">
-            <rect width="24" height="24" rx="5.5" />
-          </clipPath>
-          <g clipPath="url(#switcher-notes)">
-            <rect width="24" height="24" fill="#FFFFFF" />
-            <rect width="24" height="7" fill="#FFCC33" />
-            <g stroke="#C7C7CC" strokeWidth="0.8">
-              <line x1="3" y1="11" x2="21" y2="11" />
-              <line x1="3" y1="15" x2="21" y2="15" />
-              <line x1="3" y1="19" x2="21" y2="19" />
-            </g>
-          </g>
-        </svg>
-      );
-  }
-}
 const SWITCHER_AUTOPLAY = ["", "t", "te", "tel", "tel", "", "v", "vs", "vsc", "vsc"];
 const SWITCHER_AUTOPLAY_INTERVAL = 650;
 const SWITCHER_PAUSE_AFTER_INTERACTION = 6000;
@@ -441,17 +366,14 @@ function WindowSwitcherDemo() {
     .map((r) => r.w);
   const selection = Math.min(selected, Math.max(0, results.length - 1));
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isFocused || document.activeElement === inputRef.current) return;
-      if (Date.now() - lastInteraction.current < SWITCHER_PAUSE_AFTER_INTERACTION) return;
-      step.current = (step.current + 1) % SWITCHER_AUTOPLAY.length;
-      queryIsAutoplay.current = true;
-      setQuery(SWITCHER_AUTOPLAY[step.current]);
-      setSelected(0);
-    }, SWITCHER_AUTOPLAY_INTERVAL);
-    return () => clearInterval(interval);
-  }, [isFocused]);
+  useCardLoop(() => {
+    if (isFocused || document.activeElement === inputRef.current) return;
+    if (Date.now() - lastInteraction.current < SWITCHER_PAUSE_AFTER_INTERACTION) return;
+    step.current = (step.current + 1) % SWITCHER_AUTOPLAY.length;
+    queryIsAutoplay.current = true;
+    setQuery(SWITCHER_AUTOPLAY[step.current]);
+    setSelected(0);
+  }, SWITCHER_AUTOPLAY_INTERVAL);
 
   useEffect(() => () => {
     if (switchedTimer.current) clearTimeout(switchedTimer.current);
@@ -568,17 +490,18 @@ function KeyboardDemo() {
   const [position, setPosition] = useState<"left" | "right" | "full">("left");
   const [activeKey, setActiveKey] = useState<string | null>(null);
 
-  useEffect(() => {
+  const keyStep = useRef(0);
+  useCardLoop(() => {
     const sequence = ["left", "right", "full"] as const;
-    let idx = 0;
-    const interval = setInterval(() => {
-      idx = (idx + 1) % sequence.length;
-      setPosition(sequence[idx]);
-      setActiveKey(sequence[idx] === "left" ? "←" : sequence[idx] === "right" ? "→" : "M");
-      setTimeout(() => setActiveKey(null), 400);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+    keyStep.current = (keyStep.current + 1) % sequence.length;
+    const next = sequence[keyStep.current];
+    setPosition(next);
+    setActiveKey(next === "left" ? "←" : next === "right" ? "→" : "M");
+    setTimeout(() => setActiveKey(null), 500);
+  }, 2000);
+
+  // The modifiers go down together with the key, so the whole shortcut reads
+  const isOn = (key: string) => activeKey !== null && (key === activeKey || key === "⌃" || key === "⌥");
 
   const getWindowStyle = () => {
     switch (position) {
@@ -613,15 +536,15 @@ function KeyboardDemo() {
             key={key}
             className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium"
             style={{
-              background: activeKey === key ? ACCENT : "rgba(255,255,255,0.05)",
-              color: activeKey === key ? "#0a0a0c" : "rgba(255,255,255,0.5)",
-              boxShadow: activeKey === key
+              background: isOn(key) ? ACCENT : "rgba(255,255,255,0.05)",
+              color: isOn(key) ? "#0a0a0c" : "rgba(255,255,255,0.5)",
+              boxShadow: isOn(key)
                 ? `0 0 20px ${ACCENT}60`
                 : "0 2px 0 rgba(0,0,0,0.3)",
             }}
             animate={{
-              y: activeKey === key ? 2 : 0,
-              scale: activeKey === key ? 0.95 : 1,
+              y: isOn(key) ? 2 : 0,
+              scale: isOn(key) ? 0.95 : 1,
             }}
           >
             {key}
@@ -632,42 +555,52 @@ function KeyboardDemo() {
   );
 }
 
+// Three displays; the window is one element that travels between them
+const MONITORS = [
+  { x: 3, y: 26, w: 27, h: 56 },
+  { x: 33.5, y: 8, w: 33, h: 74 },
+  { x: 70, y: 26, w: 27, h: 56 },
+];
+
 function MultiMonitorDemo() {
   const [activeScreen, setActiveScreen] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => setActiveScreen((s) => (s + 1) % 3), 1800);
-    return () => clearInterval(interval);
-  }, []);
+  useCardLoop(() => setActiveScreen((s) => (s + 1) % MONITORS.length), 1800);
+
+  const target = MONITORS[activeScreen];
+  const inset = 2.2;
 
   return (
-    <div className="flex gap-2 justify-center items-end py-2">
-      {[0, 1, 2].map((screen) => (
-        <motion.div
-          key={screen}
-          className="relative rounded-lg overflow-hidden border-2"
-          style={{
-            width: screen === 1 ? 56 : 44,
-            height: screen === 1 ? 40 : 32,
-            background: "var(--card-solid)",
-            borderColor: activeScreen === screen ? ACCENT : "var(--card-border)",
-            boxShadow: activeScreen === screen ? `0 0 20px ${ACCENT}40` : "none",
-          }}
-        >
-          <AnimatePresence mode="wait">
-            {activeScreen === screen && (
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.5, opacity: 0 }}
-                className="absolute inset-1"
-              >
-                <MiniWindow color={ACCENT} className="w-full h-full" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+    <div className="relative h-28">
+      {MONITORS.map((m, i) => (
+        <div key={i} className="absolute" style={{ left: `${m.x}%`, top: `${m.y}%`, width: `${m.w}%`, height: `${m.h}%` }}>
+          <div
+            className="w-full h-full rounded-lg border-2 transition-all duration-300"
+            style={{
+              background: "var(--card-solid)",
+              borderColor: activeScreen === i ? ACCENT : "rgba(255,255,255,0.14)",
+              boxShadow: activeScreen === i ? `0 0 20px ${ACCENT}40` : "none",
+            }}
+          />
+          {/* Stand */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-[14%] h-[5px] bg-white/15" />
+          <div className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+5px)] w-[40%] h-[3px] rounded-full bg-white/15" />
+        </div>
       ))}
+
+      <motion.div
+        className="absolute z-10"
+        initial={false}
+        animate={{
+          left: `${target.x + inset}%`,
+          top: `${target.y + inset * 3}%`,
+          width: `${target.w - inset * 2}%`,
+          height: `${target.h - inset * 6}%`,
+        }}
+        transition={{ type: "spring", stiffness: 220, damping: 26 }}
+      >
+        <MiniWindow color={ACCENT} className="w-full h-full" />
+      </motion.div>
     </div>
   );
 }
@@ -689,22 +622,19 @@ function WindowGroupsDemo() {
   const dragControls = useDragControls();
 
   const windows = [
-    { color: ACCENT, icon: "🌐", name: "Browser" },
-    { color: "#00FFE5", icon: "💻", name: "Terminal" },
-    { color: "#A855F7", icon: "📁", name: "Files" },
+    { color: ACCENT, icon: "safari" as SwitcherApp, name: "Browser" },
+    { color: "#00FFE5", icon: "terminal" as SwitcherApp, name: "Terminal" },
+    { color: "#A855F7", icon: "files" as SwitcherApp, name: "Files" },
   ];
 
   const markInteraction = () => {
     lastInteraction.current = Date.now();
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (Date.now() - lastInteraction.current < GROUP_AUTOPLAY_PAUSE_AFTER_INTERACTION) return;
-      setActive((a) => (a + 1) % windows.length);
-    }, GROUP_AUTOPLAY_INTERVAL);
-    return () => clearInterval(interval);
-  }, [windows.length]);
+  useCardLoop(() => {
+    if (Date.now() - lastInteraction.current < GROUP_AUTOPLAY_PAUSE_AFTER_INTERACTION) return;
+    setActive((a) => (a + 1) % windows.length);
+  }, GROUP_AUTOPLAY_INTERVAL);
 
   const cancelReturn = () => {
     if (returnTimer.current) clearTimeout(returnTimer.current);
@@ -811,7 +741,7 @@ function WindowGroupsDemo() {
               aria-label={`Switch to ${win.name}`}
               aria-pressed={i === active}
             >
-              {win.icon}
+              <SwitcherAppIcon app={win.icon} size={14} />
             </motion.button>
           ))}
         </motion.div>
@@ -827,10 +757,7 @@ function WindowGroupsDemo() {
 function SwapDemo() {
   const [swapped, setSwapped] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => setSwapped((s) => !s), 2000);
-    return () => clearInterval(interval);
-  }, []);
+  useCardLoop(() => setSwapped((s) => !s), 2000);
 
   return (
     <div className="relative h-20 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden">
@@ -867,21 +794,10 @@ function SwapDemo() {
 
 // Focus Window Demo - expands window to full screen
 function FocusWindowDemo() {
+  const paused = usePaused();
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    const sequence = async () => {
-      await new Promise((r) => setTimeout(r, 1000));
-      setExpanded(true);
-      await new Promise((r) => setTimeout(r, 2000));
-      setExpanded(false);
-      await new Promise((r) => setTimeout(r, 1500));
-    };
-
-    sequence();
-    const interval = setInterval(sequence, 4500);
-    return () => clearInterval(interval);
-  }, []);
+  useCardLoop(() => setExpanded((e) => !e), 2200);
 
   return (
     <div className="relative h-24 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden">
@@ -917,10 +833,10 @@ function FocusWindowDemo() {
         <motion.div
           className="absolute -inset-1 rounded-lg"
           style={{ border: `2px solid ${ACCENT}` }}
-          animate={{
+          animate={loopOr(paused, {
             opacity: expanded ? [0.8, 0.4, 0.8] : 0,
             boxShadow: expanded ? `0 0 20px ${ACCENT}60` : "none",
-          }}
+          })}
           transition={{ duration: 1, repeat: expanded ? Infinity : 0 }}
         />
       </motion.div>
@@ -947,20 +863,9 @@ function FocusWindowDemo() {
 function SnapBackDemo() {
   const [phase, setPhase] = useState<"placed" | "dragged" | "snapping">("placed");
 
-  useEffect(() => {
-    const sequence = async () => {
-      setPhase("placed");
-      await new Promise((r) => setTimeout(r, 1000));
-      setPhase("dragged");
-      await new Promise((r) => setTimeout(r, 1200));
-      setPhase("snapping");
-      await new Promise((r) => setTimeout(r, 1500));
-    };
-
-    sequence();
-    const interval = setInterval(sequence, 3700);
-    return () => clearInterval(interval);
-  }, []);
+  useCardLoop(() => {
+    setPhase((p) => (p === "placed" ? "dragged" : p === "dragged" ? "snapping" : "placed"));
+  }, 1300);
 
   return (
     <div className="relative h-24 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden">
@@ -998,6 +903,22 @@ function SnapBackDemo() {
         <MiniWindow color={ACCENT} className="w-full h-full" />
       </motion.div>
 
+      {/* The pointer that pulls the window out of its slot */}
+      <motion.div
+        className="absolute z-30 pointer-events-none"
+        initial={false}
+        animate={{
+          left: phase === "placed" ? "20%" : "52%",
+          top: phase === "placed" ? "14%" : "40%",
+          opacity: phase === "snapping" ? 0 : 1,
+        }}
+        transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <svg width="12" height="15" viewBox="0 0 16 20" aria-hidden>
+          <path d="M1 1 L1 15 L5 11.5 L7.8 18 L10.2 17 L7.4 10.6 L13 10.4 Z" fill="#fff" stroke="#0a0a0c" strokeWidth="1.2" strokeLinejoin="round" />
+        </svg>
+      </motion.div>
+
       {/* Snap back animation */}
       <AnimatePresence>
         {phase === "snapping" && (
@@ -1017,12 +938,10 @@ function SnapBackDemo() {
 
 // Resize Adjacent Demo - shows resizing affecting neighbors
 function ResizeAdjacentDemo() {
+  const paused = usePaused();
   const [resized, setResized] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => setResized((r) => !r), 2500);
-    return () => clearInterval(interval);
-  }, []);
+  useCardLoop(() => setResized((r) => !r), 2500);
 
   return (
     <div className="relative h-24 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden flex p-1 gap-1">
@@ -1037,10 +956,10 @@ function ResizeAdjacentDemo() {
         <motion.div
           className="absolute right-0 top-2 bottom-2 w-1.5 rounded-full cursor-ew-resize"
           style={{ background: `${ACCENT}80` }}
-          animate={{ 
+          animate={loopOr(paused, { 
             opacity: [0.5, 1, 0.5],
             x: resized ? [0, 2, 0] : 0,
-          }}
+          })}
           transition={{ duration: 1, repeat: Infinity }}
         />
           </motion.div>
@@ -1066,12 +985,7 @@ function TemplateHotkeysDemo() {
     { name: "Main+Side", layout: [2, 1] },
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActive((a) => (a + 1) % templates.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  useCardLoop(() => setActive((a) => (a + 1) % templates.length), 2000);
 
   return (
     <div className="relative h-20">
@@ -1097,7 +1011,7 @@ function TemplateHotkeysDemo() {
 
       {/* Hotkey indicators */}
       <div className="absolute right-2 top-2 bottom-2 flex flex-col justify-center gap-1">
-        {["⌘1", "⌘2", "⌘3"].map((key, i) => (
+        {["Space 1", "Space 2", "Space 3"].map((key, i) => (
             <motion.div
             key={i}
             className="px-2 py-0.5 rounded text-xs font-mono"
@@ -1119,18 +1033,7 @@ function TemplateHotkeysDemo() {
 function FloatingWindowsDemo() {
   const [isFloating, setIsFloating] = useState(false);
 
-  useEffect(() => {
-    const sequence = async () => {
-      setIsFloating(false);
-      await new Promise((r) => setTimeout(r, 1500));
-      setIsFloating(true);
-      await new Promise((r) => setTimeout(r, 2500));
-    };
-
-    sequence();
-    const interval = setInterval(sequence, 4000);
-    return () => clearInterval(interval);
-  }, []);
+  useCardLoop(() => setIsFloating((f) => !f), 2200);
 
   return (
     <div className="relative h-20 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden">
@@ -1186,6 +1089,7 @@ function FeatureCard({
   index = 0,
   large = false,
   wide = false,
+  interactive = false,
 }: {
   icon: React.ElementType;
   title: string;
@@ -1194,13 +1098,25 @@ function FeatureCard({
   index?: number;
   large?: boolean;
   wide?: boolean;
+  // Demos a visitor can operate stay exposed to assistive tech; the rest are illustrations
+  interactive?: boolean;
 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  // The demo plays while the card is hovered or focused; on touch screens, while it is on screen
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const noHover = useNoHover();
+  const onScreen = useInView(ref, { amount: 0.6 });
+  const active = hovered || focused || (noHover && onScreen);
 
   return (
       <motion.div
         ref={ref}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
@@ -1222,7 +1138,20 @@ function FeatureCard({
           <p className="text-sm text-[var(--foreground-muted)]">{description}</p>
         </div>
       </div>
-      {children && <div className={`mt-4 ${large ? 'flex-1' : ''}`}>{children}</div>}
+      {children && (
+        <CardActiveContext.Provider value={active}>
+          <div aria-hidden={interactive ? undefined : true} className={`mt-4 ${large ? 'flex-1' : ''}`}>{children}</div>
+        </CardActiveContext.Provider>
+      )}
+      {children && !noHover && (
+        <span
+          aria-hidden
+          className="absolute top-4 right-4 flex items-center justify-center w-6 h-6 rounded-full border border-white/15 text-[var(--foreground-muted)] transition-opacity duration-200"
+          style={{ opacity: active ? 0 : 1 }}
+        >
+          <Play className="w-3 h-3 translate-x-px" />
+        </span>
+      )}
     </motion.div>
   );
 }
@@ -1231,8 +1160,9 @@ function FeatureCard({
 // HERO SECTION
 // ============================================
 function Hero() {
+  const paused = usePaused();
   return (
-    <section className="relative overflow-hidden">
+    <section id="content" tabIndex={-1} className="relative overflow-hidden outline-none">
       {/* Background layers */}
       <div className="absolute inset-0 atmosphere" />
       <div className="absolute inset-0 blueprint-grid opacity-30" />
@@ -1241,7 +1171,7 @@ function Hero() {
       <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] max-w-full h-[400px] rounded-full blur-3xl opacity-20 pointer-events-none"
         style={{ background: `radial-gradient(ellipse, ${ACCENT} 0%, transparent 70%)` }}
-        animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] }}
+        animate={loopOr(paused, { scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] })}
         transition={{ duration: 8, repeat: Infinity }}
       />
 
@@ -1329,9 +1259,7 @@ function Hero() {
             className="absolute -inset-10 rounded-full blur-3xl opacity-30 pointer-events-none"
             style={{ background: `radial-gradient(circle, ${ACCENT}40 0%, transparent 70%)` }}
           />
-          <div className="relative rounded-xl md:rounded-2xl overflow-hidden border border-[var(--card-border-hover)] shadow-2xl aspect-video bg-[var(--card-solid)]">
-            <HeroAnimation />
-          </div>
+          <HeroPlayground />
         </motion.div>
 
         {/* Stats */}
@@ -1364,7 +1292,7 @@ function Hero() {
 // ============================================
 // DESKTOPS BAR SECTION
 // ============================================
-type BarApp = { id: string; icon: string; title: string; color: string };
+type BarApp = { id: string; icon: SwitcherApp; title: string; color: string };
 type BarDesk = { id: number; apps: BarApp[] };
 type BarFrame = {
   desks: BarDesk[];
@@ -1381,11 +1309,11 @@ type BarFrame = {
 };
 
 const BAR_APPS: Record<string, BarApp> = {
-  browser: { id: "browser", icon: "🌐", title: "Browser", color: ACCENT },
-  code: { id: "code", icon: "💻", title: "Code", color: "#00FFE5" },
-  mail: { id: "mail", icon: "✉️", title: "Mail", color: "#A855F7" },
-  music: { id: "music", icon: "🎵", title: "Music", color: "#FF6B6B" },
-  files: { id: "files", icon: "📁", title: "Files", color: "#FFB800" },
+  browser: { id: "browser", icon: "safari", title: "Browser", color: ACCENT },
+  code: { id: "code", icon: "vscode", title: "Code", color: "#00FFE5" },
+  mail: { id: "mail", icon: "mail", title: "Mail", color: "#A855F7" },
+  music: { id: "music", icon: "music", title: "Music", color: "#FF6B6B" },
+  files: { id: "files", icon: "files", title: "Files", color: "#FFB800" },
 };
 
 const desks = (...lists: string[][]): BarDesk[] =>
@@ -1490,6 +1418,7 @@ function DesktopsBarDemo({ frame, frameKey }: { frame: BarFrame; frameKey: strin
   return (
     <div
       ref={containerRef}
+      aria-hidden
       className="relative w-full max-w-[760px] h-[360px] sm:h-[420px] rounded-2xl overflow-hidden demo-window select-none"
       style={{ background: "linear-gradient(180deg, #15151a 0%, #0a0a0c 100%)" }}
     >
@@ -1558,10 +1487,10 @@ function DesktopsBarDemo({ frame, frameKey }: { frame: BarFrame; frameKey: strin
                   key={app.id}
                   ref={register(`app-${app.id}`)}
                   layout
-                  className="text-[13px] leading-none"
+                  className="flex leading-none"
                   animate={{ opacity: frame.drag === app.id ? 0.25 : 1 }}
                 >
-                  {app.icon}
+                  <SwitcherAppIcon app={app.icon} size={14} />
                 </motion.span>
               ))}
             </motion.div>
@@ -1606,7 +1535,7 @@ function DesktopsBarDemo({ frame, frameKey }: { frame: BarFrame; frameKey: strin
                 >
                   <MiniWindow color={app.color} className="w-full h-full" />
                   <div className="absolute inset-0 top-3 flex flex-col items-center justify-center gap-2">
-                    <span className="text-3xl">{app.icon}</span>
+                    <SwitcherAppIcon app={app.icon} size={32} />
                     <span className="text-xs font-mono" style={{ color: app.color }}>
                       {app.title}
                     </span>
@@ -1615,7 +1544,7 @@ function DesktopsBarDemo({ frame, frameKey }: { frame: BarFrame; frameKey: strin
               ))}
             </AnimatePresence>
             {activeDesk.apps.length === 0 && (
-              <div className="flex-1 flex items-center justify-center text-sm text-white/30 font-mono">Empty desktop</div>
+              <div className="flex-1 flex items-center justify-center text-sm text-white/50 font-mono">Empty desktop</div>
             )}
           </motion.div>
         </AnimatePresence>
@@ -1675,7 +1604,7 @@ function DesktopsBarDemo({ frame, frameKey }: { frame: BarFrame; frameKey: strin
             exit={{ opacity: 0, scale: 0.6 }}
             transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
           >
-            {dragged.icon}
+            <SwitcherAppIcon app={dragged.icon} size={18} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -1712,12 +1641,18 @@ function DesktopsBar() {
   const [scene, setScene] = useState(0);
   const [frame, setFrame] = useState(0);
   const [pinned, setPinned] = useState(false);
+  // Stepping by hand stops this demo until it is played again
+  const [manual, setManual] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const stageInView = useInView(stageRef, { margin: "-80px" });
 
   const current = BAR_SCENES[scene];
   const step = current.frames[frame];
 
+  const paused = usePaused();
+
   useEffect(() => {
-    if (!isInView) return;
+    if (!stageInView || paused || manual) return;
     const timer = setTimeout(() => {
       if (frame + 1 < current.frames.length) {
         setFrame(frame + 1);
@@ -1727,14 +1662,11 @@ function DesktopsBar() {
       }
     }, step.ms);
     return () => clearTimeout(timer);
-  }, [isInView, frame, scene, pinned, current.frames.length, step.ms]);
+  }, [stageInView, paused, manual, frame, scene, pinned, current.frames.length, step.ms]);
 
   const highlights = [
     { icon: MousePointerClick, title: "Instant switching", text: "Click a desktop number to jump straight there, with no slide." },
-    { icon: Grip, title: "Drag to move", text: "Drop an app icon on another desktop. You stay put, or hold ⌥ to follow." },
-    { icon: Plus, title: "New desktop in one drop", text: "The + button adds a desktop. Drop an icon on it to move that window there." },
     { icon: LayoutDashboard, title: "Slots remembered", text: "On a Manual desktop, a returning window snaps back into its old slot." },
-    { icon: Laptop, title: "Notch friendly", text: "On MacBooks it hides under the notch and drops down when you point at it." },
     { icon: Monitor, title: "One bar per display", text: "Every monitor gets its own bar with its own desktops." },
   ];
 
@@ -1785,12 +1717,15 @@ function DesktopsBar() {
           {BAR_SCENES.map((s, i) => (
             <button
               key={s.id}
+              type="button"
+              aria-pressed={scene === i}
               onClick={() => {
                 setScene(i);
                 setFrame(0);
                 setPinned(true);
+                setManual(false);
               }}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 min-h-11 sm:min-h-0 rounded-xl text-sm font-medium transition-all duration-300 ${
                 scene === i
                   ? "text-[var(--background)]"
                   : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--card-border)]"
@@ -1802,36 +1737,23 @@ function DesktopsBar() {
           ))}
         </motion.div>
 
-        {/* Demo */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col items-center"
+        <DemoStage
+          stageRef={stageRef}
+          visible={isInView}
+          side="right"
+          caption={step.caption}
+          total={current.frames.length}
+          index={frame}
+          manual={manual}
+          onStep={(delta) => {
+            setManual(true);
+            setFrame((f) => (f + delta + current.frames.length) % current.frames.length);
+          }}
+          onToggle={() => setManual((m) => !m)}
+          highlights={highlights}
         >
           <DesktopsBarDemo frame={step} frameKey={`${scene}-${frame}`} />
-          <div className="h-14 mt-5 flex items-start justify-center">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={step.caption}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-                className="text-center text-[var(--foreground-muted)] max-w-xl"
-              >
-                {step.caption}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-        </motion.div>
-
-        {/* Highlights */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-          {highlights.map((h, i) => (
-            <FeatureCard key={h.title} icon={h.icon} title={h.title} description={h.text} index={i} />
-          ))}
-        </div>
+        </DemoStage>
 
         <p className="text-center text-sm text-[var(--foreground-muted)] mt-8">
           Works on macOS 26 and later. Turn it on or off in Settings → General → Menu Bar
@@ -1878,14 +1800,6 @@ function OperatingModes() {
   ];
 
   // Auto-cycle through modes (stop if user interacted)
-  useEffect(() => {
-    if (userInteracted) return;
-    const interval = setInterval(() => {
-      setActiveMode((m) => (m + 1) % modes.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [userInteracted]);
-
   return (
     <section id="modes" className="py-24 px-6 relative overflow-hidden scroll-mt-16">
       {/* Background effect */}
@@ -1898,7 +1812,7 @@ function OperatingModes() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             className="inline-block mb-4"
           >
-            <MeasurementLine width={60} label="01" />
+            <MeasurementLine width={60} />
           </motion.div>
           
           <motion.h2
@@ -1930,6 +1844,8 @@ function OperatingModes() {
           {modes.map((mode, i) => (
             <button
               key={mode.id}
+              type="button"
+              aria-pressed={activeMode === i}
               onClick={() => {
                 setActiveMode(i);
                 setUserInteracted(true);
@@ -2015,51 +1931,18 @@ function OperatingModes() {
             className="relative"
           >
             <div className="card p-6">
-              {/* Multi-monitor mockup */}
-              <div className="flex gap-4 items-end justify-center">
-                {/* Monitor 1 */}
-                <div className="relative">
-                  <div
-                    className="w-40 h-28 rounded-lg border-2 p-2 transition-colors duration-500"
-                    style={{ borderColor: modes[activeMode].color }}
-                  >
-                    <div className="w-full h-full rounded bg-[var(--background)] relative overflow-hidden">
-                      <ModePreview mode={modes[activeMode].id} color={modes[activeMode].color} />
-                </div>
-              </div>
-                  <div className="w-8 h-1 bg-[var(--card-border)] mx-auto mt-1 rounded" />
-                  <div className="w-16 h-1 bg-[var(--card-border)] mx-auto rounded" />
-                  <div className="text-center mt-2 text-xs text-[var(--foreground-muted)]">
-                    Main Display
-              </div>
-                  <div
-                    className="absolute -top-2 -right-2 px-2 py-0.5 rounded text-[10px] font-mono"
-                    style={{ backgroundColor: modes[activeMode].color, color: "#000" }}
-                  >
-                    {modes[activeMode].id}
-            </div>
-                </div>
-
-                {/* Monitor 2 */}
-                <div className="relative">
-                  <div className="w-32 h-24 rounded-lg border-2 border-[var(--card-border)] p-2">
-                    <div className="w-full h-full rounded bg-[var(--background)] relative overflow-hidden">
-                      <ModePreview mode="manual" color="#00FFE5" small />
-                </div>
-              </div>
-                  <div className="w-6 h-1 bg-[var(--card-border)] mx-auto mt-1 rounded" />
-                  <div className="w-12 h-1 bg-[var(--card-border)] mx-auto rounded" />
-                  <div className="text-center mt-2 text-xs text-[var(--foreground-muted)]">
-                    External
-              </div>
-                  <div className="absolute -top-2 -right-2 px-2 py-0.5 rounded text-[10px] font-mono bg-[#00FFE5] text-black">
-                    manual
-            </div>
-              </div>
-            </div>
+              <ModeScenario
+                key={modes[activeMode].id}
+                mode={modes[activeMode].id}
+                color={modes[activeMode].color}
+                onLoop={() => {
+                  // The next mode starts when this scene has played through
+                  if (!userInteracted) setActiveMode((m) => (m + 1) % modes.length);
+                }}
+              />
 
               {/* Independent badge */}
-              <div className="flex items-center justify-center gap-2 mt-6 text-sm text-[var(--foreground-muted)]">
+              <div className="flex items-center justify-center gap-2 mt-2 text-sm text-[var(--foreground-muted)]">
                 <Monitor className="w-4 h-4" />
                 <span>Independent mode per monitor & Space</span>
               </div>
@@ -2105,9 +1988,9 @@ const MY_LAYOUT: LayoutTemplate = {
 };
 const ZONE_COLORS = [ACCENT, "#00FFE5", "#A855F7", "#FFB800"];
 const LAYOUT_WINDOWS = [
-  { id: "browser", title: "Browser", icon: "🌐", color: ACCENT, loose: { x: 6, y: 12, w: 44, h: 50 } },
-  { id: "code", title: "Code", icon: "💻", color: "#00FFE5", loose: { x: 40, y: 24, w: 48, h: 56 } },
-  { id: "mail", title: "Mail", icon: "✉️", color: "#A855F7", loose: { x: 14, y: 50, w: 38, h: 42 } },
+  { id: "browser", title: "Browser", icon: "safari" as SwitcherApp, color: ACCENT, loose: { x: 6, y: 12, w: 44, h: 50 } },
+  { id: "code", title: "Code", icon: "vscode" as SwitcherApp, color: "#00FFE5", loose: { x: 40, y: 24, w: 48, h: 56 } },
+  { id: "mail", title: "Mail", icon: "mail" as SwitcherApp, color: "#A855F7", loose: { x: 14, y: 50, w: 38, h: 42 } },
 ];
 // Editor area inside the stage, in stage percent.
 const EDITOR = { x: 4, y: 22, w: 92, h: 64 };
@@ -2235,6 +2118,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
 
   return (
     <div
+      aria-hidden
       className="relative w-full max-w-[760px] aspect-[16/10] rounded-2xl overflow-hidden demo-window select-none"
       style={{ background: "linear-gradient(180deg, #15151a 0%, #0a0a0c 100%)" }}
     >
@@ -2251,7 +2135,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
           >
             <MiniWindow color={win.color} className="w-full h-full" />
             <div className="absolute inset-0 top-3 flex flex-col items-center justify-center gap-1">
-              <span className="text-2xl">{win.icon}</span>
+              <SwitcherAppIcon app={win.icon} size={26} />
               <span className="text-[11px] font-mono" style={{ color: win.color }}>
                 {win.title}
               </span>
@@ -2361,7 +2245,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
                 >
                   <MiniWindow color={win.color} className="w-full h-full" />
                   <div className="absolute inset-0 top-3 flex flex-col items-center justify-center">
-                    <span className="text-xl">{win.icon}</span>
+                    <SwitcherAppIcon app={win.icon} size={22} />
                     <span className="text-[10px] font-mono" style={{ color: win.color }}>
                       {win.title}
                     </span>
@@ -2414,7 +2298,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
             {/* Toolbar */}
             <div className="absolute left-[4%] right-[4%] top-[6%] h-[12%] flex items-center gap-3 px-3 rounded-xl bg-white/[0.06] border border-white/10">
               <div className="w-[34%] h-[60%] rounded-md bg-white/10 border border-white/15 flex items-center px-2 text-[11px]">
-                {frame.name ? <span className="text-white">{frame.name}</span> : <span className="text-white/35">Layout name…</span>}
+                {frame.name ? <span className="text-white">{frame.name}</span> : <span className="text-white/50">Layout name…</span>}
               </div>
               <span className="text-[11px] text-white/60">
                 <span className="font-bold text-white">{frame.zones?.length ?? 0}</span> zone{frame.zones?.length === 1 ? "" : "s"}
@@ -2530,12 +2414,18 @@ function Layouts() {
   const [scene, setScene] = useState(0);
   const [frame, setFrame] = useState(0);
   const [pinned, setPinned] = useState(false);
+  // Stepping by hand stops this demo until it is played again
+  const [manual, setManual] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const stageInView = useInView(stageRef, { margin: "-80px" });
 
   const current = LAYOUT_SCENES[scene];
   const step = current.frames[frame];
 
+  const paused = usePaused();
+
   useEffect(() => {
-    if (!isInView) return;
+    if (!stageInView || paused || manual) return;
     const timer = setTimeout(() => {
       if (frame + 1 < current.frames.length) {
         setFrame(frame + 1);
@@ -2545,15 +2435,12 @@ function Layouts() {
       }
     }, step.ms);
     return () => clearTimeout(timer);
-  }, [isInView, frame, scene, pinned, current.frames.length, step.ms]);
+  }, [stageInView, paused, manual, frame, scene, pinned, current.frames.length, step.ms]);
 
   const highlights = [
     { icon: LayoutGrid, title: "14 built-in layouts", text: "Halves, thirds, quarters, 1 + 2, center focus and more, ready to go." },
-    { icon: MousePointerClick, title: "Click to assign", text: "Choose exactly which window goes where, in the order you click them." },
-    { icon: Grid3X3, title: "Draw your own", text: "Place, move and resize zones right on your screen, with the exact size shown." },
     { icon: Undo2, title: "Save what you have", text: "Already arranged your windows by hand? Save Layout Snapshot in the Rapto menu turns it into a layout." },
     { icon: Keyboard, title: "One key per layout", text: "Give any layout its own shortcut in Settings → Shortcuts → Template Shortcuts." },
-    { icon: Layers, title: "Yours to keep", text: "Right-click a custom layout in the picker to rename or delete it." },
   ];
 
   return (
@@ -2565,7 +2452,7 @@ function Layouts() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             className="inline-block mb-4"
           >
-            <MeasurementLine width={60} label="02" />
+            <MeasurementLine width={60} />
           </motion.div>
 
           <motion.h2
@@ -2596,12 +2483,15 @@ function Layouts() {
           {LAYOUT_SCENES.map((s, i) => (
             <button
               key={s.id}
+              type="button"
+              aria-pressed={scene === i}
               onClick={() => {
                 setScene(i);
                 setFrame(0);
                 setPinned(true);
+                setManual(false);
               }}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 min-h-11 sm:min-h-0 rounded-xl text-sm font-medium transition-all duration-300 ${
                 scene === i
                   ? "text-[var(--background)]"
                   : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--card-border)]"
@@ -2613,34 +2503,23 @@ function Layouts() {
           ))}
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col items-center"
+        <DemoStage
+          stageRef={stageRef}
+          visible={isInView}
+          side="left"
+          caption={step.caption}
+          total={current.frames.length}
+          index={frame}
+          manual={manual}
+          onStep={(delta) => {
+            setManual(true);
+            setFrame((f) => (f + delta + current.frames.length) % current.frames.length);
+          }}
+          onToggle={() => setManual((m) => !m)}
+          highlights={highlights}
         >
           <OverlayDemo frame={step} frameKey={`${scene}-${frame}`} />
-          <div className="h-14 mt-5 flex items-start justify-center">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={step.caption}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-                className="text-center text-[var(--foreground-muted)] max-w-xl"
-              >
-                {step.caption}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-          {highlights.map((h, i) => (
-            <FeatureCard key={h.title} icon={h.icon} title={h.title} description={h.text} index={i} />
-          ))}
-        </div>
+        </DemoStage>
       </div>
     </section>
   );
@@ -2673,6 +2552,9 @@ const WS_TINT: Record<SwitcherApp, string> = {
   tradingview: ACCENT,
   telegram: "#2AABEE",
   notes: "#FFB800",
+  mail: "#A855F7",
+  music: "#FF6B6B",
+  files: "#FFB800",
 };
 
 const WS_WORK: WsWindow[] = [
@@ -2912,6 +2794,7 @@ function WorkspacesDemo({ frame, frameKey }: { frame: WsFrame; frameKey: string 
   return (
     <div
       ref={containerRef}
+      aria-hidden
       className="relative w-full max-w-[760px] h-[380px] sm:h-[440px] rounded-2xl overflow-hidden demo-window select-none"
       style={{ background: "linear-gradient(180deg, #15151a 0%, #0a0a0c 100%)" }}
     >
@@ -3009,7 +2892,7 @@ function WorkspacesDemo({ frame, frameKey }: { frame: WsFrame; frameKey: string 
               })}
             </AnimatePresence>
             {frame.windows.length === 0 && (
-              <div className="absolute inset-0 flex items-center justify-center text-sm text-white/30 font-mono">Empty desktop</div>
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-white/50 font-mono">Empty desktop</div>
             )}
           </motion.div>
         </AnimatePresence>
@@ -3126,12 +3009,18 @@ function Workspaces() {
   const [scene, setScene] = useState(0);
   const [frame, setFrame] = useState(0);
   const [pinned, setPinned] = useState(false);
+  // Stepping by hand stops this demo until it is played again
+  const [manual, setManual] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const stageInView = useInView(stageRef, { margin: "-80px" });
 
   const current = WS_SCENES[scene];
   const step = current.frames[frame];
 
+  const paused = usePaused();
+
   useEffect(() => {
-    if (!isInView) return;
+    if (!stageInView || paused || manual) return;
     const timer = setTimeout(() => {
       if (frame + 1 < current.frames.length) {
         setFrame(frame + 1);
@@ -3141,14 +3030,11 @@ function Workspaces() {
       }
     }, step.ms);
     return () => clearTimeout(timer);
-  }, [isInView, frame, scene, pinned, current.frames.length, step.ms]);
+  }, [stageInView, paused, manual, frame, scene, pinned, current.frames.length, step.ms]);
 
   const highlights = [
-    { icon: Briefcase, title: "Save a desktop", text: "Right-click a desktop in the bar and save its apps and where each window goes, under a name you choose." },
     { icon: Zap, title: "Everything comes back", text: "Closed apps start up, minimized windows return, and each one lands in its place. A desktop in a layout keeps that layout." },
-    { icon: Plus, title: "Here or in a new desktop", text: "Open in New Desktop gives a workspace a desktop of its own. On a busy desktop Rapto asks first." },
     { icon: X, title: "Close in one click", text: "Close Workspace closes all of its windows at once, even on another desktop. Unsaved work asks to be saved first." },
-    { icon: Monitor, title: "Every display", text: "A workspace remembers each display. If one isn’t connected, you choose where its apps go." },
     { icon: Layers, title: "Easy to manage", text: "Rename, delete or open workspaces in Settings → Workspaces, the Rapto menu or the desktops bar." },
   ];
 
@@ -3208,12 +3094,15 @@ function Workspaces() {
           {WS_SCENES.map((s, i) => (
             <button
               key={s.id}
+              type="button"
+              aria-pressed={scene === i}
               onClick={() => {
                 setScene(i);
                 setFrame(0);
                 setPinned(true);
+                setManual(false);
               }}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 min-h-11 sm:min-h-0 rounded-xl text-sm font-medium transition-all duration-300 ${
                 scene === i
                   ? "text-[var(--background)]"
                   : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] bg-[var(--card)] hover:bg-[var(--card-border)]"
@@ -3225,34 +3114,23 @@ function Workspaces() {
           ))}
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4 }}
-          className="flex flex-col items-center"
+        <DemoStage
+          stageRef={stageRef}
+          visible={isInView}
+          side="right"
+          caption={step.caption}
+          total={current.frames.length}
+          index={frame}
+          manual={manual}
+          onStep={(delta) => {
+            setManual(true);
+            setFrame((f) => (f + delta + current.frames.length) % current.frames.length);
+          }}
+          onToggle={() => setManual((m) => !m)}
+          highlights={highlights}
         >
           <WorkspacesDemo frame={step} frameKey={`${scene}-${frame}`} />
-          <div className="h-14 mt-5 flex items-start justify-center">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={step.caption}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-                className="text-center text-[var(--foreground-muted)] max-w-xl"
-              >
-                {step.caption}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-          {highlights.map((h, i) => (
-            <FeatureCard key={h.title} icon={h.icon} title={h.title} description={h.text} index={i} />
-          ))}
-        </div>
+        </DemoStage>
 
         <p className="text-center text-sm text-[var(--foreground-muted)] mt-8 max-w-2xl mx-auto">
           Apps that already have windows on another desktop stay where they are. Apps open with their usual window: tabs and documents aren&apos;t reopened
@@ -3263,86 +3141,6 @@ function Workspaces() {
 }
 
 // Mode preview for the monitor mockup
-function ModePreview({ mode, color, small = false }: { mode: string; color: string; small?: boolean }) {
-  const size = small ? 0.7 : 1;
-  
-  if (mode === "auto") {
-    // Auto tiling - windows arranging
-    return (
-      <div className="w-full h-full p-1 flex gap-0.5">
-        <motion.div
-          className="rounded-sm"
-          style={{ backgroundColor: color, width: "50%", height: "100%" }}
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-        <div className="flex flex-col gap-0.5" style={{ width: "50%" }}>
-          <motion.div
-            className="rounded-sm flex-1"
-            style={{ backgroundColor: "#00FFE5" }}
-            animate={{ opacity: [1, 0.6, 1] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
-          />
-          <motion.div
-            className="rounded-sm flex-1"
-            style={{ backgroundColor: "#A855F7" }}
-            animate={{ opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-          />
-              </div>
-            </div>
-    );
-  }
-  
-  if (mode === "manual") {
-    // Manual mode - zones with overlay feel
-    return (
-      <div className="w-full h-full p-1 grid grid-cols-2 gap-0.5">
-        {[0, 1, 2, 3].map((i) => (
-          <motion.div
-            key={i}
-            className="rounded-sm border border-dashed"
-            style={{ borderColor: color }}
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
-          />
-        ))}
-              </div>
-    );
-  }
-  
-  // Drag to snap - window being dragged
-  return (
-    <div className="w-full h-full p-1 relative">
-      <motion.div
-        className="absolute rounded-sm"
-        style={{
-          backgroundColor: color,
-          width: "40%",
-          height: "50%",
-        }}
-        animate={{
-          left: ["10%", "50%", "10%"],
-          top: ["20%", "40%", "20%"],
-        }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute rounded-sm border-2"
-        style={{
-          borderColor: color,
-          width: "48%",
-          height: "100%",
-          right: 0,
-          top: 0,
-        }}
-        animate={{ opacity: [0, 0.5, 0] }}
-        transition={{ duration: 3, repeat: Infinity }}
-      />
-              </div>
-  );
-}
-
 // ============================================
 // FEATURES SECTION
 // ============================================
@@ -3362,7 +3160,7 @@ function Features() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             className="inline-block mb-4"
           >
-            <MeasurementLine width={60} label="03" />
+            <MeasurementLine width={60} />
           </motion.div>
           
           <motion.h2
@@ -3384,6 +3182,10 @@ function Features() {
           </motion.p>
         </motion.div>
 
+        <p className="hidden [@media(hover:hover)]:block text-center text-sm text-[var(--foreground-muted)] -mt-10 mb-8">
+          Point at a card to play its demo
+        </p>
+
         {/* Feature grid - asymmetric */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Window Switcher - wide lead card */}
@@ -3393,6 +3195,7 @@ function Features() {
             description="Type the first letters of an app or window name and jump to it, on any desktop or display"
             index={0}
             wide
+            interactive
           >
             <div className="max-w-md mx-auto">
               <WindowSwitcherDemo />
@@ -3426,6 +3229,7 @@ function Features() {
             title="Window Groups"
             description="Stack windows in one slot, in every mode. Click an icon in the badge to switch, or drag the badge out of the way"
             index={3}
+            interactive
           >
             <WindowGroupsDemo />
           </FeatureCard>
@@ -3576,7 +3380,7 @@ function FAQSection() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             className="inline-block mb-4"
           >
-            <MeasurementLine width={60} label="04" />
+            <MeasurementLine width={60} />
           </motion.div>
 
           <motion.h2
@@ -3680,6 +3484,7 @@ function FAQSection() {
 // DOWNLOAD SECTION
 // ============================================
 function DownloadSection() {
+  const paused = usePaused();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -3692,7 +3497,7 @@ function DownloadSection() {
       <motion.div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
         style={{ background: `radial-gradient(circle, ${ACCENT}30 0%, transparent 60%)`, filter: "blur(80px)" }}
-        animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+        animate={loopOr(paused, { scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] })}
         transition={{ duration: 6, repeat: Infinity }}
       />
 
@@ -3707,13 +3512,13 @@ function DownloadSection() {
         <motion.div
             className="absolute -inset-8 rounded-[40px] border-2"
             style={{ borderColor: `${ACCENT}40` }}
-            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.2, 0.5] }}
+            animate={loopOr(paused, { scale: [1, 1.1, 1], opacity: [0.5, 0.2, 0.5] })}
             transition={{ duration: 3, repeat: Infinity }}
           />
           <motion.div
             className="absolute -inset-16 rounded-[50px] border"
             style={{ borderColor: `${ACCENT}20` }}
-            animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.1, 0.3] }}
+            animate={loopOr(paused, { scale: [1, 1.15, 1], opacity: [0.3, 0.1, 0.3] })}
             transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
           />
           
@@ -3805,6 +3610,29 @@ function DownloadSection() {
 }
 
 // ============================================
+// MID-PAGE DOWNLOAD BAND
+// ============================================
+function DownloadBand() {
+  return (
+    <section className="px-6 pb-8">
+      <div
+        className="max-w-4xl mx-auto rounded-2xl border px-6 py-8 sm:px-10 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left"
+        style={{ borderColor: `${ACCENT}40`, background: `${ACCENT}08` }}
+      >
+        <div className="flex-1">
+          <h2 className="font-display text-2xl font-bold mb-1">Rapto is free</h2>
+          <p className="text-[var(--foreground-muted)]">No trial, subscription, or license key. For macOS 26 and later.</p>
+        </div>
+        <a href="/download" className="btn-primary shrink-0">
+          <Download className="w-5 h-5" />
+          Download for Mac
+        </a>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
 // FOOTER
 // ============================================
 function Footer() {
@@ -3817,7 +3645,7 @@ function Footer() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
         >
-          <Image src="/app-icon.png" alt="Rapto" width={32} height={32} />
+          <Image src="/app-icon.png" alt="" width={32} height={32} />
           <span className="font-display font-semibold text-lg">Rapto</span>
           <span className="text-[var(--foreground-muted)] text-sm">© {new Date().getFullYear()}</span>
         </motion.div>
@@ -3832,7 +3660,7 @@ function Footer() {
             <motion.a
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+              className="py-3 text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
               whileHover={{ y: -2 }}
             >
               {item}
@@ -3840,14 +3668,14 @@ function Footer() {
           ))}
           <motion.a
             href="/docs"
-            className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+            className="py-3 text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
             whileHover={{ y: -2 }}
           >
             Docs
           </motion.a>
           <motion.a
             href="/privacy"
-            className="text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+            className="py-3 text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
             whileHover={{ y: -2 }}
           >
             Privacy
@@ -3877,7 +3705,9 @@ export default function Home() {
   return (
     <MotionConfig reducedMotion="user">
     <main className="overflow-hidden bg-[var(--background)]">
+      <a href="#content" className="skip-link">Skip to content</a>
       <Navigation />
+      <PauseToggle />
       <ScrollProgress />
       <CursorGlow />
       <div className="noise-overlay" />
@@ -3886,6 +3716,7 @@ export default function Home() {
       <OperatingModes />
       <Layouts />
       <Workspaces />
+      <DownloadBand />
       <Features />
       <FAQSection />
       <DownloadSection />
