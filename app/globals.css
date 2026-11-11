@@ -637,6 +637,23 @@ body {
   border: 1px solid rgba(191, 255, 0, 0.2);
 }
 
+/* Docs search: the block a result leads to flashes briefly */
+.docs-search-hit {
+  animation: docs-search-hit 2s ease-out;
+  border-radius: 6px;
+}
+
+@keyframes docs-search-hit {
+  0%, 40% {
+    background: var(--accent-subtle);
+    box-shadow: 0 0 0 6px var(--accent-subtle);
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
 /* ============================================
    RESPONSIVE
    ============================================ */

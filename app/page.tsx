@@ -51,7 +51,6 @@ import {
   Ban,
   Plus,
   Laptop,
-  Sparkles,
   Wifi,
   BatteryFull,
   Search,
@@ -97,6 +96,7 @@ function Navigation() {
     { href: "#workspaces", label: "Workspaces" },
     { href: "#features", label: "Features" },
     { href: "/docs", label: "Docs" },
+    { href: "/changelog", label: "Changelog" },
     { href: "#faq", label: "FAQ" },
   ];
 
@@ -1676,18 +1676,6 @@ function DesktopsBar() {
 
       <div className="max-w-6xl mx-auto relative">
         <motion.div ref={ref} className="text-center mb-14">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            className="inline-flex items-center gap-3 mb-4"
-          >
-            <MeasurementLine width={60} />
-            <span className="tag">
-              <Sparkles className="w-4 h-4" />
-              New in 5.47
-            </span>
-          </motion.div>
-
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -2375,7 +2363,7 @@ function OverlayDemo({ frame, frameKey }: { frame: OverlayFrame; frameKey: strin
               )}
             </AnimatePresence>
             <div className="absolute left-0 right-0 top-[91%] text-center text-[11px] text-white/60">
-              Drag handles to resize • Click + to add zone • Double-click to delete
+              Drag handles to resize • Click + to add zone • Click a zone to resize it • Double-click to delete
             </div>
           </motion.div>
         )}
@@ -3044,18 +3032,6 @@ function Workspaces() {
 
       <div className="max-w-6xl mx-auto relative">
         <motion.div ref={ref} className="text-center mb-14">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            className="inline-flex items-center gap-3 mb-4"
-          >
-            <MeasurementLine width={60} />
-            <span className="tag">
-              <Sparkles className="w-4 h-4" />
-              New in 5.55
-            </span>
-          </motion.div>
-
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -3345,7 +3321,7 @@ function FAQSection() {
     },
     {
       q: "Can I create my own layouts (templates)?",
-      a: "Yes. Open the overlay in Manual mode, press “Custom”, and draw zones visually. You can rename or delete custom templates from the template picker.",
+      a: "Yes. Open the overlay in Manual mode, press “Custom”, and draw zones visually. You can rename or delete custom templates from the template picker. Built-in layouts you don't use can be hidden: point at one in the picker and click Hide.",
     },
     {
       q: "How do I exclude apps or disable hotkeys in some apps?",
@@ -3672,6 +3648,13 @@ function Footer() {
             whileHover={{ y: -2 }}
           >
             Docs
+          </motion.a>
+          <motion.a
+            href="/changelog"
+            className="py-3 text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors"
+            whileHover={{ y: -2 }}
+          >
+            Changelog
           </motion.a>
           <motion.a
             href="/privacy"

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import DocsSearch from "./DocsSearch";
 import {
   ArrowLeft,
   Settings,
@@ -232,6 +233,8 @@ export default function DocsPage() {
           </p>
         </motion.div>
 
+        <DocsSearch />
+
         <div className="flex gap-12">
           <TableOfContents />
 
@@ -452,7 +455,7 @@ export default function DocsPage() {
 
               <h3 className="font-display text-xl font-semibold mb-4">Hotkey Presets</h3>
               <p className="text-[var(--foreground-muted)] mb-4">
-                Rapto offers two built-in presets. Switch between them in Settings → Hotkeys.
+                Rapto offers two built-in presets. Switch between them in Settings → Shortcuts.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="card p-4">
@@ -563,7 +566,7 @@ export default function DocsPage() {
               </p>
 
               <InfoBox type="tip">
-                All shortcuts can be customized in Settings → Hotkeys. You can also disable shortcuts for specific apps using Passthrough Apps.
+                All shortcuts can be customized in Settings → Shortcuts. You can also disable shortcuts for specific apps using Passthrough Apps.
               </InfoBox>
             </Section>
 
@@ -574,7 +577,7 @@ export default function DocsPage() {
               </p>
 
               <h3 className="font-display text-xl font-semibold mb-4">Built-in Templates</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                 {[
                   { name: "Full", desc: "Single window fullscreen" },
                   { name: "Halves Vertical", desc: "Two equal columns" },
@@ -584,7 +587,7 @@ export default function DocsPage() {
                   { name: "1+2 Left", desc: "Large left, two stacked right" },
                   { name: "1+2 Right", desc: "Two stacked left, large right" },
                   { name: "Center Focus", desc: "Centered main window" },
-                  { name: "Center + Sidebars", desc: "Wide center with side columns" },
+                  { name: "Center Wide", desc: "Wide center with narrow side columns" },
                 ].map((template) => (
                   <div key={template.name} className="card p-4">
                     <h4 className="font-semibold mb-1">{template.name}</h4>
@@ -592,17 +595,21 @@ export default function DocsPage() {
                   </div>
                 ))}
               </div>
+              <p className="text-sm text-[var(--foreground-muted)] mb-8">
+                …and 5 more, including 4 Columns, 2+1+2 and Center + Split Sides.
+              </p>
 
               <h3 className="font-display text-xl font-semibold mb-4">Creating Custom Templates</h3>
               <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
                 <li>Open the overlay (press <Shortcut keys={["⌃", "⌥", "G"]} />)</li>
                 <li>Click the &quot;Custom&quot; button in the template picker</li>
                 <li>Draw zones by clicking and dragging on the grid</li>
+                <li>Click a zone you already placed to move or resize it again. Double-click a zone to delete it</li>
                 <li>Name your template and save it</li>
               </ol>
 
               <InfoBox type="info">
-                Custom templates are saved automatically and appear alongside built-in templates. You can rename or delete them from the template picker.
+                Custom templates are saved automatically and appear alongside built-in templates. You can rename or delete them from the template picker. Don&apos;t need a built-in layout? Point at it in the template picker and click <strong>Hide</strong>. Hidden layouts wait at the end of the picker, where <strong>Unhide</strong> brings them back.
               </InfoBox>
             </Section>
 
@@ -661,7 +668,7 @@ export default function DocsPage() {
                     Each monitor can have its own layout template and operating mode. Windows can be moved between monitors using <Shortcut keys={["⌃", "⌥", "⌘", "← / →"]} /> or by dragging.
                   </p>
                   <p className="text-[var(--foreground-muted)]">
-                    Per-monitor settings are saved automatically and restored when you reconnect displays.
+                    Per-monitor settings are saved automatically and restored when you reconnect displays. If you change the screen resolution or the Dock&apos;s size, your windows move to their places on the new size by themselves.
                   </p>
                 </div>
 
@@ -750,7 +757,7 @@ export default function DocsPage() {
                     Exclude specific windows from tiling. They&apos;ll float freely above your tiled layout and stay on top. Toggle with keyboard shortcut <Shortcut keys={["⌃", "⌥", "T"]} />.
                   </p>
                   <p className="text-[var(--foreground-muted)]">
-                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌃"]} /> and double-click any window to toggle floating mode. This feature can be enabled in Settings → Floating Windows.
+                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌃"]} /> and double-click any window to toggle floating mode. This feature can be enabled in Settings → Appearance → Floating Windows.
                   </p>
                 </div>
 
@@ -790,7 +797,7 @@ export default function DocsPage() {
                 <li>• <strong>Passthrough Apps</strong> — Apps where Rapto&apos;s shortcuts are disabled (e.g., games, virtual machines)</li>
               </ul>
 
-              <h3 className="font-display text-xl font-semibold mb-4">Hotkeys</h3>
+              <h3 className="font-display text-xl font-semibold mb-4">Shortcuts</h3>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Preset</strong> — Choose between Rapto Style (arrows) or Vim Style (HJKL)</li>
                 <li>• <strong>Custom Bindings</strong> — Override any shortcut with your preferred key combination. Any key works, including F1–F12 (these can be used on their own, without a modifier) and keypad keys, on any keyboard layout</li>
@@ -808,7 +815,7 @@ export default function DocsPage() {
               <h3 className="font-display text-xl font-semibold mb-4">Appearance</h3>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Highlight Active Window</strong> — Show a colored border around the focused window</li>
-                <li>• <strong>Highlight Color</strong> — Customize the border color</li>
+                <li>• <strong>Border Color</strong> — The color of the border around the focused window. The current desktop in the Desktops Bar is outlined in the same color</li>
                 <li>• <strong>Show Zone Previews</strong> — Display zone outlines when dragging windows</li>
                 <li>• <strong>Group Indicators</strong> — Show/hide indicators for stacked window groups</li>
               </ul>
@@ -896,6 +903,9 @@ export default function DocsPage() {
           <div className="flex items-center gap-6">
             <Link href="/" className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
               Home
+            </Link>
+            <Link href="/changelog" className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
+              Changelog
             </Link>
             <Link href="/privacy" className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
               Privacy
