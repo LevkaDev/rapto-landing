@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.68
+## Version 5.69
 
 ### New
 - 
@@ -10,6 +10,13 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.68
+
+### New
+- Rapto now warns you when a Mac setting gets in its way, and helps you turn it off.
 
 ---
 

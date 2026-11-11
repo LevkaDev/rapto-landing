@@ -273,7 +273,7 @@ export default function DocsPage() {
 
               <h3 className="font-display text-xl font-semibold mb-3">Disable macOS Window Tiling</h3>
               <p className="text-[var(--foreground-muted)] mb-4">
-                macOS Sequoia and later includes built-in window tiling that can conflict with Rapto. We recommend disabling it for the best experience:
+                macOS Sequoia and later includes built-in window tiling that can conflict with Rapto. If it&apos;s on, Rapto tells you during setup and in Settings → General, with a button that opens the right page in System Settings. You can also turn it off yourself:
               </p>
               <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
                 <li>Open <strong>System Settings → Desktop & Dock</strong></li>
@@ -293,14 +293,10 @@ export default function DocsPage() {
                   <Ban className="w-4 h-4 mt-1 shrink-0" style={{ color: "#FFB800" }} />
                   <span className="text-[var(--foreground-muted)]">Hold ⌥ key while dragging windows to tile</span>
                 </li>
-                <li className="flex gap-3">
-                  <Ban className="w-4 h-4 mt-1 shrink-0" style={{ color: "#FFB800" }} />
-                  <span className="text-[var(--foreground-muted)]">Tiled windows have margins</span>
-                </li>
               </ul>
 
               <InfoBox type="warning">
-                If these options remain enabled, macOS and Rapto may fight over window positions, causing unexpected behavior when dragging or snapping windows.
+                If these options stay on, macOS and Rapto may fight over window positions, and dragged windows can jump around. Rapto shows an orange warning in Settings → General until they&apos;re off. Rapto never changes these settings for you.
               </InfoBox>
 
               <h3 className="font-display text-xl font-semibold mb-3">First Launch</h3>
@@ -853,6 +849,13 @@ export default function DocsPage() {
                   <h4 className="font-display font-semibold mb-2">Windows jump around when switching Spaces</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
                     This can happen briefly during Space transitions. If it persists, try disabling Auto Tiling for that Space or increasing the transition delay in advanced settings.
+                  </p>
+                </div>
+
+                <div className="card p-5">
+                  <h4 className="font-display font-semibold mb-2">Windows jump when I drag them</h4>
+                  <p className="text-[var(--foreground-muted)] text-sm">
+                    macOS has its own window tiling that can fight with Rapto. If it&apos;s on, Settings → General shows an orange warning. Click Open Settings… and turn off the switches it lists in System Settings → Desktop &amp; Dock → Windows.
                   </p>
                 </div>
 
