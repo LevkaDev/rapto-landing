@@ -401,6 +401,19 @@ export default function DocsPage() {
                 To keep your desktops in a fixed order, turn off &quot;Automatically rearrange Spaces based on most recent use&quot; in System Settings → Desktop &amp; Dock → Mission Control.
               </InfoBox>
 
+              <h3 className="font-display text-xl font-semibold mb-3 mt-8">Bar Style</h3>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                Choose how the bar looks with <strong>Style</strong> in Settings → Appearance → Desktops Bar:
+              </p>
+              <ul className="space-y-2 text-[var(--foreground-muted)] mb-3">
+                <li>• <strong>Dark</strong> — A dark pill on any wallpaper (the default)</li>
+                <li>• <strong>Glass</strong> — A see-through pill that goes light or dark with the menu bar</li>
+                <li>• <strong>Plain</strong> — No pill. Your desktops look like the other items in the menu bar</li>
+              </ul>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                On a screen with a notch, the bar always uses the Dark style.
+              </p>
+
               <h3 className="font-display text-xl font-semibold mb-3 mt-8">Moving Windows Between Desktops</h3>
               <p className="text-[var(--foreground-muted)] mb-3">
                 Drag an app icon onto another desktop number to move that app&apos;s window there. You stay on the desktop you were on.
@@ -810,6 +823,8 @@ export default function DocsPage() {
 
               <h3 className="font-display text-xl font-semibold mb-4">Appearance</h3>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
+                <li>• <strong>Theme</strong> — System, Light or Dark for the Settings window. System follows your Mac</li>
+                <li>• <strong>Desktops Bar Style</strong> — Dark, Glass or Plain (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
                 <li>• <strong>Highlight Active Window</strong> — Show a colored border around the focused window</li>
                 <li>• <strong>Border Color</strong> — The color of the border around the focused window. The current desktop in the Desktops Bar is outlined in the same color</li>
                 <li>• <strong>Show Zone Previews</strong> — Display zone outlines when dragging windows</li>

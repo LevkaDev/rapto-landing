@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.69
+## Version 5.70
 
 ### New
 - 
@@ -10,6 +10,17 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.69
+
+### New
+- Settings have a new look, with a light and a dark theme. Choose one in Settings → Appearance, or let it follow your Mac.
+- The desktop bar comes in three styles: Dark, Glass and Plain. Glass and Plain go light or dark with the menu bar. Choose one in Settings → Appearance.
+
+### Improvements
+- App icons and numbers in the desktop bar are now as large as the icons in your menu bar.
 
 ---
 
