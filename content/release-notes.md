@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.70
+## Version 5.71
 
 ### New
 - 
@@ -10,6 +10,17 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.70
+
+### New
+- Send the active window to another desktop from the keyboard: to the next or previous one, or straight to desktop 1–9. See the keys in Settings → Shortcuts → Move Window to Desktop.
+- Save all your settings, shortcuts, layouts and workspaces to a file and load them back, on this Mac or another one. Find Export and Import in Settings → General → Settings File.
+
+### Improvements
+- The window switcher shows each window's own title, so windows of the same app are easy to tell apart.
 
 ---
 

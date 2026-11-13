@@ -418,9 +418,12 @@ export default function DocsPage() {
               <p className="text-[var(--foreground-muted)] mb-3">
                 Drag an app icon onto another desktop number to move that app&apos;s window there. You stay on the desktop you were on.
               </p>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                You can also use the keyboard: <Shortcut keys={["⌃", "⌥", "⇧", "← / →"]} /> sends the active window to the previous or next desktop, and <Shortcut keys={["⌃", "⌥", "⇧", "1-9"]} /> sends it straight to that desktop (see <a href="#keyboard" style={{ color: ACCENT }}>Keyboard Shortcuts</a>). It works with desktops on the same display. If there is no such desktop, you hear a beep.
+              </p>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-3">
                 <li>• Hold <Shortcut keys={["⌥"]} /> as you drop the icon to switch to that desktop along with the window.</li>
-                <li>• To make going along the default, turn on <strong>Go With Moved Window</strong> in Settings → General → Menu Bar. Then <Shortcut keys={["⌥"]} /> keeps you where you are.</li>
+                <li>• To make going along the default, turn on <strong>Go With Moved Window</strong> in Settings → General → Menu Bar. Then <Shortcut keys={["⌥"]} /> keeps you where you are. The keyboard shortcuts follow this setting too.</li>
                 <li>• On a Manual desktop, a window that comes back snaps into the slot it had before, or into a free one. The other windows stay where they are.</li>
               </ul>
               <p className="text-[var(--foreground-muted)] mb-6">
@@ -562,6 +565,24 @@ export default function DocsPage() {
                   <Shortcut keys={["⌃", "⌥", "⌘", "→"]} />
                 </div>
               </div>
+
+              <h3 className="font-display text-xl font-semibold mb-4">Move Window to Desktop</h3>
+              <p className="text-[var(--foreground-muted)] mb-4">
+                Send the active window to another desktop on the same display:
+              </p>
+              <div className="space-y-3 mb-4">
+                <div className="flex items-center justify-between py-2 border-b border-[var(--card-border)]">
+                  <span>Move to Previous / Next Desktop</span>
+                  <Shortcut keys={["⌃", "⌥", "⇧", "← / →"]} />
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-[var(--card-border)]">
+                  <span>Move to Desktop 1-9</span>
+                  <Shortcut keys={["⌃", "⌥", "⇧", "1-9"]} />
+                </div>
+              </div>
+              <p className="text-[var(--foreground-muted)] mb-8 text-sm">
+                In Vim Style, previous and next use the same keys, and desktops 1-9 are <Shortcut keys={["⌃", "⌥", "1-9"]} />. Change them in Settings → Shortcuts → Move Window to Desktop.
+              </p>
 
               <h3 className="font-display text-xl font-semibold mb-4">Mode Switching</h3>
               <div className="space-y-3 mb-8">
@@ -795,9 +816,10 @@ export default function DocsPage() {
                 <li>• <strong>Desktops Bar</strong> — Show your desktops and their apps in the menu bar</li>
                 <li>• <strong>Show Desktops Bar</strong> — Automatic, Always or On Hover (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
                 <li>• <strong>Menu Bar Icon</strong> — Show the Rapto icon while the Desktops Bar is on</li>
-                <li>• <strong>Go With Moved Window</strong> — Go to the desktop you drag an app to. Hold Option to do the opposite</li>
+                <li>• <strong>Go With Moved Window</strong> — Go to the desktop you move a window to, by dragging or with a shortcut. Hold Option while dragging to do the opposite</li>
                 <li>• <strong>Window Gap</strong> — Space between tiled windows (0-20 pixels)</li>
                 <li>• <strong>Screen Edge Gap</strong> — Space from screen edges (0-20 pixels)</li>
+                <li>• <strong>Settings File</strong> — <strong>Export…</strong> saves your settings, shortcuts, layouts and workspaces to one file. <strong>Import…</strong> loads them back, on this Mac or another one, and restarts Rapto. Your current settings are kept as a backup, which <strong>Show Backups</strong> opens. On another Mac, choose a layout for each desktop after the import</li>
               </ul>
 
               <h3 className="font-display text-xl font-semibold mb-4">Apps</h3>
