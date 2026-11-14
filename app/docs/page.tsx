@@ -271,9 +271,9 @@ export default function DocsPage() {
                 When prompted, grant the permissions and restart Rapto if needed. You can always manage permissions in System Settings → Privacy & Security.
               </InfoBox>
 
-              <h3 className="font-display text-xl font-semibold mb-3">Disable macOS Window Tiling</h3>
+              <h3 className="font-display text-xl font-semibold mb-3">Disable macOS Window Tiling and Stage Manager</h3>
               <p className="text-[var(--foreground-muted)] mb-4">
-                macOS Sequoia and later includes built-in window tiling that can conflict with Rapto. If it&apos;s on, Rapto tells you during setup and in Settings → General, with a button that opens the right page in System Settings. You can also turn it off yourself:
+                macOS Sequoia and later includes built-in window tiling, and macOS also has Stage Manager. Both can conflict with Rapto. If either is on, Rapto tells you during setup and in Settings → General, with a button that opens the right page in System Settings. You can also turn them off yourself:
               </p>
               <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
                 <li>Open <strong>System Settings → Desktop & Dock</strong></li>
@@ -294,6 +294,9 @@ export default function DocsPage() {
                   <span className="text-[var(--foreground-muted)]">Hold ⌥ key while dragging windows to tile</span>
                 </li>
               </ul>
+              <p className="text-[var(--foreground-muted)] mb-4">
+                Also turn off <strong>Stage Manager</strong> in System Settings → Desktop &amp; Dock → Desktop &amp; Stage Manager.
+              </p>
 
               <InfoBox type="warning">
                 If these options stay on, macOS and Rapto may fight over window positions, and dragged windows can jump around. Rapto shows an orange warning in Settings → General until they&apos;re off. Rapto never changes these settings for you.
@@ -302,6 +305,9 @@ export default function DocsPage() {
               <h3 className="font-display text-xl font-semibold mb-3">First Launch</h3>
               <p className="text-[var(--foreground-muted)]">
                 After launching, you&apos;ll see the Rapto icon in your menu bar. Click it to access settings, change modes, or select templates. Press <Shortcut keys={["⌃", "⌥", "G"]} /> to open the overlay and start organizing your windows.
+              </p>
+              <p className="text-[var(--foreground-muted)] mt-4">
+                During setup you choose how you like to arrange windows: Drag to Snap, Manual or Auto-tiling. If you pick Auto-tiling, you also choose how many windows to keep on screen (2–8). Rapto recommends 4 for laptops and regular monitors, and 5 for wide displays. You can change it anytime in Settings.
               </p>
             </Section>
 
@@ -319,7 +325,7 @@ export default function DocsPage() {
                     <h4 className="font-display text-lg font-semibold">Manual Mode</h4>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Pick a layout or create your own, and Rapto does the rest. Choose a layout from the menu bar or the Desktops Bar, or draw one in the overlay, and your windows move into its slots. Want a window in a different slot? Drag it onto another window to swap them, drop it into an empty slot, or use the Swap hotkeys.
+                    Pick a layout or create your own, and Rapto does the rest. Choose a layout from the menu bar or the Desktops Bar, or draw one in the overlay, and your windows move into its slots. Want a window in a different slot? Drag it onto another window to group them, or hold Control to swap them (see Window Swap). You can also drop it into an empty slot or use the Swap hotkeys.
                   </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> People who want to choose or design the layout themselves and let Rapto do the arranging.
@@ -334,6 +340,9 @@ export default function DocsPage() {
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-3">
                     Windows automatically arrange themselves as you open or close them. The layout adapts based on how many windows you have. You can set the maximum number of tiled windows (2-8). When there are more windows than that, the extra ones stack into a group: a window joins the slot of its own app, or the last slot if its app has none.
+                  </p>
+                  <p className="text-[var(--foreground-muted)] mb-3">
+                    Windows keep their place. When a window opens or closes, the others move as little as possible, and a new window takes the free spot right away. To rearrange, drag a window onto another one and they swap places. If you drop a window anywhere else, it goes back to its slot. If you resize windows by hand, Rapto keeps those sizes until the number of windows changes.
                   </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> Users who want hands-off window management, similar to i3 or yabai.
@@ -423,7 +432,7 @@ export default function DocsPage() {
               </p>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-3">
                 <li>• Hold <Shortcut keys={["⌥"]} /> as you drop the icon to switch to that desktop along with the window.</li>
-                <li>• To make going along the default, turn on <strong>Go With Moved Window</strong> in Settings → General → Menu Bar. Then <Shortcut keys={["⌥"]} /> keeps you where you are. The keyboard shortcuts follow this setting too.</li>
+                <li>• To make going along the default, turn on <strong>Go With Moved Window</strong> in Settings → General → Menu Bar. Then <Shortcut keys={["⌥"]} /> keeps you where you are. The keyboard shortcuts follow this setting too, even when the Desktops Bar is hidden.</li>
                 <li>• On a Manual desktop, a window that comes back snaps into the slot it had before, or into a free one. The other windows stay where they are.</li>
               </ul>
               <p className="text-[var(--foreground-muted)] mb-6">
@@ -729,7 +738,7 @@ export default function DocsPage() {
                     <h3 className="font-display text-xl font-semibold">Window Swap</h3>
                   </div>
                   <p className="text-[var(--foreground-muted)]">
-                    Instantly swap the positions of two windows. Use the keyboard shortcut or drag one window onto another while holding a modifier key.
+                    Instantly swap the positions of two windows. Use the keyboard shortcut, or drag one window onto another while holding Control. In Settings → General you can make dragging swap without a key; then hold Shift to group instead. In Auto Tiling, just drop one window onto another.
                   </p>
                 </div>
 
@@ -784,7 +793,7 @@ export default function DocsPage() {
                     <h3 className="font-display text-xl font-semibold">Floating Windows</h3>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-2">
-                    Exclude specific windows from tiling. They&apos;ll float freely above your tiled layout and stay on top. Toggle with keyboard shortcut <Shortcut keys={["⌃", "⌥", "T"]} />.
+                    Exclude specific windows from tiling. They&apos;ll float freely above your tiled layout and stay on top. Toggle with keyboard shortcut <Shortcut keys={["⌃", "⌥", "T"]} />. In Auto Tiling, the slot of a floating window stays empty until a new window takes it. Turn floating off and the window goes back to its old slot if it&apos;s still free.
                   </p>
                   <p className="text-[var(--foreground-muted)]">
                     <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌃"]} /> and double-click any window to toggle floating mode. This feature can be enabled in Settings → Appearance → Floating Windows.
@@ -885,14 +894,14 @@ export default function DocsPage() {
                 <div className="card p-5">
                   <h4 className="font-display font-semibold mb-2">Windows jump around when switching Spaces</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
-                    This can happen briefly during Space transitions. If it persists, try disabling Auto Tiling for that Space or increasing the transition delay in advanced settings.
+                    This can happen briefly during Space transitions. If it persists, try disabling Auto Tiling for that Space.
                   </p>
                 </div>
 
                 <div className="card p-5">
                   <h4 className="font-display font-semibold mb-2">Windows jump when I drag them</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
-                    macOS has its own window tiling that can fight with Rapto. If it&apos;s on, Settings → General shows an orange warning. Click Open Settings… and turn off the switches it lists in System Settings → Desktop &amp; Dock → Windows.
+                    macOS window tiling and Stage Manager can fight with Rapto. If either is on, Settings → General shows an orange warning. Click Open Settings… and turn off the switches it lists in System Settings → Desktop &amp; Dock → Windows, and Stage Manager in Desktop &amp; Stage Manager.
                   </p>
                 </div>
 

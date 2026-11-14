@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.71
+## Version 5.72
 
 ### New
 - 
@@ -10,6 +10,21 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.71
+
+### New
+- When you choose Auto Tiling during setup, you pick how many windows to keep on screen, with a recommendation for your display.
+
+### Improvements
+- Auto Tiling has been reworked: it's faster and more stable. Windows keep their place, take their spot right away and no longer jump around.
+- Rapto now also lets you know when Stage Manager is on, and helps you turn it off.
+- You can turn Go With Moved Window on or off even when the desktop bar is hidden. It also works for the shortcuts that send a window to another desktop.
+
+### Fixes
+- A window you drag and let go always goes back to its slot, even right after swapping windows.
 
 ---
 
