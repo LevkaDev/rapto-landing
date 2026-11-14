@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.72
+## Version 5.73
 
 ### New
 - 
@@ -10,6 +10,24 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.72
+
+### New
+- In Drag to Snap without a chosen layout, a panel with small layouts appears at the top of the screen as soon as you start dragging a window. Drop the window on any part of a layout to put it there. Screen edges work as before; hold Option to move the window freely.
+
+### Improvements
+- Focus mode is now Option + double-click and floating is Option + Command + double-click, so they no longer clash with Shift-click and Control-click in your apps. If you picked your own keys in Settings, they stay.
+- Clearer choices for when the desktops bar shows: Always On, Auto-Hide (hidden on every screen until you point at the menu bar) and Notched Screens (hidden only on screens with a notch).
+- In Auto Tiling, when you float a window, the other windows fill its space right away. When it comes back and no other window was opened or closed meanwhile, every window returns to where it was.
+- In Auto Tiling, opening or closing a window ends focus mode and puts the focused window back in its spot. Switching desktops and coming back keeps everything as you left it.
+
+### Fixes
+- In Auto Tiling, a floating window no longer resets the window sizes you set when you come back to a desktop.
+- In Auto Tiling, a window you double-click into focus mode stays there instead of going straight back to its spot.
+- A floating window is no longer pulled into the layout when you come back to a desktop.
 
 ---
 

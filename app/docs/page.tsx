@@ -368,10 +368,13 @@ export default function DocsPage() {
                     <li>• <strong>Bottom edge</strong> — the left, center or right third, depending on where you drop</li>
                   </ul>
                   <p className="text-[var(--foreground-muted)] mb-3">
+                    As soon as you start dragging, a panel with small layouts appears at the top of the screen: halves side by side, halves top and bottom, thirds, two thirds and one third (both ways), quarters, a half with two quarters, and full screen. Drop the window on any part of a layout to put it there.
+                  </p>
+                  <p className="text-[var(--foreground-muted)] mb-3">
                     <strong>With a layout</strong>, its zones work as in Manual mode: all zones show up while you drag, and the window goes into the zone under the pointer, anywhere on the screen.
                   </p>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Hold <Shortcut keys={["⌥"]} /> while dragging to move the window freely without snapping, with Standard Zones and with a layout.
+                    Hold <Shortcut keys={["⌥"]} /> while dragging to move the window freely without snapping, with Standard Zones and with a layout. With Standard Zones, the layout panel hides too.
                   </p>
                   <p className="text-[var(--foreground-muted)] mb-3">
                     Drop a window into a zone that already has a snapped window, and they become a group with a badge, just like in Manual mode. Resize one window of the group and the others take the same size. Drag a snapped window away and it gets back its previous size.
@@ -457,9 +460,9 @@ export default function DocsPage() {
                 On a screen with a notch, the bar stays hidden. Point at the notch and it drops down below it. Move away and it hides again. It also shows for a moment when you switch desktops. Choose how it appears with <strong>Show Desktops Bar</strong> in Settings → General → Menu Bar:
               </p>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
-                <li>• <strong>Automatic</strong> — Appears when you point at the notch on screens with a notch, always shown on other screens</li>
-                <li>• <strong>Always</strong> — Always shown. On screens with a notch it sits just below the menu bar</li>
-                <li>• <strong>On Hover</strong> — Appears when you point at the middle of the menu bar or the notch, on every screen</li>
+                <li>• <strong>Always On</strong> — Always shown. On screens with a notch it sits just below the menu bar</li>
+                <li>• <strong>Auto-Hide</strong> — Hidden on every screen until you point at the middle of the menu bar or the notch</li>
+                <li>• <strong>Notched Screens</strong> (the default) — Hidden on screens with a notch until you point at the notch, always shown on other screens</li>
               </ul>
 
               <h3 className="font-display text-xl font-semibold mb-3">Multiple Monitors</h3>
@@ -751,8 +754,11 @@ export default function DocsPage() {
                   <p className="text-[var(--foreground-muted)] mb-2">
                     Temporarily expand any window to fullscreen (or a custom focus zone) with a single shortcut. Press again to return to the original position.
                   </p>
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    In Auto Tiling, opening or closing a window ends focus mode and puts the window back in its spot. Switching desktops and coming back keeps it as you left it.
+                  </p>
                   <p className="text-[var(--foreground-muted)]">
-                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⇧"]} /> and double-click any window to toggle focus mode. The modifier key can be changed in Settings.
+                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌥"]} /> and double-click any window to toggle focus mode. The modifier key can be changed in Settings.
                   </p>
                 </div>
 
@@ -793,10 +799,10 @@ export default function DocsPage() {
                     <h3 className="font-display text-xl font-semibold">Floating Windows</h3>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-2">
-                    Exclude specific windows from tiling. They&apos;ll float freely above your tiled layout and stay on top. Toggle with keyboard shortcut <Shortcut keys={["⌃", "⌥", "T"]} />. In Auto Tiling, the slot of a floating window stays empty until a new window takes it. Turn floating off and the window goes back to its old slot if it&apos;s still free.
+                    Exclude specific windows from tiling. They&apos;ll float freely above your tiled layout and stay on top. Toggle with keyboard shortcut <Shortcut keys={["⌃", "⌥", "T"]} />. In Auto Tiling, the other windows fill its space right away. Turn floating off and, if no window was opened or closed in the meantime, every window goes back to where it was.
                   </p>
                   <p className="text-[var(--foreground-muted)]">
-                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌃"]} /> and double-click any window to toggle floating mode. This feature can be enabled in Settings → Appearance → Floating Windows.
+                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌥", "⌘"]} /> and double-click any window to toggle floating mode. This feature can be enabled in Settings → Appearance → Floating Windows.
                   </p>
                 </div>
 
@@ -823,7 +829,7 @@ export default function DocsPage() {
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Launch at Login</strong> — Start Rapto automatically when you log in</li>
                 <li>• <strong>Desktops Bar</strong> — Show your desktops and their apps in the menu bar</li>
-                <li>• <strong>Show Desktops Bar</strong> — Automatic, Always or On Hover (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
+                <li>• <strong>Show Desktops Bar</strong> — Always On, Auto-Hide or Notched Screens (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
                 <li>• <strong>Menu Bar Icon</strong> — Show the Rapto icon while the Desktops Bar is on</li>
                 <li>• <strong>Go With Moved Window</strong> — Go to the desktop you move a window to, by dragging or with a shortcut. Hold Option while dragging to do the opposite</li>
                 <li>• <strong>Window Gap</strong> — Space between tiled windows (0-20 pixels)</li>
@@ -848,8 +854,8 @@ export default function DocsPage() {
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Focus Mode</strong> — Enable/disable the focus window feature</li>
                 <li>• <strong>Focus Zone</strong> — Set a custom zone for focused windows (instead of fullscreen)</li>
-                <li>• <strong>Double-Tap Modifier</strong> — Choose modifier key for mouse double-tap activation (Shift by default)</li>
-                <li>• <strong>Floating Double-Tap</strong> — Enable Control+double-tap to toggle floating windows</li>
+                <li>• <strong>Double-Tap Modifier</strong> — Choose modifier key for mouse double-tap activation (Option by default)</li>
+                <li>• <strong>Floating Double-Tap</strong> — Enable Option+Command+double-tap to toggle floating windows. The key can be changed</li>
               </ul>
 
               <h3 className="font-display text-xl font-semibold mb-4">Appearance</h3>
@@ -908,7 +914,7 @@ export default function DocsPage() {
                 <div className="card p-5">
                   <h4 className="font-display font-semibold mb-2">The Desktops Bar doesn&apos;t appear</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
-                    Check that it&apos;s on in Settings → General → Menu Bar and that &quot;Displays have separate Spaces&quot; is on in System Settings → Desktop &amp; Dock. On a MacBook with a notch, point at the notch, or set Show Desktops Bar to Always.
+                    Check that it&apos;s on in Settings → General → Menu Bar and that &quot;Displays have separate Spaces&quot; is on in System Settings → Desktop &amp; Dock. On a MacBook with a notch, point at the notch, or set Show Desktops Bar to Always On.
                   </p>
                 </div>
 

@@ -1781,9 +1781,9 @@ function OperatingModes() {
       id: "drag",
       title: "Drag to Snap",
       subtitle: "Intuitive drag and drop",
-      description: "Drag windows to screen edges, or into the zones of your own layout. Preview appears before you release. Drop windows into one zone to group them.",
+      description: "Drag windows to screen edges, onto the layout panel at the top of the screen, or into the zones of your own layout. Preview appears before you release. Drop windows into one zone to group them.",
       color: "#A855F7",
-      features: ["Edge snapping", "Layout zones", "Window groups"],
+      features: ["Edge snapping", "Layout panel while dragging", "Layout zones", "Window groups"],
     },
   ];
 
@@ -3309,7 +3309,7 @@ function FAQSection() {
     },
     {
       q: "How does the desktops bar work on a MacBook with a notch, or with several monitors?",
-      a: "On a screen with a notch the bar hides and drops down below the notch when you point at it. Choose Automatic, Always or On Hover in Settings → General → Menu Bar. With several monitors, each display gets its own bar with its own desktops, as long as “Displays have separate Spaces” is on in System Settings → Desktop & Dock.",
+      a: "On a screen with a notch the bar hides and drops down below the notch when you point at it. Choose Always On, Auto-Hide or Notched Screens in Settings → General → Menu Bar. With several monitors, each display gets its own bar with its own desktops, as long as “Displays have separate Spaces” is on in System Settings → Desktop & Dock.",
     },
     {
       q: "Why did my desktops change their order?",
@@ -3317,7 +3317,7 @@ function FAQSection() {
     },
     {
       q: "What’s the difference between Manual, Auto-tiling, and Drag to Snap?",
-      a: "In Manual you pick a layout or create your own, and Rapto places the windows into it. In Auto-tiling Rapto also picks the layout, and rearranges windows as they open and close. Drag to Snap lets you drag a window to an edge, or into a zone of the layout you chose for it, with a preview before it snaps.",
+      a: "In Manual you pick a layout or create your own, and Rapto places the windows into it. In Auto-tiling Rapto also picks the layout, and rearranges windows as they open and close. Drag to Snap lets you drag a window to an edge or onto a small layout in the panel at the top of the screen, or into a zone of the layout you chose for it, with a preview before it snaps.",
     },
     {
       q: "Can I create my own layouts (templates)?",

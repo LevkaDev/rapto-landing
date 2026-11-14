@@ -182,6 +182,8 @@ type SceneFrame = {
   zones?: Box[];
   hot?: number;
   preview?: Box;
+  /** The layout panel shown at the top while a window is dragged; `hot` is [layout, tile] */
+  picker?: { hot?: [number, number] };
   cursor?: [number, number];
   press?: boolean;
   note: string;
@@ -234,14 +236,38 @@ const MANUAL_SCENE: SceneFrame[] = [
 const DRAG_A: Box = { x: 26, y: 16, w: 44, h: 52 };
 const DRAG_B: Box = { x: 50, y: 40, w: 40, h: 48 };
 
+// Layout panel, in % of the stage. The stage is 16:10, so a 16:10 thumbnail is as tall in % as it is wide.
+const PICKER_LAYOUTS: Box[][] = [
+  [{ x: 0, y: 0, w: 50, h: 100 }, { x: 50, y: 0, w: 50, h: 100 }],
+  [{ x: 0, y: 0, w: 100, h: 50 }, { x: 0, y: 50, w: 100, h: 50 }],
+  [{ x: 0, y: 0, w: 100 / 3, h: 100 }, { x: 100 / 3, y: 0, w: 100 / 3, h: 100 }, { x: 200 / 3, y: 0, w: 100 / 3, h: 100 }],
+  [{ x: 0, y: 0, w: 200 / 3, h: 100 }, { x: 200 / 3, y: 0, w: 100 / 3, h: 100 }],
+  [{ x: 0, y: 0, w: 50, h: 50 }, { x: 50, y: 0, w: 50, h: 50 }, { x: 0, y: 50, w: 50, h: 50 }, { x: 50, y: 50, w: 50, h: 50 }],
+  [{ x: 0, y: 0, w: 100, h: 100 }],
+];
+const PICKER = { x: 14, y: 4, padX: 1.5, padY: 2.4, gap: 1.5, thumb: 10.25 };
+const PICKER_W = PICKER.padX * 2 + PICKER_LAYOUTS.length * PICKER.thumb + (PICKER_LAYOUTS.length - 1) * PICKER.gap;
+const PICKER_H = PICKER.padY * 2 + PICKER.thumb;
+
+/** Centre of a tile of the layout panel, for the pointer */
+const pickerTile = (layout: number, tile: number): [number, number] => {
+  const t = PICKER_LAYOUTS[layout][tile];
+  const left = PICKER.x + PICKER.padX + layout * (PICKER.thumb + PICKER.gap);
+  const top = PICKER.y + PICKER.padY;
+  return [left + ((t.x + t.w / 2) / 100) * PICKER.thumb, top + ((t.y + t.h / 2) / 100) * PICKER.thumb];
+};
+
+const HALF_RIGHT_TILE = pickerTile(0, 1);
+
 const DRAG_SCENE: SceneFrame[] = [
   { wins: [win("a", ACCENT, DRAG_A), win("b", VIOLET, DRAG_B)], cursor: [50, 92], note: "Drag a window to a screen edge", ms: 1100 },
-  { wins: [win("a", ACCENT, DRAG_A), win("b", VIOLET, DRAG_B)], cursor: [48, 21], note: "Drag a window to a screen edge", ms: 750 },
-  { wins: [win("b", VIOLET, DRAG_B), win("a", ACCENT, { x: 0, y: 14, w: 44, h: 52 }, { lift: true })], preview: LEFT, cursor: [22, 19], press: true, note: "A preview shows where it will land", ms: 1300 },
-  { wins: [win("b", VIOLET, DRAG_B), win("a", ACCENT, LEFT)], cursor: [22, 19], note: "Let go and it snaps into place", ms: 1300 },
-  { wins: [win("a", ACCENT, LEFT), win("b", VIOLET, DRAG_B)], cursor: [70, 45], note: "Let go and it snaps into place", ms: 750 },
-  { wins: [win("a", ACCENT, LEFT), win("b", VIOLET, { x: 58, y: 34, w: 40, h: 48 }, { lift: true })], preview: RIGHT, cursor: [78, 39], press: true, note: "A preview shows where it will land", ms: 1300 },
-  { wins: [win("a", ACCENT, LEFT), win("b", VIOLET, RIGHT)], cursor: [78, 39], note: "Two drags, two halves", ms: 1900 },
+  { wins: [win("a", ACCENT, DRAG_A), win("b", VIOLET, DRAG_B)], cursor: [48, 18], note: "Drag a window to a screen edge", ms: 750 },
+  { wins: [win("b", VIOLET, DRAG_B), win("a", ACCENT, { x: 0, y: 40, w: 44, h: 52 }, { lift: true })], picker: {}, preview: LEFT, cursor: [3, 42], press: true, note: "A preview shows where it will land", ms: 1300 },
+  { wins: [win("b", VIOLET, DRAG_B), win("a", ACCENT, LEFT)], cursor: [3, 42], note: "Let go and it snaps into place", ms: 1200 },
+  { wins: [win("a", ACCENT, LEFT), win("b", VIOLET, DRAG_B)], cursor: [70, 42], note: "Or drop it on a layout at the top", ms: 800 },
+  { wins: [win("a", ACCENT, LEFT), win("b", VIOLET, DRAG_B, { lift: true })], picker: {}, cursor: [70, 42], press: true, note: "A panel of layouts appears as you drag", ms: 900 },
+  { wins: [win("a", ACCENT, LEFT), win("b", VIOLET, { x: HALF_RIGHT_TILE[0] - 20, y: HALF_RIGHT_TILE[1] - 2, w: 40, h: 48 }, { lift: true })], picker: { hot: [0, 1] }, preview: RIGHT, cursor: HALF_RIGHT_TILE, press: true, note: "Drop it on a tile and it takes that spot", ms: 1400 },
+  { wins: [win("a", ACCENT, LEFT), win("b", VIOLET, RIGHT)], cursor: HALF_RIGHT_TILE, note: "Drop it on a tile and it takes that spot", ms: 1900 },
 ];
 
 const MODE_SCENES: Record<string, SceneFrame[]> = { auto: AUTO_SCENE, manual: MANUAL_SCENE, drag: DRAG_SCENE };
@@ -362,6 +388,58 @@ export function ModeScenario({ mode, color, onLoop }: { mode: string; color: str
               </div>
             </motion.div>
           ))}
+        </AnimatePresence>
+
+        {/* Layout panel */}
+        <AnimatePresence>
+          {frame.picker && (
+            <motion.div
+              key="picker"
+              className="absolute z-40 rounded-lg border border-white/15"
+              style={{
+                left: `${PICKER.x}%`,
+                top: `${PICKER.y}%`,
+                width: `${PICKER_W}%`,
+                height: `${PICKER_H}%`,
+                background: "rgba(22,22,26,0.92)",
+                boxShadow: "0 10px 24px rgba(0,0,0,0.55)",
+              }}
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2 }}
+            >
+              {PICKER_LAYOUTS.map((tiles, layout) => (
+                <div
+                  key={layout}
+                  className="absolute"
+                  style={{
+                    left: `${((PICKER.padX + layout * (PICKER.thumb + PICKER.gap)) / PICKER_W) * 100}%`,
+                    top: `${(PICKER.padY / PICKER_H) * 100}%`,
+                    width: `${(PICKER.thumb / PICKER_W) * 100}%`,
+                    height: `${(PICKER.thumb / PICKER_H) * 100}%`,
+                  }}
+                >
+                  {tiles.map((t, tile) => {
+                    const hot = frame.picker?.hot?.[0] === layout && frame.picker?.hot?.[1] === tile;
+                    return (
+                      <div
+                        key={tile}
+                        className="absolute rounded-[2px] transition-colors duration-150"
+                        style={{
+                          left: `calc(${t.x}% + 1px)`,
+                          top: `calc(${t.y}% + 1px)`,
+                          width: `calc(${t.w}% - 2px)`,
+                          height: `calc(${t.h}% - 2px)`,
+                          background: hot ? color : "rgba(255,255,255,0.2)",
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </motion.div>
+          )}
         </AnimatePresence>
 
         {/* Pointer */}
