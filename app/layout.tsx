@@ -51,10 +51,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* Umami Analytics - privacy-friendly, no cookies */}
+        {/* Umami Analytics - privacy-friendly, no cookies. Proxied through /s (app/s) so blockers don't drop it */}
         <Script
           defer
-          src="https://cloud.umami.is/script.js"
+          src="/s/v.js"
+          data-host-url="/s"
           data-website-id="c968e5a0-15f4-4e66-bf81-8b8af46c7c89"
           strategy="afterInteractive"
         />
