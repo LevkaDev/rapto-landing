@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 
 const ACCENT = "#BFFF00";
-// Site download buttons must link to /download, not to the DMG, so Plausible counts each download as a pageview
+// Site download buttons must link to /download, not to the DMG, so analytics counts each download as a pageview
 const DMG_URL = "https://github.com/LevkaDev/rapto-releases/releases/latest/download/Rapto.dmg";
 const START_DELAY_MS = 800;
 

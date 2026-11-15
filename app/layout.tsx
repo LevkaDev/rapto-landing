@@ -51,11 +51,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* Plausible Analytics - privacy-friendly, no cookies */}
+        {/* Umami Analytics - privacy-friendly, no cookies */}
         <Script
           defer
-          data-domain="rapto.app"
-          src="https://plausible.io/js/script.js"
+          src="https://cloud.umami.is/script.js"
+          data-website-id="c968e5a0-15f4-4e66-bf81-8b8af46c7c89"
           strategy="afterInteractive"
         />
       </head>

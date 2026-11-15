@@ -100,7 +100,7 @@ export default function PrivacyPage() {
 
           <Section icon={Globe} title="This Website">
             <p>
-              rapto.app uses Plausible Analytics to count visits and downloads. Plausible uses no cookies and collects no personal data, and visitors can&rsquo;t be identified or tracked across other websites. The site is hosted on Cloudflare, which may keep standard technical logs to deliver and protect the site.
+              rapto.app uses Umami Analytics to count visits and downloads. Umami uses no cookies and collects no personal data, and visitors can&rsquo;t be identified or tracked across other websites. The site is hosted on Cloudflare, which may keep standard technical logs to deliver and protect the site.
             </p>
           </Section>
 
