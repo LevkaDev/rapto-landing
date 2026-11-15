@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.74
+## Version 5.75
 
 ### New
 - 
@@ -10,6 +10,14 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.74
+
+### Improvements
+- Smoother window resizing: neighbouring windows follow along as you drag, and the layout stays steady.
+- The active window border now hides while you resize a window and comes back when you let go.
 
 ---
 

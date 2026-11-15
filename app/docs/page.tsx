@@ -862,7 +862,7 @@ export default function DocsPage() {
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Theme</strong> — System, Light or Dark for the Settings window. System follows your Mac</li>
                 <li>• <strong>Desktops Bar Style</strong> — Dark, Glass or Plain (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
-                <li>• <strong>Highlight Active Window</strong> — Show a colored border around the focused window</li>
+                <li>• <strong>Highlight Active Window</strong> — Show a colored border around the focused window. The border hides while you resize a window and comes back when you let go</li>
                 <li>• <strong>Border Color</strong> — The color of the border around the focused window. The current desktop in the Desktops Bar is outlined in the same color</li>
                 <li>• <strong>Show Zone Previews</strong> — Display zone outlines when dragging windows</li>
                 <li>• <strong>Group Indicators</strong> — Show/hide indicators for stacked window groups</li>
