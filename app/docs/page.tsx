@@ -339,10 +339,10 @@ export default function DocsPage() {
                     <h4 className="font-display text-lg font-semibold">Auto Tiling</h4>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Windows automatically arrange themselves as you open or close them. The layout adapts based on how many windows you have. You can set the maximum number of tiled windows (2-8). When there are more windows than that, the extra ones stack into a group: a window joins the slot of its own app, or the last slot if its app has none.
+                    Windows automatically arrange themselves as you open or close them. The layout adapts based on how many windows you have. You can set the maximum number of tiled windows (2-8). When there are more windows than that, the extra ones stack into a group: a window joins the slot of its own app, or the last slot if its app has none. Settings windows and small pop-ups of your apps stay out of the layout.
                   </p>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Windows keep their place. When a window opens or closes, the others move as little as possible, and a new window takes the free spot right away. To rearrange, drag a window onto another one and they swap places. If you drop a window anywhere else, it goes back to its slot. If you resize windows by hand, Rapto keeps those sizes until the number of windows changes.
+                    Windows keep their place. When a window opens or closes, the others move as little as possible, and a new window takes the free spot right away. If the new window switches to a layout with one large slot, like one large and two small, or a large center among four, the new window takes the large slot and the others move to the smaller ones. To rearrange, drag a window onto another one and they swap places. If you drop a window anywhere else, it goes back to its slot. If you resize windows by hand, Rapto keeps those sizes until the number of windows changes.
                   </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> Users who want hands-off window management, similar to i3 or yabai.

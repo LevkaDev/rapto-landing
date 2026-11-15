@@ -212,9 +212,9 @@ const win = (id: string, color: string, box: Box, extra: Partial<SceneWindow> = 
 const AUTO_SCENE: SceneFrame[] = [
   { wins: [win("a", ACCENT, FULL)], note: "One window takes the whole screen", ms: 1400 },
   { wins: [win("a", ACCENT, LEFT), win("b", CYAN, RIGHT)], note: "Open another and they split it", ms: 1500 },
-  { wins: [win("a", ACCENT, MAIN), win("b", CYAN, SIDE_TOP), win("c", VIOLET, SIDE_BOTTOM)], note: "A third one joins on the side", ms: 1500 },
-  { wins: [win("a", ACCENT, Q[0]), win("b", CYAN, Q[1]), win("c", VIOLET, Q[2]), win("d", AMBER, Q[3])], note: "A fourth, and the layout changes again", ms: 1600 },
-  { wins: [win("a", ACCENT, MAIN), win("b", CYAN, SIDE_TOP), win("c", VIOLET, SIDE_BOTTOM)], note: "Close one and the rest fill the gap", ms: 1900 },
+  { wins: [win("a", ACCENT, SIDE_TOP), win("b", CYAN, SIDE_BOTTOM), win("c", VIOLET, MAIN)], note: "A third one opens in the big spot", ms: 1500 },
+  { wins: [win("a", ACCENT, Q[1]), win("b", CYAN, Q[3]), win("c", VIOLET, Q[0]), win("d", AMBER, Q[2])], note: "A fourth, and the layout changes again", ms: 1600 },
+  { wins: [win("a", ACCENT, SIDE_TOP), win("b", CYAN, SIDE_BOTTOM), win("c", VIOLET, MAIN)], note: "Close one and the rest fill the gap", ms: 1900 },
 ];
 
 const LOOSE = {

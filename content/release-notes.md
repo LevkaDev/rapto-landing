@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.73
+## Version 5.74
 
 ### New
 - 
@@ -10,6 +10,18 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.73
+
+### Improvements
+- In Auto Tiling, when a new window switches to a layout with one large slot, like one large and two small, or a large center among four, the new window takes the large slot.
+
+### Fixes
+- A window no longer shows a group badge when a small window of the same app, like a browser's new tab bar, opens over it.
+- The active window border no longer stays on screen after you close a window or quit some browsers, like Dia.
+- Settings windows of apps like Gemini no longer take a slot and rearrange your windows in Auto Tiling.
 
 ---
 
