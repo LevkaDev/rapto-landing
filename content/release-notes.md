@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.75
+## Version 5.76
 
 ### New
 - 
@@ -10,6 +10,14 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.75
+
+### Fixes
+- Your layout and group indicators come back when you turn a monitor off and on, or plug it back in.
+- In Drag to Snap, the blue highlight that shows where a window will land appears on every desktop.
 
 ---
 
