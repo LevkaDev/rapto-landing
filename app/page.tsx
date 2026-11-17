@@ -1078,6 +1078,145 @@ function FloatingWindowsDemo() {
   );
 }
 
+// App Exclusions Demo - an app joins the ignore list and its window leaves the layout
+function AppExclusionsDemo() {
+  const [phase, setPhase] = useState<"tiled" | "listed" | "free">("tiled");
+
+  useCardLoop(() => {
+    setPhase((p) => (p === "tiled" ? "listed" : p === "listed" ? "free" : "tiled"));
+  }, 1400);
+
+  const listed = phase !== "tiled";
+  const free = phase === "free";
+
+  return (
+    <div className="relative h-24 rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden flex gap-1 p-1">
+      {/* Screen with the layout */}
+      <div className="relative flex-[1.6]">
+        <div className="absolute left-0 top-0 bottom-0 w-[calc(50%-2px)]">
+          <MiniWindow color={ACCENT} className="w-full h-full" />
+        </div>
+
+        {/* The slot the ignored window leaves behind */}
+        <div
+          className="absolute right-0 top-0 bottom-0 w-[calc(50%-2px)] rounded-lg"
+          style={{ border: "1px dashed var(--card-border)" }}
+        />
+
+        <motion.div
+          className="absolute z-10"
+          initial={false}
+          animate={{
+            right: free ? "14%" : "0%",
+            top: free ? "16%" : "0%",
+            width: free ? "44%" : "calc(50% - 2px)",
+            height: free ? "62%" : "100%",
+            rotate: free ? -4 : 0,
+            boxShadow: free ? "0 10px 30px rgba(0,0,0,0.5)" : "0 0 0 rgba(0,0,0,0)",
+          }}
+          transition={{ type: "spring", stiffness: 250, damping: 24 }}
+        >
+          <MiniWindow color="#00FFE5" className="w-full h-full" />
+        </motion.div>
+      </div>
+
+      {/* Ignored Apps list */}
+      <div className="flex-1 rounded-lg bg-black/20 border border-[var(--card-border)] px-1.5 py-1 flex flex-col gap-1 min-w-0">
+        <div className="text-[9px] font-mono uppercase tracking-wider text-[var(--foreground-muted)] truncate">Ignored Apps</div>
+        <div className="flex items-center gap-1 text-[10px] text-[var(--foreground-muted)]">
+          <span className="w-2.5 h-2.5 rounded-[3px] shrink-0" style={{ background: "#A855F7" }} />
+          <span className="truncate">Zoom</span>
+        </div>
+        <AnimatePresence>
+          {listed && (
+            <motion.div
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center gap-1 text-[10px] rounded px-0.5 -mx-0.5"
+              style={{ background: "#00FFE515", color: "#00FFE5" }}
+            >
+              <span className="w-2.5 h-2.5 rounded-[3px] shrink-0" style={{ background: "#00FFE5" }} />
+              <span className="truncate">Notes</span>
+              <ShieldCheck className="w-2.5 h-2.5 ml-auto shrink-0" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// Raycast Demo - the extension's commands in a Raycast-style search window
+const RAYCAST_STORE_URL = "https://www.raycast.com/Levka/rapto";
+
+function RaycastDemo() {
+  const paused = usePaused();
+  const [selected, setSelected] = useState(0);
+  const commands = [
+    { icon: Search, title: "Switch Window", hint: "Jump to any window" },
+    { icon: Grid3X3, title: "Apply Layout", hint: "Arrange this desktop" },
+    { icon: Zap, title: "Change Mode", hint: "Manual, Auto Tiling, Drag to Snap" },
+    { icon: Briefcase, title: "Open Workspace", hint: "Bring back a saved set of apps" },
+  ];
+
+  useCardLoop(() => setSelected((s) => (s + 1) % commands.length), 1300);
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <div aria-hidden className="w-full max-w-lg rounded-xl bg-[var(--card-solid)] border border-[var(--card-border)] overflow-hidden shadow-lg">
+        <div className="flex items-center gap-2 px-3 py-2.5 border-b border-[var(--card-border)] text-sm">
+          <Search className="w-3.5 h-3.5 text-[var(--foreground-muted)]" />
+          <span>Rapto</span>
+          <motion.span
+            className="w-px h-4"
+            style={{ background: ACCENT }}
+            animate={loopOr(paused, { opacity: [1, 0, 1] })}
+            transition={{ duration: 1, repeat: Infinity }}
+          />
+        </div>
+        <div className="p-1.5 space-y-0.5">
+          {commands.map((command, i) => {
+            const Icon = command.icon;
+            const active = selected === i;
+            return (
+              <motion.div
+                key={command.title}
+                className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-sm"
+                animate={{ background: active ? `${ACCENT}20` : "rgba(0,0,0,0)" }}
+                transition={{ duration: 0.2 }}
+              >
+                <span
+                  className="w-5 h-5 rounded-md flex items-center justify-center shrink-0"
+                  style={{ background: `${ACCENT}25`, color: ACCENT }}
+                >
+                  <Icon className="w-3 h-3" />
+                </span>
+                <span className="font-medium">{command.title}</span>
+                <span className="text-xs text-[var(--foreground-muted)] truncate hidden sm:inline">{command.hint}</span>
+                <span className="ml-auto text-[10px] font-mono text-[var(--foreground-muted)] shrink-0">
+                  {active ? "↵" : "Command"}
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+      <a
+        href={RAYCAST_STORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-sm font-medium hover:underline"
+        style={{ color: ACCENT }}
+      >
+        Get it in the Raycast Store
+        <ArrowRight className="w-3.5 h-3.5" />
+      </a>
+    </div>
+  );
+}
+
 // ============================================
 // FEATURE CARD
 // ============================================
@@ -1089,6 +1228,7 @@ function FeatureCard({
   index = 0,
   large = false,
   wide = false,
+  full = false,
   interactive = false,
 }: {
   icon: React.ElementType;
@@ -1098,6 +1238,7 @@ function FeatureCard({
   index?: number;
   large?: boolean;
   wide?: boolean;
+  full?: boolean;
   // Demos a visitor can operate stay exposed to assistive tech; the rest are illustrations
   interactive?: boolean;
 }) {
@@ -1120,7 +1261,7 @@ function FeatureCard({
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
-      className={`card spotlight p-6 flex flex-col ${large ? 'md:col-span-2 md:row-span-2' : ''} ${wide ? 'md:col-span-2' : ''}`}
+      className={`card spotlight p-6 flex flex-col ${large ? 'md:col-span-2 md:row-span-2' : ''} ${wide ? 'md:col-span-2' : ''} ${full ? 'md:col-span-2 lg:col-span-3' : ''}`}
         onMouseMove={(e) => {
           const rect = e.currentTarget.getBoundingClientRect();
           const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -3276,7 +3417,21 @@ function Features() {
             title="App Exclusions"
             description="Manually exclude apps from tiling with a blacklist. Apps in the blacklist won't be tiled or managed by Rapto."
             index={12}
-          />
+          >
+            <AppExclusionsDemo />
+          </FeatureCard>
+
+          {/* Raycast Extension - full row */}
+          <FeatureCard
+            icon={Command}
+            title="Raycast Extension"
+            description="Switch windows, apply layouts, change modes and open workspaces right from Raycast. Free in the Raycast Store."
+            index={13}
+            full
+            interactive
+          >
+            <RaycastDemo />
+          </FeatureCard>
         </div>
       </div>
     </section>
