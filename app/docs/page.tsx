@@ -642,6 +642,7 @@ export default function DocsPage() {
               </p>
 
               <h3 className="font-display text-xl font-semibold mb-4">Creating Custom Templates</h3>
+              <p className="font-semibold mb-2">Draw it in the overlay</p>
               <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
                 <li>Open the overlay (press <Shortcut keys={["⌃", "⌥", "G"]} />)</li>
                 <li>Click the &quot;Custom&quot; button in the template picker</li>
@@ -649,6 +650,16 @@ export default function DocsPage() {
                 <li>Click a zone you already placed to move or resize it again. Double-click a zone to delete it</li>
                 <li>Name your template and save it</li>
               </ol>
+
+              <p className="font-semibold mb-2">Or arrange real windows first</p>
+              <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
+                <li>Place and size your windows on the display the way you want them</li>
+                <li>Right-click that display&apos;s desktop in the Desktops Bar (or open the Rapto menu) and choose <strong>Create Layout from Windows</strong></li>
+                <li>Name it, or keep the suggested &quot;Layout&quot; with the date and time. Each window on that display becomes a zone, and the new layout appears in the template picker</li>
+              </ol>
+              <p className="text-[var(--foreground-muted)] mb-4">
+                Only the places are saved, not the windows or apps. To bring back the apps themselves, use Workspaces.
+              </p>
 
               <InfoBox type="info">
                 Custom templates are saved automatically and appear alongside built-in templates. You can rename or delete them from the template picker. Don&apos;t need a built-in layout? Point at it in the template picker and click <strong>Hide</strong>. Hidden layouts wait at the end of the picker, where <strong>Unhide</strong> brings them back.

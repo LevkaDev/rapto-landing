@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.76
+## Version 5.77
 
 ### New
 - 
@@ -10,6 +10,70 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.76
+
+### New
+- Rapto is now in the Raycast Store. Switch to any window on any desktop, apply a layout, change the mode or open a workspace right from Raycast.
+
+### Improvements
+- "Save Layout Snapshot" is now called "Create Layout from Windows" and is also in the Desktops Bar menu.
+- The overlay now opens in None and Drag to Snap too. Picking a layout there switches the display to Manual.
+- The overlay shows the windows of its own display first, and windows from your other displays below them.
+- The overlay has a close button, so you can close it with the mouse as well as with Esc.
+- Dragging a window to another display works the same way in every mode: drop it to move it there, or hold the swap key to swap it with the window under the cursor.
+
+### Fixes: Multiple displays
+- On a second display, windows you swap, move to another slot or resize stay where you put them.
+- In Manual mode, a window you drag off its place on a second display goes back into its slot.
+- On a second display, dragging a window no longer offers to swap it with a window from its own group.
+- Big windows dropped on another display no longer stay stuck in their old place.
+- Changing the space between windows keeps every display's windows in their own places.
+- A template hotkey arranges only the windows of the display you are working on.
+- A layout you pick in the overlay stays with the display you are working on.
+- On a second display, "Create Layout from Windows" saves the windows where they really are.
+- Drawing a custom grid or a focus zone on a second display lines up with the screen.
+- When you connect a display again, its modes and layouts no longer go to another display.
+- Settings mark your main display as "Primary display", not the one you clicked last.
+
+### Fixes: Auto-tiling
+- A window dragged to an Auto-tiling display gets its own place there instead of being stacked with another window, and the display it came from rearranges its windows.
+- A window dragged to an Auto-tiling display while you switch desktops now joins the tiling.
+- Auto-tiling on a second display keeps your window order when you switch modes.
+- Auto-tiling keeps working after you unplug a display.
+
+### Fixes: Manual and groups
+- A minimized window stays in its group and comes back to it.
+- When all windows of a slot are minimized, a window from another group fills it.
+- Clicking a window in a group of one app brings up exactly that window.
+- The cursor goes back to normal if a group badge disappears while you drag it.
+
+### Fixes: Layouts and overlay
+- Resizing a zone in the grid editor stops at the edge of the screen.
+- Window groups in the layout overlay show up in a row under the zone preview.
+- After you close the layout overlay, the Esc key works normally again everywhere in Rapto.
+- In Drag to Snap, the panel of layouts keeps appearing on every desktop after you leave a full screen app. The same goes for the window switcher and the highlight you see when swapping windows.
+
+### Fixes: Desktops and workspaces
+- The Settings window stays with you when you switch desktops.
+- Switching desktops twice in a row no longer mixes windows from both desktops.
+- Mission Control closes if adding a desktop takes too long.
+- Closing a workspace after you restart your Mac closes only that workspace's windows.
+
+### Fixes: Shortcuts and Settings
+- Rapto shortcuts stay off in apps you set to pass keys through, also right after Rapto starts.
+- While you record a new shortcut, Rapto shortcuts stay off, so the keys you press don't run anything.
+- When a shortcut is taken by another Rapto action, Settings tell you which one.
+- Only one shortcut field records at a time.
+- "Reset to Defaults" in Shortcuts brings back your shortcut style.
+- Settings open normally after importing a settings file with an unusual window count.
+
+### Fixes: Other
+- Windows with the same name, like two terminals, no longer get mixed up.
+- The highlight border stays on your window when you close another window of the same app.
+- Option + double-click on a window of another app no longer hides the app you were in.
 
 ---
 

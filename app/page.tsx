@@ -2568,7 +2568,7 @@ function Layouts() {
 
   const highlights = [
     { icon: LayoutGrid, title: "14 built-in layouts", text: "Halves, thirds, quarters, 1 + 2, center focus and more, ready to go." },
-    { icon: Undo2, title: "Save what you have", text: "Already arranged your windows by hand? Save Layout Snapshot in the Rapto menu turns it into a layout." },
+    { icon: Undo2, title: "Save what you have", text: "Already arranged your windows by hand? Create Layout from Windows in the Desktops Bar or the Rapto menu turns it into a layout." },
     { icon: Keyboard, title: "One key per layout", text: "Give any layout its own shortcut in Settings → Shortcuts → Template Shortcuts." },
   ];
 
@@ -3476,7 +3476,7 @@ function FAQSection() {
     },
     {
       q: "Can I create my own layouts (templates)?",
-      a: "Yes. Open the overlay in Manual mode, press “Custom”, and draw zones visually. You can rename or delete custom templates from the template picker. Built-in layouts you don't use can be hidden: point at one in the picker and click Hide.",
+      a: "Yes, in two ways. Open the overlay in Manual mode, press “Custom”, and draw zones visually. Or arrange your windows on the screen yourself and choose Create Layout from Windows in the Desktops Bar or the Rapto menu. You can rename or delete custom templates from the template picker. Built-in layouts you don't use can be hidden: point at one in the picker and click Hide.",
     },
     {
       q: "How do I exclude apps or disable hotkeys in some apps?",
