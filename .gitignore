@@ -37,3 +37,6 @@ next-env.d.ts
 # OS
 .DS_Store
 Thumbs.db
+
+# Promo material is kept locally, not in this repository
+animations/promo/
