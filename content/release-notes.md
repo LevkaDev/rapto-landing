@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.77
+## Version 5.78
 
 ### New
 - 
@@ -10,6 +10,26 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.77
+
+### Improvements
+- When an app stops responding, Rapto no longer freezes with it. It tells you which app it is and dims its icon in the group indicator and the Desktops Bar until the app is back.
+
+### Fixes: Desktops and workspaces
+- Dragging an app to another desktop in the Desktops Bar now also moves Antigravity and other apps that draw their own title bar.
+- A window moved to a Manual desktop for the first time takes an empty slot when there is one, instead of joining the window that sits where it came from.
+
+### Fixes: Shortcuts and Settings
+- The group cycling shortcut (Control+Tab) no longer stops working after you use one of your Passthrough Apps or record a shortcut.
+- A shortcut you clear in Settings is released right away and stays cleared after a restart.
+- Clearing one direction of Swap or Move no longer turns off the other three.
+- Control+Option+1 to 9 (Option+Shift+1 to 9 in Vim Style) can be assigned again.
+- Deleting a layout frees its shortcut.
+- Swap, Move and Resize shortcuts act on the right window when two windows of one app sit side by side.
+- Pressing a Resize shortcut several times keeps resizing the window.
 
 ---
 
