@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.78
+## Version 5.79
 
 ### New
 - 
@@ -10,6 +10,25 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 5.78
+
+### New
+- A new Guide tab in Settings walks you through picking a mode, setting up your apps, and learning Rapto's gestures and shortcuts.
+- Right-click any app icon in the Desktops Bar (or use Quick Actions in the menu bar icon) to ignore that app or pause Rapto's shortcuts in it right away.
+- While you drag a window or an app in the Desktops Bar, the highlight tells you what will happen when you let go and which key changes it.
+- Short tips explain window groups, Focus Mode, slot snap-back, and choosing a layout the first few times you meet them. Turn them off anytime in Settings, or show them again.
+- Press Command+F in Settings to search across every tab.
+- Appearance now shows a live preview of window gaps and borders as you change them.
+
+### Improvements
+- Settings now group window behavior into a dedicated Behavior tab, and keep Ignored Apps and Passthrough Apps together under Apps.
+- The custom layout editor now explains what is still needed to save, clarifies zone fill order, and can fill zones directly from your open windows.
+- Pressing or releasing Control, Shift, or Option while holding a window updates the preview right away, without moving the mouse.
+- Rapto now warns you right in Settings and the menu bar when Accessibility is turned off, and explains why the overlay does not open on an Auto-tiling desktop.
+- New setups start with a small gap between windows and screen edges so adjacent windows are easier to tell apart. Your current gaps do not change.
 
 ---
 
