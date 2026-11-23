@@ -309,6 +309,9 @@ export default function DocsPage() {
               <p className="text-[var(--foreground-muted)] mt-4">
                 During setup you choose how you like to arrange windows: Drag to Snap, Manual or Auto-tiling. If you pick Auto-tiling, you also choose how many windows to keep on screen (2–8). Rapto recommends 4 for laptops and regular monitors, and 5 for wide displays. You can change it anytime in Settings.
               </p>
+              <p className="text-[var(--foreground-muted)] mt-4">
+                The last step of setup opens Settings → Guide, where you can pick a starter profile and tune Rapto for your apps.
+              </p>
             </Section>
 
             {/* Operating Modes */}
@@ -388,6 +391,14 @@ export default function DocsPage() {
               <InfoBox type="info">
                 Change modes from the menu bar icon, the Desktops Bar, or Settings. Each monitor and Space can have its own mode.
               </InfoBox>
+
+              <h3 className="font-display text-xl font-semibold mb-3 mt-8">Hints While You Drag</h3>
+              <p className="text-[var(--foreground-muted)] mb-3">
+                While you drag a window, the highlighted slot or zone says what will happen when you let go (Move here, Swap, Snap here, Groups with…) and which key changes it. Press or release Control or Shift while holding the window and the preview changes right away, without moving the mouse. A key&apos;s hint goes away after you have used that key ten times.
+              </p>
+              <p className="text-[var(--foreground-muted)]">
+                The first few times you use window groups, Focus Mode, snap-back, or a Manual desktop without a layout, Rapto shows a short tip under the Desktops Bar. Click it to dismiss it. Turn tips off, or show them again, in Settings → Guide.
+              </p>
             </Section>
 
             {/* Desktops Bar */}
@@ -437,6 +448,8 @@ export default function DocsPage() {
                 <li>• Hold <Shortcut keys={["⌥"]} /> as you drop the icon to switch to that desktop along with the window.</li>
                 <li>• To make going along the default, turn on <strong>Go With Moved Window</strong> in Settings → General → Menu Bar. Then <Shortcut keys={["⌥"]} /> keeps you where you are. The keyboard shortcuts follow this setting too, even when the Desktops Bar is hidden.</li>
                 <li>• On a Manual desktop, a window that comes back snaps into the slot it had before, or into a free one. The other windows stay where they are.</li>
+                <li>• A window that arrives on a Manual desktop for the first time takes an empty slot when there is one.</li>
+                <li>• While you drag an icon, a hint under the bar says where the window will go and what holding <Shortcut keys={["⌥"]} /> does.</li>
               </ul>
               <p className="text-[var(--foreground-muted)] mb-6">
                 While a window is moving, the screen may briefly flash to the other desktop and back. That&apos;s how macOS moves windows between desktops.
@@ -453,6 +466,9 @@ export default function DocsPage() {
               <h3 className="font-display text-xl font-semibold mb-3 mt-8">Desktop Menu</h3>
               <p className="text-[var(--foreground-muted)] mb-6">
                 Right-click a desktop to choose its mode (Manual, Auto Tiling or Drag to Snap) and layout, open the overlay, restore the layout, or open Settings. While the Desktops Bar is on, the Rapto menu bar icon is hidden, since the bar has the same controls. You can bring the icon back in Settings → General → Menu Bar.
+              </p>
+              <p className="text-[var(--foreground-muted)] mb-6">
+                Right-click an app icon in the bar to get a submenu with the app&apos;s name. <strong>Always Ignore</strong> keeps Rapto away from that app&apos;s windows, and <strong>Pause Shortcuts</strong> turns off Rapto&apos;s shortcuts while the app is in front. Both take effect right away. The same submenu for the app in front is in the menu bar icon under Quick Actions.
               </p>
 
               <h3 className="font-display text-xl font-semibold mb-3">MacBooks with a Notch</h3>
@@ -608,7 +624,7 @@ export default function DocsPage() {
               </p>
 
               <InfoBox type="tip">
-                All shortcuts can be customized in Settings → Shortcuts. You can also disable shortcuts for specific apps using Passthrough Apps.
+                All shortcuts can be customized in Settings → Shortcuts. You can also pause shortcuts in specific apps with Passthrough Apps in Settings → Apps.
               </InfoBox>
             </Section>
 
@@ -648,7 +664,8 @@ export default function DocsPage() {
                 <li>Click the &quot;Custom&quot; button in the template picker</li>
                 <li>Draw zones by clicking and dragging on the grid</li>
                 <li>Click a zone you already placed to move or resize it again. Double-click a zone to delete it</li>
-                <li>Name your template and save it</li>
+                <li>Or click <strong>Use Open Windows</strong> to make a zone from each window open on that display</li>
+                <li>Name your layout and click <strong>Save Layout</strong>. A note next to the button tells you what is still missing. Windows fill the zones in order: 1, 2, 3</li>
               </ol>
 
               <p className="font-semibold mb-2">Or arrange real windows first</p>
@@ -739,7 +756,7 @@ export default function DocsPage() {
                   </p>
                   <ul className="space-y-1 text-[var(--foreground-muted)]">
                     <li>• <strong>Click an icon</strong> to switch straight to that window. Icons stay in place and the active one is highlighted.</li>
-                    <li>• <strong>Scroll over the badge</strong> to move through the windows: up goes to the window on the left, down to the one on the right. Turn this off with <strong>Scroll to Cycle</strong> in Settings.</li>
+                    <li>• <strong>Scroll over the badge</strong> to move through the windows: up goes to the window on the left, down to the one on the right. Turn this off with <strong>Scroll to Cycle</strong> in Settings → Behavior.</li>
                     <li>• <strong>Drag the badge aside</strong> if it covers buttons in your window. It slides back to its corner a couple of seconds after you move the pointer away.</li>
                     <li>• To hide all badges at once, use the <strong>Toggle Group Indicators</strong> shortcut in Settings → Shortcuts.</li>
                   </ul>
@@ -752,7 +769,7 @@ export default function DocsPage() {
                     <h3 className="font-display text-xl font-semibold">Window Swap</h3>
                   </div>
                   <p className="text-[var(--foreground-muted)]">
-                    Instantly swap the positions of two windows. Use the keyboard shortcut, or drag one window onto another while holding Control. In Settings → General you can make dragging swap without a key; then hold Shift to group instead. In Auto Tiling, just drop one window onto another.
+                    Instantly swap the positions of two windows. Use the keyboard shortcut, or drag one window onto another while holding Control. In Settings → Behavior → Dragging Windows you can choose Swap by default; then hold Shift to move and group instead. In Auto Tiling, just drop one window onto another.
                   </p>
                 </div>
 
@@ -813,7 +830,7 @@ export default function DocsPage() {
                     Exclude specific windows from tiling. They&apos;ll float freely above your tiled layout and stay on top. Toggle with keyboard shortcut <Shortcut keys={["⌃", "⌥", "T"]} />. In Auto Tiling, the other windows fill its space right away. Turn floating off and, if no window was opened or closed in the meantime, every window goes back to where it was.
                   </p>
                   <p className="text-[var(--foreground-muted)]">
-                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌥", "⌘"]} /> and double-click any window to toggle floating mode. This feature can be enabled in Settings → Appearance → Floating Windows.
+                    <strong>Mouse shortcut:</strong> Hold <Shortcut keys={["⌥", "⌘"]} /> and double-click any window to toggle floating mode. This feature can be enabled in Settings → Behavior → Floating Windows.
                   </p>
                 </div>
 
@@ -833,8 +850,17 @@ export default function DocsPage() {
             {/* Settings */}
             <Section id="settings" title="Settings" icon={Settings}>
               <p className="text-[var(--foreground-muted)] mb-6">
-                Access Settings from the menu bar icon → Settings, by right-clicking a desktop in the Desktops Bar, or press <Shortcut keys={["⌘", ","]} /> when the overlay is open.
+                Access Settings from the menu bar icon → Settings, by right-clicking a desktop in the Desktops Bar, or press <Shortcut keys={["⌘", ","]} /> when the overlay is open. Press <Shortcut keys={["⌘", "F"]} /> in Settings to search across every tab.
               </p>
+
+              <h3 className="font-display text-xl font-semibold mb-4">Guide</h3>
+              <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
+                <li>• <strong>Starter Profiles</strong> — Apply Drag to Snap, Manual or Auto-tiling with recommended defaults in one click</li>
+                <li>• <strong>Fine-Tune for Your Mac</strong> — A four-step checklist: app rules, displays and new desktops, gaps, Launch at Login</li>
+                <li>• <strong>Smart App Scanner</strong> — Finds the terminals, editors and virtual machines installed on your Mac and offers to pause Rapto&apos;s shortcuts in them. It can also suggest chat and media apps to leave untiled</li>
+                <li>• <strong>Essential Gestures & Shortcuts</strong> — The keys and gestures for your current setup</li>
+                <li>• <strong>Show In-Action Hints</strong> — Turn the hints and tips on or off. <strong>Show Hints Again</strong> brings back the ones you have already seen</li>
+              </ul>
 
               <h3 className="font-display text-xl font-semibold mb-4">General</h3>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
@@ -843,8 +869,6 @@ export default function DocsPage() {
                 <li>• <strong>Show Desktops Bar</strong> — Always On, Auto-Hide or Notched Screens (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
                 <li>• <strong>Menu Bar Icon</strong> — Show the Rapto icon while the Desktops Bar is on</li>
                 <li>• <strong>Go With Moved Window</strong> — Go to the desktop you move a window to, by dragging or with a shortcut. Hold Option while dragging to do the opposite</li>
-                <li>• <strong>Window Gap</strong> — Space between tiled windows (0-20 pixels)</li>
-                <li>• <strong>Screen Edge Gap</strong> — Space from screen edges (0-20 pixels)</li>
                 <li>• <strong>Settings File</strong> — <strong>Export…</strong> saves your settings, shortcuts, layouts and workspaces to one file. <strong>Import…</strong> loads them back, on this Mac or another one, and restarts Rapto. Your current settings are kept as a backup, which <strong>Show Backups</strong> opens. On another Mac, choose a layout for each desktop after the import</li>
               </ul>
 
@@ -861,12 +885,16 @@ export default function DocsPage() {
                 <li>• <strong>Focus Slots 1-9</strong> — Quickly jump to windows in specific grid positions</li>
               </ul>
 
-              <h3 className="font-display text-xl font-semibold mb-4">Focus Mode & Floating</h3>
+              <h3 className="font-display text-xl font-semibold mb-4">Behavior</h3>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
+                <li>• <strong>Dragging Windows</strong> — What a plain drag onto another slot does: move and group (hold Control to swap), swap (hold Shift to move and group), or nothing without a key</li>
+                <li>• <strong>Window Grouping</strong> — Turn groups on or off, group windows of the same app automatically, Scroll to Cycle, and the size and corner of the group badge</li>
                 <li>• <strong>Focus Mode</strong> — Enable/disable the focus window feature</li>
-                <li>• <strong>Focus Zone</strong> — Set a custom zone for focused windows (instead of fullscreen)</li>
-                <li>• <strong>Double-Tap Modifier</strong> — Choose modifier key for mouse double-tap activation (Option by default)</li>
-                <li>• <strong>Floating Double-Tap</strong> — Enable Option+Command+double-tap to toggle floating windows. The key can be changed</li>
+                <li>• <strong>Focus Area</strong> — Full screen, or a custom Focus Zone that you set in the overlay</li>
+                <li>• <strong>Double-click Activation</strong> — Hold a modifier key (Option by default) and double-click a window to focus it. The key can be changed</li>
+                <li>• <strong>Floating Windows</strong> — Enable Option+Command+double-click to toggle floating windows. The key can be changed</li>
+                <li>• <strong>Manual Mode</strong> — Minimize Others and Snap Back</li>
+                <li>• <strong>Auto-tiling</strong> — The layout for each number of windows and the maximum number of tiled windows (2-8), also per display</li>
               </ul>
 
               <h3 className="font-display text-xl font-semibold mb-4">Appearance</h3>
@@ -875,8 +903,9 @@ export default function DocsPage() {
                 <li>• <strong>Desktops Bar Style</strong> — Dark, Glass or Plain (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
                 <li>• <strong>Highlight Active Window</strong> — Show a colored border around the focused window. The border hides while you resize a window and comes back when you let go</li>
                 <li>• <strong>Border Color</strong> — The color of the border around the focused window. The current desktop in the Desktops Bar is outlined in the same color</li>
-                <li>• <strong>Show Zone Previews</strong> — Display zone outlines when dragging windows</li>
-                <li>• <strong>Group Indicators</strong> — Show/hide indicators for stacked window groups</li>
+                <li>• <strong>Window Gap</strong> — Space between tiled windows (0–24 pixels, 4 by default)</li>
+                <li>• <strong>Screen Edge Gap</strong> — Space from screen edges (0–24 pixels, 4 by default)</li>
+                <li>• <strong>Live Preview</strong> — A small picture of your windows shows the gaps and the border as you change them</li>
               </ul>
 
               <InfoBox type="tip">
@@ -891,6 +920,23 @@ export default function DocsPage() {
                   <h4 className="font-display font-semibold mb-2">Rapto doesn&apos;t move my windows</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
                     Make sure Accessibility permission is granted in System Settings → Privacy & Security → Accessibility. If already granted, try removing Rapto from the list and adding it again, then restart the app.
+                  </p>
+                  <p className="text-[var(--foreground-muted)] text-sm mt-2">
+                    If Accessibility is turned off, Rapto shows a warning at the top of Settings, in the Desktops Bar and in the menu bar menu, with a button that opens System Settings. The warning goes away by itself once the permission is on.
+                  </p>
+                </div>
+
+                <div className="card p-5">
+                  <h4 className="font-display font-semibold mb-2">The overlay doesn&apos;t open</h4>
+                  <p className="text-[var(--foreground-muted)] text-sm">
+                    On an Auto-tiling desktop Rapto picks the layout itself, so the overlay shortcut shows a notice instead. Switch that desktop to Manual to choose a layout.
+                  </p>
+                </div>
+
+                <div className="card p-5">
+                  <h4 className="font-display font-semibold mb-2">An app stopped responding</h4>
+                  <p className="text-[var(--foreground-muted)] text-sm">
+                    Rapto keeps working. It tells you which app is not responding, skips that app&apos;s windows, and dims its icon in the group badge and the Desktops Bar. When the app answers again, its windows go back to their slots.
                   </p>
                 </div>
 
