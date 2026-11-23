@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { Download, Menu, X } from "lucide-react";
 
-export const GITHUB_REPO_URL = "https://github.com/LevkaDev/Rapto";
+import { GITHUB_REPO_URL } from "@/lib/links";
 
 export function GitHubMark({ className = "w-4 h-4" }: { className?: string }) {
   return (

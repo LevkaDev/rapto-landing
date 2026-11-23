@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArrowLeft, Shield, Lock, Eye, FileText, RefreshCw, Globe, Trash2, Mail, Code2 } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { GITHUB_REPO_URL } from "../components/SiteChrome";
+import { GITHUB_REPO_URL } from "@/lib/links";
 
 const ACCENT = "#BFFF00";
 

@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Download, ShieldCheck } from "lucide-react";
-import { GITHUB_REPO_URL, GitHubMark } from "../components/SiteChrome";
+import { GitHubMark } from "../components/SiteChrome";
+import { GITHUB_REPO_URL } from "@/lib/links";
 
 const ACCENT = "#BFFF00";
 // Site download buttons must link to /download, not to the DMG, so analytics counts each download as a pageview

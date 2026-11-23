@@ -16,7 +16,8 @@ import {
 } from "lucide-react";
 import { HeroPlayground } from "./HeroPlayground";
 import { PauseToggle } from "./motion-pause";
-import { CursorGlow, GITHUB_REPO_URL, GitHubMark, Navigation } from "./components/SiteChrome";
+import { CursorGlow, GitHubMark, Navigation } from "./components/SiteChrome";
+import { GITHUB_REPO_URL } from "@/lib/links";
 import { FaqExpandAll } from "./components/FaqExpandAll";
 import {
   DesktopsBar,
