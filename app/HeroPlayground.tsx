@@ -186,7 +186,7 @@ function SafariContent() {
       <div className="flex items-center gap-[0.5em] px-[0.7em] py-[0.5em] border-b border-white/5">
         <span className="text-white/50">‹ ›</span>
         <div className="flex-1 min-w-0 rounded-[0.5em] bg-white/[0.07] px-[0.7em] py-[0.25em] text-center text-white/55 truncate" style={{ fontSize: "0.9em" }}>
-          github.com/rapto/rapto
+          github.com/LevkaDev/Rapto
         </div>
       </div>
       <div className="flex-1 min-h-0 p-[0.9em] flex flex-col gap-[0.8em]">
@@ -237,7 +237,7 @@ function TerminalContent() {
 const NOTES = [
   { text: "Record the demo", done: true },
   { text: "Update the landing", done: true },
-  { text: "Ship 5.64", done: false },
+  { text: "Ship 6.0", done: false },
   { text: "Post on Product Hunt", done: false },
   { text: "Reply to feedback", done: false },
 ];
@@ -273,7 +273,7 @@ function NotesContent() {
 
 const INBOX = [
   { from: "Anna", subject: "Launch plan", unread: true },
-  { from: "Build bot", subject: "Release 5.64 is ready", unread: true },
+  { from: "Build bot", subject: "Release 6.0 is ready", unread: true },
   { from: "Sam", subject: "Re: screenshots", unread: false },
   { from: "Newsletter", subject: "This week in Swift", unread: false },
 ];

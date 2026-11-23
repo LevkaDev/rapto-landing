@@ -38,57 +38,74 @@ function DocsNavigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-xl border-b border-[var(--card-border)]">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/app-icon.png" alt="Rapto" width={32} height={32} />
-            <span className="font-display font-bold text-lg">Rapto</span>
-          </Link>
-          <span className="text-[var(--foreground-muted)]">/</span>
-          <span className="font-medium">Documentation</span>
-        </div>
-
-        <div className="hidden md:flex items-center gap-6">
-          <Link
-            href="/#features"
-            className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors text-sm"
-          >
-            Features
-          </Link>
-          <Link
-            href="/#faq"
-            className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors text-sm"
-          >
-            FAQ
-          </Link>
-          <Link
-            href="/#download"
-            className="btn-primary !py-2 !px-4 text-sm"
-          >
-            <Download className="w-4 h-4" />
-            Download
-          </Link>
-        </div>
-
-        <button
-          className="md:hidden p-2 text-[var(--foreground-muted)]"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
-
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-[var(--background)]/95 backdrop-blur-xl border-b border-[var(--card-border)] px-6 py-4">
-          <div className="flex flex-col gap-4">
-            <Link href="/#features" className="text-[var(--foreground-muted)]">Features</Link>
-            <Link href="/#faq" className="text-[var(--foreground-muted)]">FAQ</Link>
-            <Link href="/#download" className="text-[var(--foreground-muted)]">Download</Link>
+    <header>
+      <nav aria-label="Documentation" className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/90 backdrop-blur-xl border-b border-[var(--card-border)]">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="flex items-center gap-3">
+              <Image src="/app-icon.png" alt="" width={32} height={32} />
+              <span className="font-display font-bold text-lg">Rapto</span>
+            </Link>
+            <span aria-hidden="true" className="text-[var(--foreground-muted)]">/</span>
+            <Link href="/docs" aria-current="page" className="font-medium text-[var(--accent)]">
+              Documentation
+            </Link>
           </div>
+
+          <div className="hidden md:flex items-center gap-6">
+            <Link
+              href="/#features"
+              className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors text-sm"
+            >
+              Features
+            </Link>
+            <Link
+              href="/#faq"
+              className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors text-sm"
+            >
+              FAQ
+            </Link>
+            <a
+              href="https://github.com/LevkaDev/Rapto"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors text-sm"
+            >
+              GitHub
+            </a>
+            <Link
+              href="/download"
+              className="btn-primary !py-2 !px-4 text-sm"
+            >
+              <Download aria-hidden="true" className="w-4 h-4" />
+              Download
+            </Link>
+          </div>
+
+          <button
+            type="button"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="docs-mobile-menu"
+            className="md:hidden p-2 min-w-11 min-h-11 flex items-center justify-center text-[var(--foreground-muted)]"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X aria-hidden="true" className="w-6 h-6" /> : <Menu aria-hidden="true" className="w-6 h-6" />}
+          </button>
         </div>
-      )}
-    </nav>
+
+        {isMobileMenuOpen && (
+          <div id="docs-mobile-menu" className="md:hidden bg-[var(--background)]/95 backdrop-blur-xl border-b border-[var(--card-border)] px-6 py-4">
+            <div className="flex flex-col gap-4">
+              <Link href="/#features" className="text-[var(--foreground-muted)]">Features</Link>
+              <Link href="/#faq" className="text-[var(--foreground-muted)]">FAQ</Link>
+              <a href="https://github.com/LevkaDev/Rapto" target="_blank" rel="noopener noreferrer" className="text-[var(--foreground-muted)]">GitHub</a>
+              <Link href="/download" className="text-[var(--accent)] font-medium">Download</Link>
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
   );
 }
 
@@ -247,10 +264,14 @@ export default function DocsPage() {
                 <li>Drag Rapto to your Applications folder</li>
                 <li>Launch Rapto — it will appear in your menu bar</li>
               </ol>
+              <p className="text-[var(--foreground-muted)] mb-6">
+                Rapto is free and open source under the GNU General Public License v3.0 or later. The code is on GitHub at{" "}
+                <a href="https://github.com/LevkaDev/Rapto" target="_blank" rel="noopener noreferrer" style={{ color: ACCENT }}>github.com/LevkaDev/Rapto</a>, and contributions are welcome.
+              </p>
 
               <h3 className="font-display text-xl font-semibold mb-3">Required Permissions</h3>
               <p className="text-[var(--foreground-muted)] mb-4">
-                Rapto needs two permissions to work properly:
+                Rapto asks for two permissions. The first is required, the second is optional:
               </p>
               <ul className="space-y-3 mb-6">
                 <li className="flex gap-3">
@@ -262,7 +283,7 @@ export default function DocsPage() {
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full mt-2 shrink-0" style={{ backgroundColor: ACCENT }} />
                   <div>
-                    <strong>Screen Recording</strong> — Allows Rapto to see window titles and generate previews. Your screen is never recorded or uploaded.
+                    <strong>Screen Recording</strong> (optional) — Lets Rapto show live window previews in the layout overlay and match the highlight border to each window&apos;s corners. The images stay in memory on your Mac and are never saved or uploaded.
                   </div>
                 </li>
               </ul>
@@ -857,6 +878,7 @@ export default function DocsPage() {
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Starter Profiles</strong> — Apply Drag to Snap, Manual or Auto-tiling with recommended defaults in one click</li>
                 <li>• <strong>Fine-Tune for Your Mac</strong> — A four-step checklist: app rules, displays and new desktops, gaps, Launch at Login</li>
+                <li>• <strong>Layout for New Desktops</strong> — Shown when the default mode for new desktops is Manual or Drag to Snap. New desktops start with this layout. It is the same setting as in General</li>
                 <li>• <strong>Smart App Scanner</strong> — Finds the terminals, editors and virtual machines installed on your Mac and offers to pause Rapto&apos;s shortcuts in them. It can also suggest chat and media apps to leave untiled</li>
                 <li>• <strong>Essential Gestures & Shortcuts</strong> — The keys and gestures for your current setup</li>
                 <li>• <strong>Show In-Action Hints</strong> — Turn the hints and tips on or off. <strong>Show Hints Again</strong> brings back the ones you have already seen</li>
@@ -903,9 +925,20 @@ export default function DocsPage() {
                 <li>• <strong>Desktops Bar Style</strong> — Dark, Glass or Plain (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
                 <li>• <strong>Highlight Active Window</strong> — Show a colored border around the focused window. The border hides while you resize a window and comes back when you let go</li>
                 <li>• <strong>Border Color</strong> — The color of the border around the focused window. The current desktop in the Desktops Bar is outlined in the same color</li>
+                <li>• <strong>Border Width</strong> — 1 to 4 pixels</li>
+                <li>• <strong>Hide in Drag to Snap</strong> — No border on desktops in Drag to Snap mode</li>
                 <li>• <strong>Window Gap</strong> — Space between tiled windows (0–24 pixels, 4 by default)</li>
                 <li>• <strong>Screen Edge Gap</strong> — Space from screen edges (0–24 pixels, 4 by default)</li>
                 <li>• <strong>Live Preview</strong> — A small picture of your windows shows the gaps and the border as you change them</li>
+              </ul>
+
+              <h3 className="font-display text-xl font-semibold mb-4">About</h3>
+              <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
+                <li>• <strong>Source Code</strong> — <strong>View on GitHub</strong> opens the repository. <strong>Star on GitHub</strong> helps other people find Rapto</li>
+                <li>• <strong>Acknowledgements</strong> — The work Rapto builds on, and its license</li>
+                <li>• <strong>Report a Problem</strong> — <strong>On GitHub</strong> or <strong>By Email</strong>. Opens a report with your versions and setup filled in. Nothing is sent until you send it</li>
+                <li>• <strong>Debug Logging</strong> — Writes detailed logs on your Mac to help find a problem. <strong>Open Folder</strong> shows the log files, <strong>Clear</strong> deletes them</li>
+                <li>• <strong>Onboarding</strong> — <strong>Show Onboarding</strong> opens the setup guide again</li>
               </ul>
 
               <InfoBox type="tip">
@@ -957,7 +990,7 @@ export default function DocsPage() {
                 <div className="card p-5">
                   <h4 className="font-display font-semibold mb-2">Windows jump around when switching Spaces</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
-                    This can happen briefly during Space transitions. If it persists, try disabling Auto Tiling for that Space.
+                    Update to Rapto 6.0 or later. Windows on other desktops are no longer resized or pulled into the current layout when you switch desktops. If it still happens, report it from Settings → About → Troubleshooting.
                   </p>
                 </div>
 
@@ -985,8 +1018,7 @@ export default function DocsPage() {
                 <div className="card p-5">
                   <h4 className="font-display font-semibold mb-2">How do I report a bug?</h4>
                   <p className="text-[var(--foreground-muted)] text-sm">
-                    Enable Debug Logging in Settings → About → Troubleshooting. Reproduce the issue, then click &quot;Open Log Folder&quot; and send the logs to{" "}
-                    <a href="mailto:support@rapto.app" style={{ color: ACCENT }}>support@rapto.app</a>.
+                    Open Settings → About → Troubleshooting and, next to <strong>Report a Problem</strong>, click <strong>On GitHub</strong> or <strong>By Email</strong>. Rapto opens a report with your Rapto and macOS versions, displays, desktops and modes filled in. Nothing is sent until you send it. If the problem is hard to describe, turn on <strong>Debug Logging</strong> first, repeat the problem, then click <strong>Open Folder</strong> next to Log Files and attach the log.
                   </p>
                 </div>
               </div>
@@ -1007,9 +1039,9 @@ export default function DocsPage() {
       <footer className="border-t border-[var(--card-border)] py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Image src="/app-icon.png" alt="Rapto" width={24} height={24} />
+            <Image src="/app-icon.png" alt="" width={24} height={24} />
             <span className="text-sm text-[var(--foreground-muted)]">
-              © 2026 Rapto. All rights reserved.
+              © {new Date().getFullYear()} Rapto · GPL-3.0
             </span>
           </div>
           <div className="flex items-center gap-6">
@@ -1022,6 +1054,9 @@ export default function DocsPage() {
             <Link href="/privacy" className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
               Privacy
             </Link>
+            <a href="https://github.com/LevkaDev/Rapto" target="_blank" rel="noopener noreferrer" className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
+              GitHub
+            </a>
             <a href="mailto:support@rapto.app" className="text-sm text-[var(--foreground-muted)] hover:text-[var(--foreground)]">
               Contact
             </a>

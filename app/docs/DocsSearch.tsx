@@ -108,21 +108,30 @@ export default function DocsSearch() {
   const go = (entry: Entry) => {
     setOpen(false);
     inputRef.current?.blur();
-    entry.element.scrollIntoView({ behavior: "smooth", block: "center" });
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    entry.element.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
     entry.element.classList.remove("docs-search-hit");
     void entry.element.offsetWidth;
     entry.element.classList.add("docs-search-hit");
     window.setTimeout(() => entry.element.classList.remove("docs-search-hit"), 2000);
   };
 
+  const showPopup = open && words.length > 0;
+  const activeOptionId = showPopup && results.length > 0 ? `docs-search-option-${active}` : undefined;
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
+      if (!results.length) return;
       event.preventDefault();
       setActive((i) => Math.min(i + 1, results.length - 1));
     } else if (event.key === "ArrowUp") {
+      if (!results.length) return;
       event.preventDefault();
       setActive((i) => Math.max(i - 1, 0));
     } else if (event.key === "Enter" && results[active]) {
+      event.preventDefault();
+      // IME-safe check (including Safari WebKit bug 165004 keyCode 229 fallback)
+      if (event.nativeEvent.isComposing || event.keyCode === 229) return;
       go(results[active]);
     } else if (event.key === "Escape") {
       setOpen(false);
@@ -133,10 +142,16 @@ export default function DocsSearch() {
   return (
     <div ref={boxRef} className="relative max-w-2xl mb-12">
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[var(--card-border)] bg-[var(--card)] focus-within:border-[var(--accent)] transition-colors">
-        <Search className="w-5 h-5 shrink-0 text-[var(--foreground-muted)]" />
+        <Search aria-hidden="true" className="w-5 h-5 shrink-0 text-[var(--foreground-muted)]" />
         <input
+          id="docs-search-input"
           ref={inputRef}
           type="search"
+          role="combobox"
+          aria-expanded={showPopup && results.length > 0}
+          aria-controls="docs-search-listbox"
+          aria-activedescendant={activeOptionId}
+          aria-autocomplete="list"
           value={query}
           placeholder="Search the docs"
           aria-label="Search the docs"
@@ -155,14 +170,15 @@ export default function DocsSearch() {
         />
         {query ? (
           <button
+            type="button"
             aria-label="Clear search"
-            className="text-[var(--foreground-muted)] hover:text-[var(--foreground)]"
+            className="p-1 text-[var(--foreground-muted)] hover:text-[var(--foreground)]"
             onClick={() => {
               setQuery("");
               inputRef.current?.focus();
             }}
           >
-            <X className="w-4 h-4" />
+            <X aria-hidden="true" className="w-4 h-4" />
           </button>
         ) : (
           <kbd className="hidden sm:inline px-2 py-0.5 rounded-md text-xs font-mono text-[var(--foreground-muted)] border border-[var(--card-border)]">
@@ -171,29 +187,41 @@ export default function DocsSearch() {
         )}
       </div>
 
-      {open && words.length > 0 && (
+      {showPopup && (
         <div className="absolute z-40 left-0 right-0 mt-2 rounded-xl border border-[var(--card-border)] bg-[var(--background)] shadow-2xl overflow-hidden">
           {results.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-[var(--foreground-muted)]">
+            <p role="status" className="px-4 py-3 text-sm text-[var(--foreground-muted)]">
               Nothing found. Try another word, or write to{" "}
-              <a href="mailto:support@rapto.app" style={{ color: ACCENT }}>support@rapto.app</a>.
+              <a href="mailto:support@rapto.app" style={{ color: ACCENT }}>
+                support@rapto.app
+              </a>
+              .
             </p>
           ) : (
-            <ul role="listbox">
+            <ul id="docs-search-listbox" role="listbox" aria-label="Documentation search results">
               {results.map((entry, i) => (
-                <li key={i} role="option" aria-selected={i === active}>
-                  <button
-                    className={`w-full text-left px-4 py-3 transition-colors ${i === active ? "bg-[var(--card)]" : ""}`}
-                    onMouseEnter={() => setActive(i)}
-                    onClick={() => go(entry)}
+                <li
+                  id={`docs-search-option-${i}`}
+                  key={i}
+                  role="option"
+                  aria-selected={i === active}
+                  onMouseEnter={() => setActive(i)}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => go(entry)}
+                  className={`w-full text-left px-4 py-3 transition-colors cursor-pointer ${
+                    i === active ? "bg-[var(--card)]" : ""
+                  }`}
+                >
+                  <span className="block text-xs uppercase tracking-wider text-[var(--foreground-muted)] mb-1">
+                    {entry.section}
+                  </span>
+                  <span
+                    className={`block text-sm ${
+                      entry.heading ? "font-semibold text-[var(--foreground)]" : "text-[var(--foreground-muted)]"
+                    }`}
                   >
-                    <span className="block text-xs uppercase tracking-wider text-[var(--foreground-muted)] mb-1">
-                      {entry.section}
-                    </span>
-                    <span className={`block text-sm ${entry.heading ? "font-semibold text-[var(--foreground)]" : "text-[var(--foreground-muted)]"}`}>
-                      <Highlighted text={snippet(entry.text, words[0])} words={words} />
-                    </span>
-                  </button>
+                    <Highlighted text={snippet(entry.text, words[0])} words={words} />
+                  </span>
                 </li>
               ))}
             </ul>

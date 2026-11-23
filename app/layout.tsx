@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Bricolage_Grotesque } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -17,28 +17,59 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "600", "700"],
 });
 
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#0a0a0c",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://rapto.app"),
-  title: "Rapto — Window Manager for macOS",
-  description: "A free, native macOS tiling window manager. Organize your windows with customizable layouts, keyboard shortcuts, and seamless multi-monitor support.",
-  keywords: ["macOS", "window manager", "tiling", "productivity", "window snapping", "Rapto"],
+  title: {
+    default: "Rapto — Free & Open-Source Window Manager for macOS",
+    template: "%s — Rapto",
+  },
+  description:
+    "A free, open-source native macOS tiling window manager. Auto tiling, custom layouts, Desktops Bar, window groups, workspaces, and Vim-ready shortcuts per display and Space.",
+  keywords: [
+    "macOS",
+    "window manager",
+    "tiling window manager",
+    "open source",
+    "macOS Tahoe",
+    "productivity",
+    "window snapping",
+    "Desktops Bar",
+    "Rapto",
+  ],
   authors: [{ name: "Levan Karamanishvili" }],
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/favicon.png",
     apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "Rapto — Window Manager for macOS",
-    description: "A free, native macOS tiling window manager with customizable layouts and keyboard shortcuts.",
+    title: "Rapto — Free & Open-Source Window Manager for macOS",
+    description:
+      "Auto tiling, custom layouts, Desktops Bar, window groups, and one-click workspaces for macOS 26 Tahoe+.",
     type: "website",
     url: "https://rapto.app",
     siteName: "Rapto",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Rapto arranging macOS windows into a layout" }],
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Rapto arranging macOS windows into a layout",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rapto — Window Manager for macOS",
-    description: "A free, native macOS tiling window manager with customizable layouts and keyboard shortcuts.",
+    title: "Rapto — Free & Open-Source Window Manager for macOS",
+    description:
+      "Auto tiling, custom layouts, Desktops Bar, window groups, and one-click workspaces for macOS 26 Tahoe+.",
     images: ["/og.png"],
   },
 };
@@ -49,7 +80,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <head>
         {/* Umami Analytics - privacy-friendly, no cookies. Proxied through /s (app/s) so blockers don't drop it */}
         <Script

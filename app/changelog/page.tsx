@@ -6,8 +6,8 @@ import { getReleaseNotes } from "@/lib/release-notes";
 const ACCENT = "#BFFF00";
 
 export const metadata: Metadata = {
-  title: "Changelog — Rapto",
-  description: "What's new in every version of Rapto, the window manager for macOS.",
+  title: "Changelog",
+  description: "What's new in every version of Rapto, the free & open-source window manager for macOS.",
   alternates: { canonical: "/changelog" },
 };
 

@@ -41,14 +41,15 @@ export function loopOr<T extends Record<string, unknown>>(stopped: boolean, targ
 
 export function PauseToggle() {
   const stopped = usePaused();
+  // Per Modern Web Guidance (`motion`): when the label switches between "Pause" and "Play",
+  // omit `aria-pressed` so screen readers do not announce a contradictory "Play, pressed".
   return (
     <button
       type="button"
       onClick={() => setPaused(!stopped)}
-      aria-pressed={stopped}
-      className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 h-11 px-3.5 rounded-full border border-white/20 bg-[var(--background-elevated)]/90 backdrop-blur text-sm text-[var(--foreground)] shadow-lg hover:border-[var(--accent)] transition-colors"
+      className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 min-h-11 px-3.5 rounded-full border border-white/20 bg-[var(--background-elevated)]/90 backdrop-blur text-sm text-[var(--foreground)] shadow-lg hover:border-[var(--accent)] transition-colors"
     >
-      {stopped ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+      {stopped ? <Play aria-hidden="true" className="w-4 h-4" /> : <Pause aria-hidden="true" className="w-4 h-4" />}
       <span className="hidden sm:inline">{stopped ? "Play animations" : "Pause animations"}</span>
       <span className="sm:hidden sr-only">{stopped ? "Play animations" : "Pause animations"}</span>
     </button>

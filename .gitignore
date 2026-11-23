@@ -40,3 +40,8 @@ Thumbs.db
 
 # Promo material is kept locally, not in this repository
 animations/promo/
+
+# Agent and editor files
+.agents/
+skills-lock.json
+.claude/

@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 5.79
+## Version 6.1
 
 ### New
 - 
@@ -10,6 +10,23 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 6.0
+
+### New
+- Rapto is now open source. The code is on GitHub at github.com/LevkaDev/Rapto, and contributions are welcome.
+- Found a bug? Report it from Settings → About, on GitHub or by email. Only your versions and display setup are filled in, and nothing is sent until you send it.
+
+### Improvements
+- 
+
+### Fixes: Manual and groups
+- Swapping windows in Manual mode now always lands both windows exactly in their slots.
+
+### Fixes: Desktops and workspaces
+- Windows on other desktops are no longer resized or pulled into the current layout when you switch desktops.
 
 ---
 
