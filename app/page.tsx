@@ -309,7 +309,7 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "How easy is it to set up and learn Rapto?",
-    a: "Settings → Guide lets you pick a Starter Profile (Drag to Snap, Manual, or Auto-tiling) in one click and runs a local Smart App Scanner to suggest terminals, editors, and VMs where shortcuts should pause. While you drag a window or an app icon, live hints show what will happen on release and which modifier key (Control, Shift, or Option) changes it — updating the preview immediately as you press a key.",
+    a: "Settings → Guide lets you pick a Starter Profile (Drag to Snap, Manual, or Auto-tiling) in one click and runs a local Smart App Scanner to suggest terminals, editors, and VMs where shortcuts should pause. While you drag a window or an app icon, live hints show what will happen on release and which modifier key (Control, Shift, or Option) changes it — updating the preview immediately as you press a key. Hints step aside once you have learned a key, and you can bring them back in Settings → Guide.",
   },
   {
     q: "Does Rapto work per monitor and per Space?",
