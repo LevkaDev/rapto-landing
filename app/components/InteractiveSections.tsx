@@ -41,6 +41,9 @@ import {
   BatteryFull,
   Search,
   Play,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 // ============================================
@@ -106,6 +109,460 @@ function MiniWindow({
 // FEATURE DEMOS
 // ============================================
 
+
+// ============================================
+// WINDOW FLOW 3D DEMO
+// ============================================
+type FlowThemeId = "azure" | "dusk" | "night" | "glass";
+
+const FLOW_THEMES: Array<{
+  id: FlowThemeId;
+  name: string;
+  background: string;
+  glow: string;
+  cloudTint: string;
+  stars?: boolean;
+}> = [
+  {
+    id: "azure",
+    name: "Sky · Azure",
+    background:
+      "linear-gradient(180deg, #0b1b36 0%, #1d3f6e 48%, #4d7aa8 82%, #0c1728 100%)",
+    glow: "radial-gradient(ellipse 68% 54% at 34% 78%, rgba(208,229,255,0.42) 0%, transparent 72%)",
+    cloudTint: "rgba(216,232,252,0.22)",
+  },
+  {
+    id: "dusk",
+    name: "Sky · Dusk",
+    background:
+      "linear-gradient(180deg, #081229 0%, #183058 46%, #4a5b7f 76%, #0b1120 100%)",
+    glow: "radial-gradient(ellipse 68% 58% at 68% 82%, rgba(250,148,92,0.46) 0%, rgba(120,58,96,0.22) 45%, transparent 74%)",
+    cloudTint: "rgba(240,185,165,0.20)",
+  },
+  {
+    id: "night",
+    name: "Sky · Night",
+    background:
+      "linear-gradient(180deg, #040813 0%, #0b1832 50%, #192d50 82%, #050914 100%)",
+    glow: "radial-gradient(ellipse 52% 46% at 74% 26%, rgba(145,190,255,0.28) 0%, transparent 70%)",
+    cloudTint: "rgba(116,154,212,0.16)",
+    stars: true,
+  },
+  {
+    id: "glass",
+    name: "Glass",
+    background:
+      "radial-gradient(circle at 22% 30%, rgba(191,255,0,0.22) 0%, transparent 45%), radial-gradient(circle at 78% 70%, rgba(0,255,229,0.22) 0%, transparent 48%), linear-gradient(160deg, #131823 0%, #0c1018 100%)",
+    glow: "linear-gradient(180deg, rgba(224,238,255,0.12) 0%, transparent 55%)",
+    cloudTint: "rgba(255,255,255,0.06)",
+  },
+];
+
+const FLOW_CARDS: Array<{
+  id: string;
+  app: string;
+  title: string;
+  icon: SwitcherApp;
+  desktop: number;
+  isCurrent?: boolean;
+  badge?: string;
+  accent: string;
+  surface: string;
+  kind: "code" | "browser" | "chat" | "terminal" | "notes";
+}> = [
+  {
+    id: "vscode",
+    app: "Visual Studio Code",
+    title: "WindowFlow.swift",
+    icon: "vscode",
+    desktop: 1,
+    isCurrent: true,
+    badge: "Current",
+    accent: "#60A5FA",
+    surface: "#121826",
+    kind: "code",
+  },
+  {
+    id: "safari",
+    app: "Safari",
+    title: "Rapto Documentation",
+    icon: "safari",
+    desktop: 1,
+    badge: "Previous",
+    accent: "#38BDF8",
+    surface: "#161E2E",
+    kind: "browser",
+  },
+  {
+    id: "telegram",
+    app: "Telegram",
+    title: "Product Design",
+    icon: "telegram",
+    desktop: 2,
+    badge: "Frequent",
+    accent: "#2AABEE",
+    surface: "#131C2B",
+    kind: "chat",
+  },
+  {
+    id: "terminal",
+    app: "Terminal",
+    title: "xcodebuild — rapto",
+    icon: "terminal",
+    desktop: 2,
+    accent: "#BFFF00",
+    surface: "#0E131B",
+    kind: "terminal",
+  },
+  {
+    id: "notes",
+    app: "Notes",
+    title: "Release Checklist",
+    icon: "notes",
+    desktop: 3,
+    accent: "#FACC15",
+    surface: "#1C1A16",
+    kind: "notes",
+  },
+];
+
+function FlowWindowMock({ card }: { card: (typeof FLOW_CARDS)[number] }) {
+  return (
+    <div
+      className="w-full h-full flex flex-col overflow-hidden"
+      style={{ background: card.surface }}
+    >
+      {/* Window chrome */}
+      <div className="h-6 px-2.5 flex items-center gap-1.5 border-b border-white/10 bg-black/25 shrink-0">
+        <span aria-hidden="true" className="w-2 h-2 rounded-full bg-[#FF5F56]/85" />
+        <span aria-hidden="true" className="w-2 h-2 rounded-full bg-[#FFBD2E]/85" />
+        <span aria-hidden="true" className="w-2 h-2 rounded-full bg-[#27C93F]/85" />
+        <span className="ml-2 text-[10px] font-medium text-white/60 truncate">{card.title}</span>
+      </div>
+
+      {/* Stylized live window body */}
+      <div className="flex-1 p-3 flex flex-col gap-2 overflow-hidden">
+        {card.kind === "code" && (
+          <div className="flex gap-2.5 h-full">
+            <div className="w-1/4 rounded-md bg-white/[0.04] p-1.5 space-y-1.5">
+              <div className="h-1.5 w-3/4 rounded bg-white/20" />
+              <div className="h-1.5 w-full rounded bg-sky-400/45" />
+              <div className="h-1.5 w-2/3 rounded bg-white/12" />
+              <div className="h-1.5 w-4/5 rounded bg-white/12" />
+            </div>
+            <div className="flex-1 rounded-md bg-black/25 p-2 space-y-1.5">
+              <div className="h-1.5 w-2/5 rounded bg-sky-400/60" />
+              <div className="h-1.5 w-4/5 rounded bg-white/20 ml-2" />
+              <div className="h-1.5 w-3/5 rounded bg-lime-300/45 ml-4" />
+              <div className="h-1.5 w-2/3 rounded bg-white/15 ml-4" />
+              <div className="h-1.5 w-1/2 rounded bg-purple-300/40 ml-2" />
+              <div className="h-1.5 w-3/4 rounded bg-white/15" />
+            </div>
+          </div>
+        )}
+        {card.kind === "browser" && (
+          <>
+            <div className="h-5 rounded-md bg-white/[0.07] px-2 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-sky-400/70" />
+              <span className="text-[9px] font-mono text-white/50 truncate">rapto.app/docs</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 flex-1">
+              <div className="col-span-2 rounded-md bg-white/[0.05] p-2 space-y-1.5">
+                <div className="h-2 w-2/3 rounded bg-white/30" />
+                <div className="h-1.5 w-full rounded bg-white/15" />
+                <div className="h-1.5 w-5/6 rounded bg-white/15" />
+                <div className="h-6 w-full rounded bg-lime-300/20 border border-lime-300/35 mt-2" />
+              </div>
+              <div className="rounded-md bg-white/[0.04] p-2 space-y-1.5">
+                <div className="h-1.5 w-3/4 rounded bg-white/20" />
+                <div className="h-1.5 w-full rounded bg-white/12" />
+                <div className="h-1.5 w-2/3 rounded bg-white/12" />
+              </div>
+            </div>
+          </>
+        )}
+        {card.kind === "chat" && (
+          <div className="flex gap-2 h-full">
+            <div className="w-1/3 rounded-md bg-white/[0.04] p-1.5 space-y-2">
+              {[0, 1, 2].map((r) => (
+                <div key={r} className="flex items-center gap-1.5">
+                  <div className="w-3.5 h-3.5 rounded-full bg-sky-400/35 shrink-0" />
+                  <div className="h-1.5 flex-1 rounded bg-white/18" />
+                </div>
+              ))}
+            </div>
+            <div className="flex-1 flex flex-col justify-end gap-1.5 p-1">
+              <div className="self-start h-4 w-3/4 rounded-lg bg-white/10" />
+              <div className="self-end h-4 w-2/3 rounded-lg bg-sky-400/35 border border-sky-400/40" />
+              <div className="self-start h-4 w-4/5 rounded-lg bg-white/10" />
+            </div>
+          </div>
+        )}
+        {card.kind === "terminal" && (
+          <div className="font-mono text-[9px] leading-relaxed text-white/75 space-y-1">
+            <div><span style={{ color: ACCENT }}>➜</span> swift test --filter WindowFlow</div>
+            <div className="text-emerald-300/80">✔ 15 tests passed in 0.01s</div>
+            <div className="text-white/45">Building Release archive…</div>
+            <div className="h-1.5 w-2/3 rounded bg-lime-300/30 mt-1" />
+          </div>
+        )}
+        {card.kind === "notes" && (
+          <div className="space-y-2 pt-0.5">
+            <div className="h-2.5 w-1/2 rounded bg-amber-300/50" />
+            {[0, 1, 2, 3].map((row) => (
+              <div key={row} className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-sm border border-amber-300/50 bg-amber-300/20" />
+                <div className="h-1.5 rounded bg-white/20" style={{ width: `${72 - row * 9}%` }} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function WindowFlowDemo() {
+  const [active, setActive] = useState(0);
+  const [themeIndex, setThemeIndex] = useState(0);
+  const lastInteraction = useRef(0);
+  const theme = FLOW_THEMES[themeIndex];
+  const currentCard = FLOW_CARDS[active];
+
+  const markInteraction = () => {
+    lastInteraction.current = Date.now();
+  };
+
+  useCardLoop(() => {
+    if (Date.now() - lastInteraction.current < 6000) return;
+    setActive((i) => (i + 1) % FLOW_CARDS.length);
+  }, 2400);
+
+  const step = (delta: number) => {
+    markInteraction();
+    setActive((i) => Math.max(0, Math.min(FLOW_CARDS.length - 1, i + delta)));
+  };
+
+  const selectCard = (index: number) => {
+    markInteraction();
+    setActive(index);
+  };
+
+  const cycleTheme = () => {
+    markInteraction();
+    setThemeIndex((t) => (t + 1) % FLOW_THEMES.length);
+  };
+
+  return (
+    <div
+      className="relative rounded-2xl overflow-hidden border border-white/15 select-none"
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          step(-1);
+        } else if (e.key === "ArrowRight") {
+          e.preventDefault();
+          step(1);
+        } else if (e.key === "b" || e.key === "B") {
+          e.preventDefault();
+          cycleTheme();
+        }
+      }}
+    >
+      {/* Living atmospheric backdrop */}
+      <div
+        className="relative px-4 pt-5 pb-4 transition-[background] duration-500"
+        style={{ background: theme.background }}
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 transition-opacity duration-500"
+          style={{ background: theme.glow }}
+        />
+        {/* Soft volumetric cloud bands */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-10 h-24 blur-2xl opacity-80"
+          style={{
+            background: `radial-gradient(ellipse 46% 65% at 24% 60%, ${theme.cloudTint}, transparent 70%), radial-gradient(ellipse 50% 65% at 76% 52%, ${theme.cloudTint}, transparent 72%)`,
+          }}
+        />
+        {theme.stars && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 opacity-75"
+            style={{
+              backgroundImage:
+                "radial-gradient(1px 1px at 14% 22%, #fff, transparent), radial-gradient(1.5px 1.5px at 28% 14%, #dbeafe, transparent), radial-gradient(1px 1px at 44% 18%, #fff, transparent), radial-gradient(1.5px 1.5px at 62% 12%, #fef3c7, transparent), radial-gradient(1px 1px at 78% 24%, #fff, transparent), radial-gradient(1.5px 1.5px at 88% 16%, #dbeafe, transparent), radial-gradient(1px 1px at 35% 32%, #fff, transparent), radial-gradient(1px 1px at 68% 30%, #fff, transparent)",
+            }}
+          />
+        )}
+
+        {/* Top theme bar */}
+        <div className="relative z-20 flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/40 border border-white/15 text-[11px] font-mono text-white/80 backdrop-blur-md">
+            <span>⌃⌥S</span>
+            <span aria-hidden="true" className="text-white/35">·</span>
+            <span>Smart Order</span>
+          </div>
+
+          <div role="group" aria-label="Window Flow backdrop themes" className="flex flex-wrap items-center gap-1 bg-black/40 p-1 rounded-full border border-white/15 backdrop-blur-md">
+            {FLOW_THEMES.map((t, idx) => {
+              const selected = idx === themeIndex;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => {
+                    markInteraction();
+                    setThemeIndex(idx);
+                  }}
+                  className="px-2.5 py-1 min-h-6 rounded-full text-[11px] font-medium transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                  style={{
+                    background: selected ? "rgba(255,255,255,0.18)" : "transparent",
+                    color: selected ? "#ffffff" : "rgba(255,255,255,0.68)",
+                  }}
+                >
+                  {t.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 3D Amphitheatre stage (compositor-only transform & opacity) */}
+        <div
+          className="relative h-48 sm:h-56 flex items-center justify-center overflow-hidden"
+          style={{ perspective: "1050px" }}
+        >
+          {/* Prev / Next keyboard-accessible controls */}
+          <button
+            type="button"
+            onClick={() => step(-1)}
+            disabled={active === 0}
+            aria-label="Previous window"
+            className="absolute left-1 sm:left-2 z-30 w-8 h-8 rounded-full bg-black/45 border border-white/15 text-white/85 flex items-center justify-center backdrop-blur-md transition-opacity hover:bg-black/65 disabled:opacity-25 cursor-pointer disabled:cursor-default focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+          >
+            <ChevronLeft aria-hidden="true" className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => step(1)}
+            disabled={active === FLOW_CARDS.length - 1}
+            aria-label="Next window"
+            className="absolute right-1 sm:right-2 z-30 w-8 h-8 rounded-full bg-black/45 border border-white/15 text-white/85 flex items-center justify-center backdrop-blur-md transition-opacity hover:bg-black/65 disabled:opacity-25 cursor-pointer disabled:cursor-default focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+          >
+            <ChevronRight aria-hidden="true" className="w-4 h-4" />
+          </button>
+
+          {FLOW_CARDS.map((card, index) => {
+            const delta = index - active;
+            const absDelta = Math.abs(delta);
+            const isCenter = delta === 0;
+            const translateX = delta * 175 - Math.sign(delta) * Math.max(0, absDelta - 1) * 32;
+            const translateZ = -Math.pow(absDelta, 0.9) * 110;
+            const rotateY = -Math.tanh(delta * 1.1) * 34;
+            const scale = isCenter ? 1 : Math.max(0.7, 0.84 - (absDelta - 1) * 0.08);
+            const opacity = absDelta > 2 ? 0 : isCenter ? 1 : absDelta === 1 ? 0.88 : 0.56;
+
+            return (
+              <motion.button
+                key={card.id}
+                type="button"
+                aria-current={isCenter ? "true" : undefined}
+                aria-label={`${card.title} — ${card.app}, Desktop ${card.desktop}`}
+                onClick={() => selectCard(index)}
+                animate={{
+                  transform: `translate3d(${translateX}px, ${absDelta * 5}px, ${translateZ}px) rotateY(${rotateY}deg) scale(${scale})`,
+                  opacity,
+                }}
+                transition={{ type: "spring", stiffness: 250, damping: 28 }}
+                style={{ zIndex: 20 - absDelta }}
+                className="absolute w-56 sm:w-72 h-36 sm:h-44 rounded-xl overflow-hidden border border-white/20 shadow-[0_18px_40px_rgba(0,0,0,0.55)] text-left cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+              >
+                <FlowWindowMock card={card} />
+                {/* Subtle side dimming */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-[#050811] transition-opacity duration-300"
+                  style={{ opacity: isCenter ? 0 : Math.min(0.36, absDelta * 0.2) }}
+                />
+                {/* Corner app badge on side cards */}
+                {!isCenter && (
+                  <span
+                    aria-hidden="true"
+                    className={`absolute bottom-2 ${delta < 0 ? "left-2" : "right-2"} p-1 rounded-lg bg-black/55 backdrop-blur-md border border-white/15 shadow-md`}
+                  >
+                    <SwitcherAppIcon app={card.icon} size={18} />
+                  </span>
+                )}
+              </motion.button>
+            );
+          })}
+        </div>
+
+        {/* Sculpted Glass Title HUD + Page Dots */}
+        <div className="relative z-20 flex flex-col items-center gap-2.5 mt-1">
+          <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-[#0a0d16]/85 border border-white/15 shadow-xl backdrop-blur-md max-w-full">
+            <span className="shrink-0 flex">
+              <SwitcherAppIcon app={currentCard.icon} size={24} />
+            </span>
+            <div className="min-w-0 text-left">
+              <div className="text-xs sm:text-sm font-semibold text-white truncate leading-tight">
+                {currentCard.title}
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] text-white/65 leading-tight mt-0.5">
+                {currentCard.isCurrent && (
+                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
+                )}
+                <span className="truncate">
+                  {currentCard.app} · Desktop {currentCard.desktop}
+                  {currentCard.isCurrent ? " · Current" : ""}
+                </span>
+                {currentCard.badge && !currentCard.isCurrent && (
+                  <span className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-white/85">
+                    {currentCard.badge}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive page dots */}
+          <div className="flex items-center gap-1.5" role="group" aria-label="Choose window card">
+            {FLOW_CARDS.map((card, i) => {
+              const isCurrent = i === active;
+              return (
+                <button
+                  key={card.id}
+                  type="button"
+                  aria-label={`Show ${card.app}`}
+                  aria-current={isCurrent ? "true" : undefined}
+                  onClick={() => selectCard(i)}
+                  className="p-2 flex items-center justify-center cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--accent)] rounded-full"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="block h-1.5 rounded-full bg-white transition-all duration-200"
+                    style={{
+                      width: isCurrent ? 18 : 6,
+                      opacity: isCurrent ? 0.95 : 0.35,
+                    }}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="text-[11px] text-white/55 text-center">
+            Click a card or use ← → · Switch themes with the bar above or <kbd className="px-1 py-0.5 rounded bg-white/10 font-mono text-white/80">B</kbd>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const SWITCHER_WINDOWS: Array<{ app: string; title: string; icon: SwitcherApp; desktop: number }> = [
   { app: "TradingView", title: "BTCUSD", icon: "tradingview", desktop: 1 },
@@ -3013,12 +3470,24 @@ function Features() {
 
         {/* Feature grid - asymmetric */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Window Flow - full-width lead showcase */}
+          <FeatureCard
+            icon={Sparkles}
+            title="Window Flow"
+            description="Press ⌃⌥S to scroll through live 3D previews of every window across your desktops. Your most used windows stay close, four themes switch with B, and it still works as an app-icon overlay without Screen Recording."
+            index={0}
+            full
+            interactive
+          >
+            <WindowFlowDemo />
+          </FeatureCard>
+
           {/* Window Switcher - wide lead card */}
           <FeatureCard
             icon={Search}
             title="Window Switcher"
             description="Type the first letters of an app or window name and jump to it, on any desktop or display"
-            index={0}
+            index={1}
             wide
             interactive
           >

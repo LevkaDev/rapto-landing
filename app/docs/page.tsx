@@ -28,6 +28,7 @@ import {
   Ban,
   PanelTop,
   Search,
+  Sparkles,
   Briefcase,
 } from "lucide-react";
 
@@ -283,7 +284,7 @@ export default function DocsPage() {
                 <li className="flex gap-3">
                   <div className="w-2 h-2 rounded-full mt-2 shrink-0" style={{ backgroundColor: ACCENT }} />
                   <div>
-                    <strong>Screen Recording</strong> (optional) — Lets Rapto show live window previews in the layout overlay and match the highlight border to each window&apos;s corners. The images stay in memory on your Mac and are never saved or uploaded.
+                    <strong>Screen Recording</strong> (optional) — Lets Rapto show live window previews in Window Flow and the layout overlay, and match the highlight border to each window&apos;s corners. Without it, Window Flow still works as an app-icon overlay. The images stay in memory on your Mac and are never saved or uploaded.
                   </div>
                 </li>
               </ul>
@@ -540,6 +541,10 @@ export default function DocsPage() {
                   <Shortcut keys={["⌃", "⌥", "G"]} />
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-[var(--card-border)]">
+                  <span>Window Flow</span>
+                  <Shortcut keys={["⌃", "⌥", "S"]} />
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-[var(--card-border)]">
                   <span>Window Switcher</span>
                   <Shortcut keys={["⌃", "⌥", "W"]} />
                 </div>
@@ -707,6 +712,25 @@ export default function DocsPage() {
             {/* Features */}
             <Section id="features" title="Features" icon={LayoutGrid}>
               <div className="space-y-8">
+                {/* Window Flow */}
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Sparkles className="w-5 h-5" style={{ color: ACCENT }} />
+                    <h3 className="font-display text-xl font-semibold">Window Flow</h3>
+                  </div>
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    Press <Shortcut keys={["⌃", "⌥", "S"]} /> (<Shortcut keys={["⌥", "S"]} /> in Vim Style) to open a 3D strip of every window across all desktops on your active display. Scroll with your trackpad, mouse wheel, arrow keys, or press <Shortcut keys={["1-9"]} /> to jump to a card, then press <Shortcut keys={["Return"]} /> (or click) to switch to it, or <Shortcut keys={["Esc"]} /> to close.
+                  </p>
+                  <ul className="space-y-1 text-[var(--foreground-muted)] mb-2">
+                    <li>• <strong>Smart order.</strong> Your current window opens in the center, your previous window sits right next to it for quick back-and-forth switching, and your most frequently used windows follow close behind.</li>
+                    <li>• <strong>Four backdrop themes.</strong> Press <Shortcut keys={["B"]} /> while Window Flow is open to switch between <strong>Sky · Azure</strong>, <strong>Sky · Dusk</strong>, <strong>Sky · Night</strong>, and <strong>Glass</strong>. Your choice is remembered across restarts.</li>
+                    <li>• <strong>Works without Screen Recording.</strong> If Screen Recording permission is off, Window Flow still opens as a clean app-icon overlay with window titles and a shortcut to System Settings if you want live previews later.</li>
+                  </ul>
+                  <p className="text-[var(--foreground-muted)]">
+                    Change the shortcut to any key combination in Settings → Shortcuts → Window Focus.
+                  </p>
+                </div>
+
                 {/* Window Switcher */}
                 <div>
                   <div className="flex items-center gap-3 mb-3">
@@ -833,6 +857,9 @@ export default function DocsPage() {
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-2">
                     In Manual mode, drag the edge of a window and its neighbors follow as you drag, filling the space. No overlaps.
+                  </p>
+                  <p className="text-[var(--foreground-muted)] mb-2">
+                    The resize shortcuts do the same from the keyboard: they move the border the window shares with its neighbor, and a window at the edge of the screen resizes from its other side.
                   </p>
                   <ul className="space-y-1 text-[var(--foreground-muted)]">
                     <li>• <strong>The whole slot resizes</strong>, including the windows of a group hidden behind the front one.</li>

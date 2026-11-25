@@ -116,8 +116,9 @@ export default function PrivacyPage() {
               </li>
               <li>
                 <strong>Screen Recording</strong> is optional. It lets Rapto show live previews of your windows in
-                the layout overlay and match the highlight border to each window&rsquo;s corners. The images stay in
-                memory on your Mac and are never saved or uploaded.
+                Window Flow and the layout overlay, and match the highlight border to each window&rsquo;s corners.
+                Without it, Window Flow shows app icons instead. The images stay in memory on your Mac and are never
+                saved or uploaded.
               </li>
             </ul>
           </Section>

@@ -41,7 +41,7 @@ const softwareJsonLd = {
   downloadUrl: "https://rapto.app/download",
   codeRepository: GITHUB_REPO_URL,
   description:
-    "Free and open-source native macOS tiling window manager with Auto Tiling, custom layouts, Desktops Bar, window groups, and one-click Workspaces per display and Space.",
+    "Free and open-source native macOS tiling window manager with Auto Tiling, custom layouts, Window Flow 3D switching, Desktops Bar, window groups, and one-click Workspaces per display and Space.",
   offers: {
     "@type": "Offer",
     price: "0",
@@ -104,7 +104,7 @@ function Hero() {
 
           <p className="text-lg md:text-xl text-[var(--foreground-muted)] max-w-2xl mx-auto leading-relaxed">
             Rapto puts every window in its place with automatic tiling, ready-made and custom layouts,
-            a menu bar Desktops Bar, window groups, and one-click Workspaces.
+            Window Flow 3D switching, a menu bar Desktops Bar, window groups, and one-click Workspaces.
           </p>
         </div>
 
@@ -301,7 +301,7 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "Why does Rapto ask for Screen Recording permission?",
-    a: "Screen Recording is optional. It lets Rapto show live previews of your windows in the layout overlay and match the highlight border to each window's corners. The images stay in memory on your Mac and are never saved or uploaded. Without it, Rapto shows app icons instead of previews and everything else works the same.",
+    a: "Screen Recording is optional. It lets Rapto show live previews of your windows in Window Flow and the layout overlay, and match the highlight border to each window's corners. The images stay in memory on your Mac and are never saved or uploaded. Without it, Window Flow and the overlay show app icons instead of previews and everything else works the same.",
   },
   {
     q: "Is Rapto safe? Does it record or upload my screen?",
@@ -314,6 +314,10 @@ const FAQS: Array<{ q: string; a: string }> = [
   {
     q: "Does Rapto work per monitor and per Space?",
     a: "Yes. You can choose a different mode (Auto Tiling, Manual, Drag to Snap, or None/Off) and a different layout independently for each display and each macOS Space.",
+  },
+  {
+    q: "What is Window Flow, and how is it different from Window Switcher?",
+    a: "Window Flow (⌃⌥S, or ⌥S in Vim Style) is a visual 3D strip of live window previews across all desktops on your active display — scroll with your trackpad or arrows and click or press Return to jump straight there. Your previous window sits right next to the current one, followed by the windows you use most. Window Switcher (⌃⌥W) is for typing: enter a couple of letters of an app or window name to filter and jump immediately.",
   },
   {
     q: "What is the Desktops Bar?",
