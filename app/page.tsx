@@ -309,7 +309,7 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "How easy is it to set up and learn Rapto?",
-    a: "Settings → Guide lets you pick a Starter Profile (Drag to Snap, Manual, or Auto-tiling) in one click and runs a local Smart App Scanner to suggest terminals, editors, and VMs where shortcuts should pause. While you drag a window or an app icon, live hints show what will happen on release and which modifier key (Control, Shift, or Option) changes it — updating the preview immediately as you press a key. Hints step aside once you have learned a key, and you can bring them back in Settings → Guide.",
+    a: "First launch automatically tunes window limits and layouts to your display, lets you preview with Arrange Now (and one-click Put Back), and offers a short two-part mouse tour covering your mode, the Desktops Bar, and Window Flow. Settings → Guide also lets you switch starter profiles in one click and runs a local Smart App Scanner for terminals, editors, and VMs. While you drag a window or an app icon, live hints show what will happen on release and which modifier key changes it — stepping aside once you learn each feature.",
   },
   {
     q: "Does Rapto work per monitor and per Space?",
@@ -317,11 +317,11 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "What is Window Flow, and how is it different from Window Switcher?",
-    a: "Window Flow (⌃⌥S, or ⌥S in Vim Style) is a visual 3D strip of live window previews across all desktops on your active display — scroll with your trackpad or arrows and click or press Return to jump straight there. Your previous window sits right next to the current one, followed by the windows you use most. Window Switcher (⌃⌥W) is for typing: enter a couple of letters of an app or window name to filter and jump immediately.",
+    a: "Window Flow (click the circular button on the left of the Desktops Bar, pick Open Window Flow in the menu, or press ⌃⌥S / ⌥S in Vim Style) is a visual 3D strip of live window previews across all desktops on your active display — scroll with your trackpad or arrows and click or press Return to jump straight there. Your previous window sits right next to the current one, followed by the windows you use most. Window Switcher (⌃⌥W) is for typing: enter a couple of letters of an app or window name to filter and jump immediately.",
   },
   {
     q: "What is the Desktops Bar?",
-    a: "A compact bar in the middle of your menu bar that shows every Space and the apps open on it. Click a number to jump there instantly without macOS's slide animation, drag an app icon onto another desktop to move its window there (hold Option to switch along with it), drop it on “+” to open a new desktop, or right-click any app icon to ignore that app or pause shortcuts in it right away.",
+    a: "A compact bar in the middle of your menu bar that shows every Space and the apps open on it, with a one-click Window Flow button on the left and a “+” button on the right. Click a number to jump there instantly without macOS's slide animation, drag an app icon onto another desktop to move its window there (hold Option to switch along with it), drop it on “+” to open a new desktop, or right-click to switch modes, pause Rapto, or set per-app rules.",
   },
   {
     q: "How does the Desktops Bar work on a MacBook with a notch, or with multiple monitors?",

@@ -326,13 +326,13 @@ export default function DocsPage() {
 
               <h3 className="font-display text-xl font-semibold mb-3">First Launch</h3>
               <p className="text-[var(--foreground-muted)]">
-                After launching, you&apos;ll see the Rapto icon in your menu bar. Click it to access settings, change modes, or select templates. Press <Shortcut keys={["⌃", "⌥", "G"]} /> to open the overlay and start organizing your windows.
+                After launching, you&apos;ll see the Rapto icon in your menu bar (shown by default on new installations). Click it to switch modes, pick layouts, pause Rapto, open Window Flow, or open Settings. Press <Shortcut keys={["⌃", "⌥", "G"]} /> to open the layout overlay.
               </p>
               <p className="text-[var(--foreground-muted)] mt-4">
-                During setup you choose how you like to arrange windows: Drag to Snap, Manual or Auto-tiling. If you pick Auto-tiling, you also choose how many windows to keep on screen (2–8). Rapto recommends 4 for laptops and regular monitors, and 5 for wide displays. You can change it anytime in Settings.
+                During setup you grant Accessibility and choose how you like to arrange windows: Drag to Snap, Manual, or Auto-tiling. Rapto automatically tunes window limits (2 for compact laptops, 3–4 for larger displays, 5 for wide displays), single-window layouts, and layout menus to your display (tucking ultrawide layouts into an Ultrawide submenu on laptops and standard monitors).
               </p>
               <p className="text-[var(--foreground-muted)] mt-4">
-                The last step of setup opens Settings → Guide, where you can pick a starter profile and tune Rapto for your apps.
+                Before finishing, you can try your chosen mode right away with <strong>Arrange Now</strong> (and one-click <strong>Put Back</strong> to restore your windows), turn on <strong>Launch at Login</strong>, and take a short two-part mouse tour covering your mode, the Desktops Bar, and Window Flow.
               </p>
             </Section>
 
@@ -350,7 +350,7 @@ export default function DocsPage() {
                     <h4 className="font-display text-lg font-semibold">Manual Mode</h4>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    Pick a layout or create your own, and Rapto does the rest. Choose a layout from the menu bar or the Desktops Bar, or draw one in the overlay, and your windows move into its slots. Want a window in a different slot? Drag it onto another window to group them, or hold Control to swap them (see Window Swap). You can also drop it into an empty slot or use the Swap hotkeys.
+                    Fixed grid for the desktop: windows stay in slots, extras group automatically, and a group indicator lets you switch between them. Pick a layout from the menu bar or the Desktops Bar, or draw one in the overlay, and your windows move into its slots. Want a window in a different slot? Drag it onto another window to group them, or hold Control to swap them (see Window Swap). You can also drop it into an empty slot or use the Swap hotkeys.
                   </p>
                   <p className="text-sm text-[var(--foreground-muted)]">
                     <strong>Best for:</strong> People who want to choose or design the layout themselves and let Rapto do the arranging.
@@ -419,7 +419,7 @@ export default function DocsPage() {
                 While you drag a window, the highlighted slot or zone says what will happen when you let go (Move here, Swap, Snap here, Groups with…) and which key changes it. Press or release Control or Shift while holding the window and the preview changes right away, without moving the mouse. A key&apos;s hint goes away after you have used that key ten times.
               </p>
               <p className="text-[var(--foreground-muted)]">
-                The first few times you use window groups, Focus Mode, snap-back, or a Manual desktop without a layout, Rapto shows a short tip under the Desktops Bar. Click it to dismiss it. Turn tips off, or show them again, in Settings → Guide.
+                Short contextual tips appear under the Desktops Bar when they are useful — such as when you use window groups, Focus Mode, snap-back in Manual or Auto-tiling, add a second desktop, have many windows open, or are ready for Workspaces — and step aside once you use the feature. Click a tip to dismiss it, or turn tips off and bring them back in Settings → Guide.
               </p>
             </Section>
 
@@ -477,6 +477,11 @@ export default function DocsPage() {
                 While a window is moving, the screen may briefly flash to the other desktop and back. That&apos;s how macOS moves windows between desktops.
               </p>
 
+              <h3 className="font-display text-xl font-semibold mb-3">Window Flow Button</h3>
+              <p className="text-[var(--foreground-muted)] mb-6">
+                Click the circular <strong>Window Flow</strong> button on the left of each display&apos;s bar to open Window Flow for that display in one click — no shortcut needed.
+              </p>
+
               <h3 className="font-display text-xl font-semibold mb-3">Adding a Desktop</h3>
               <p className="text-[var(--foreground-muted)] mb-3">
                 Click the <strong>+</strong> button at the end of the bar to add a desktop. Drop an app icon on <strong>+</strong> to add a desktop and move that app&apos;s window onto it.
@@ -487,7 +492,7 @@ export default function DocsPage() {
 
               <h3 className="font-display text-xl font-semibold mb-3 mt-8">Desktop Menu</h3>
               <p className="text-[var(--foreground-muted)] mb-6">
-                Right-click a desktop to choose its mode (Manual, Auto Tiling or Drag to Snap) and layout, open the overlay, restore the layout, or open Settings. While the Desktops Bar is on, the Rapto menu bar icon is hidden, since the bar has the same controls. You can bring the icon back in Settings → General → Menu Bar.
+                Right-click a desktop to choose its mode (Manual, Auto Tiling or Drag to Snap) and layout, open Window Flow or the layout overlay, restore the layout, pause or resume Rapto, or open Settings. On new installations, the Rapto menu bar icon is shown by default alongside the Desktops Bar (existing setups keep their prior setting). You can hide or show the icon anytime in Settings → General → Menu Bar.
               </p>
               <p className="text-[var(--foreground-muted)] mb-6">
                 Right-click an app icon in the bar to get a submenu with the app&apos;s name. <strong>Always Ignore</strong> keeps Rapto away from that app&apos;s windows, and <strong>Pause Shortcuts</strong> turns off Rapto&apos;s shortcuts while the app is in front. Both take effect right away. The same submenu for the app in front is in the menu bar icon under Quick Actions.
@@ -495,7 +500,7 @@ export default function DocsPage() {
 
               <h3 className="font-display text-xl font-semibold mb-3">MacBooks with a Notch</h3>
               <p className="text-[var(--foreground-muted)] mb-3">
-                On a screen with a notch, the bar stays hidden. Point at the notch and it drops down below it. Move away and it hides again. It also shows for a moment when you switch desktops. Choose how it appears with <strong>Show Desktops Bar</strong> in Settings → General → Menu Bar:
+                On a screen with a notch, the bar stays hidden. Point at the notch and it drops down below it. Move away and it hides again. It also shows for a moment when you switch desktops. On a new setup, a brief upward hint points to the hidden bar under the notch and disappears as soon as you reveal it. Choose how it appears with <strong>Show Desktops Bar</strong> in Settings → General → Menu Bar:
               </p>
               <ul className="space-y-2 text-[var(--foreground-muted)] mb-6">
                 <li>• <strong>Always On</strong> — Always shown. On screens with a notch it sits just below the menu bar</li>
@@ -719,7 +724,7 @@ export default function DocsPage() {
                     <h3 className="font-display text-xl font-semibold">Window Flow</h3>
                   </div>
                   <p className="text-[var(--foreground-muted)] mb-2">
-                    Press <Shortcut keys={["⌃", "⌥", "S"]} /> (<Shortcut keys={["⌥", "S"]} /> in Vim Style) to open a 3D strip of every window across all desktops on your active display. Scroll with your trackpad, mouse wheel, arrow keys, or press <Shortcut keys={["1-9"]} /> to jump to a card, then press <Shortcut keys={["Return"]} /> (or click) to switch to it, or <Shortcut keys={["Esc"]} /> to close.
+                    Click the circular <strong>Window Flow</strong> button on the left of the Desktops Bar, choose <strong>Open Window Flow</strong> from the menu, or press <Shortcut keys={["⌃", "⌥", "S"]} /> (<Shortcut keys={["⌥", "S"]} /> in Vim Style) to open a 3D strip of every window across all desktops on your active display. Scroll with your trackpad, mouse wheel, arrow keys, or press <Shortcut keys={["1-9"]} /> to jump to a card, then press <Shortcut keys={["Return"]} /> (or click) to switch to it, or <Shortcut keys={["Esc"]} /> to close.
                   </p>
                   <ul className="space-y-1 text-[var(--foreground-muted)] mb-2">
                     <li>• <strong>Smart order.</strong> Your current window opens in the center, your previous window sits right next to it for quick back-and-forth switching, and your most frequently used windows follow close behind.</li>
@@ -916,7 +921,7 @@ export default function DocsPage() {
                 <li>• <strong>Launch at Login</strong> — Start Rapto automatically when you log in</li>
                 <li>• <strong>Desktops Bar</strong> — Show your desktops and their apps in the menu bar</li>
                 <li>• <strong>Show Desktops Bar</strong> — Always On, Auto-Hide or Notched Screens (see <a href="#desktops-bar" style={{ color: ACCENT }}>Desktops Bar</a>)</li>
-                <li>• <strong>Menu Bar Icon</strong> — Show the Rapto icon while the Desktops Bar is on</li>
+                <li>• <strong>Menu Bar Icon</strong> — Show the Rapto icon in the menu bar alongside the Desktops Bar (on by default for new installations). Click it to switch modes, choose layouts, open Window Flow, or choose <strong>Pause Rapto / Resume Rapto</strong> to temporarily suspend window management without losing your layouts</li>
                 <li>• <strong>Go With Moved Window</strong> — Go to the desktop you move a window to, by dragging or with a shortcut. Hold Option while dragging to do the opposite</li>
                 <li>• <strong>Settings File</strong> — <strong>Export…</strong> saves your settings, shortcuts, layouts and workspaces to one file. <strong>Import…</strong> loads them back, on this Mac or another one, and restarts Rapto. Your current settings are kept as a backup, which <strong>Show Backups</strong> opens. On another Mac, choose a layout for each desktop after the import</li>
               </ul>

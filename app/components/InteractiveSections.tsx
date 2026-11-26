@@ -3474,7 +3474,7 @@ function Features() {
           <FeatureCard
             icon={Sparkles}
             title="Window Flow"
-            description="Press ⌃⌥S to scroll through live 3D previews of every window across your desktops. Your most used windows stay close, four themes switch with B, and it still works as an app-icon overlay without Screen Recording."
+            description="Click the Desktops Bar Flow button or press ⌃⌥S to scroll through live 3D previews of every window across your desktops. Your most used windows stay close, four themes switch with B, and it still works as an app-icon overlay without Screen Recording."
             index={0}
             full
             interactive

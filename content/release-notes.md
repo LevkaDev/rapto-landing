@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 6.2
+## Version 6.3
 
 ### New
 - 
@@ -10,6 +10,31 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 6.2
+
+### New
+- Redesigned first-launch setup in the Window Flow look, with an Arrange Now preview (and one-click Put Back) and a short two-part mouse tour covering your chosen mode, the Desktops Bar, and Window Flow.
+- A circular Window Flow button now sits on the left of the Desktops Bar (and Open Window Flow is available in the menu), so you can open Window Flow in one click even without a shortcut.
+- Pause Rapto / Resume Rapto in the menu bar and Desktops Bar menu lets you suspend window management temporarily without losing your layouts.
+
+### Improvements
+- New installations automatically adapt window limits, single-window layouts, and layout menus to your display (tucking ultrawide layouts into an Ultrawide submenu on laptops and standard monitors), while keeping existing setups unchanged.
+- New installations now show a redesigned grid icon in the menu bar by default, and MacBooks with a notch briefly point up to the hidden Desktops Bar until you reveal it.
+- Short contextual tips now appear when they are useful — such as when Auto-tiling returns a window to its slot, when you add a second desktop, or when many windows are open — and step aside once you use the feature.
+- Clearer descriptions for Manual mode explain fixed slots, automatic window grouping, and switching with the group indicator.
+
+### Fixes: Manual and groups
+- A window dropped onto another window now lands in that window's slot, even when the other window doesn't fill its slot.
+
+### Fixes: Desktops and workspaces
+- Moving a window to another desktop from the Desktops Bar now works for Orca, Yab and other apps where the usual spot in the title bar doesn't drag the window.
+
+### Fixes: Shortcuts and Settings
+- Apps that run Windows software through Wine, such as MetaTrader 5, can now be added to Ignored Apps and appear under Add Running App.
+- Choosing Drag to Snap, Manual, or Auto-tiling during onboarding or from Settings → Guide now activates right away on a new setup without switching modes back and forth.
 
 ---
 
