@@ -52,16 +52,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Rapto — Free & Open-Source Window Manager for macOS",
     description:
-      "Auto tiling, custom layouts, Desktops Bar, window groups, and one-click workspaces for macOS 26 Tahoe+.",
+      "Auto-tiling, custom layouts, Window Flow 3D switching, Desktops Bar, window groups, and one-click Workspaces for macOS 26 Tahoe+.",
     type: "website",
     url: "https://rapto.app",
     siteName: "Rapto",
     images: [
       {
-        url: "/og.png",
+        url: "/og.png?v=2",
         width: 1200,
         height: 630,
-        alt: "Rapto arranging macOS windows into a layout",
+        alt: "Rapto — native macOS window tiling and Window Flow 3D switcher",
       },
     ],
   },
@@ -69,8 +69,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Rapto — Free & Open-Source Window Manager for macOS",
     description:
-      "Auto tiling, custom layouts, Desktops Bar, window groups, and one-click workspaces for macOS 26 Tahoe+.",
-    images: ["/og.png"],
+      "Auto-tiling, custom layouts, Window Flow 3D switching, Desktops Bar, window groups, and one-click Workspaces for macOS 26 Tahoe+.",
+    images: ["/og.png?v=2"],
   },
 };
 
