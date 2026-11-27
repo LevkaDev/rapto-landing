@@ -324,7 +324,20 @@ export default function DocsPage() {
                 If these options stay on, macOS and Rapto may fight over window positions, and dragged windows can jump around. Rapto shows an orange warning in Settings → General until they&apos;re off. Rapto never changes these settings for you.
               </InfoBox>
 
-              <h3 className="font-display text-xl font-semibold mb-3">First Launch</h3>
+              <h3 className="font-display text-xl font-semibold mb-3 mt-6">Keep Your Desktop Numbers Fixed (Recommended)</h3>
+              <p className="text-[var(--foreground-muted)] mb-4">
+                By default, macOS automatically reorders your desktops based on which one you used most recently — so a desktop you were working on at #5 can suddenly jump to #2 and shift all the numbers in the Desktops Bar. To lock your desktop order permanently:
+              </p>
+              <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
+                <li>Open <strong>System Settings → Desktop &amp; Dock</strong></li>
+                <li>Scroll down to the <strong>Mission Control</strong> section</li>
+                <li>Turn off <strong>Automatically rearrange Spaces based on most recent use</strong></li>
+              </ol>
+              <InfoBox type="tip">
+                Rapto never changes macOS system settings for you. Turning this off keeps desktops 1, 2, 3… in a predictable order while you switch or move windows between them.
+              </InfoBox>
+
+              <h3 className="font-display text-xl font-semibold mb-3 mt-6">First Launch</h3>
               <p className="text-[var(--foreground-muted)]">
                 After launching, you&apos;ll see the Rapto icon in your menu bar (shown by default on new installations). Click it to switch modes, pick layouts, pause Rapto, open Window Flow, or open Settings. Press <Shortcut keys={["⌃", "⌥", "G"]} /> to open the layout overlay.
               </p>

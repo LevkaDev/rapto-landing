@@ -3,6 +3,7 @@ import { ArrowLeft, Shield, Lock, Eye, FileText, RefreshCw, Globe, Trash2, Mail,
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { GITHUB_REPO_URL } from "@/lib/links";
+import { Navigation, SiteFooter } from "../components/SiteChrome";
 
 const ACCENT = "#BFFF00";
 
@@ -31,12 +32,15 @@ function Section({ icon: Icon, title, children }: { icon: typeof Shield; title: 
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[var(--background)] relative overflow-hidden pretty-copy">
-      {/* Background effects */}
-      <div aria-hidden="true" className="absolute inset-0 atmosphere" />
-      <div aria-hidden="true" className="absolute inset-0 blueprint-grid opacity-10" />
+    <>
+      <header>
+        <Navigation />
+      </header>
+      <main className="min-h-dvh bg-[var(--background)] relative overflow-hidden pretty-copy">
+        {/* Background effects */}
+        <div aria-hidden="true" className="absolute inset-0 atmosphere" />
 
-      <div className="relative max-w-4xl mx-auto px-6 py-20">
+        <div className="relative max-w-4xl mx-auto px-6 pt-28 pb-20">
         {/* Back button */}
         <div className="mb-12">
           <Link
@@ -176,5 +180,7 @@ export default function PrivacyPage() {
         </div>
       </div>
     </main>
+      <SiteFooter />
+    </>
   );
 }

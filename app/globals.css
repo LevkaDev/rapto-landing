@@ -1,46 +1,51 @@
 @import "tailwindcss";
 
 /* ============================================
-   ULTIMATE ENGINEERING THEME
-   A power-user focused aesthetic for an ultimate tool
+   TAHOE GLASS + ELECTRIC SIGNAL THEME (Direction A)
+   macOS Tahoe dark liquid glass surfaces paired with
+   surgical Electric Lime (#BFFF00) signal accents.
    ============================================ */
 
-/* Dark theme (default) - Viewport-wide color scheme & intrinsic size opt-in */
 :root {
   color-scheme: dark;
   interpolate-size: allow-keywords;
 
-  /* Core palette - bold and distinctive */
-  --background: #0a0a0c;
-  --background-elevated: #111114;
-  --foreground: #fafafa;
-  --foreground-muted: #8e8e96;
+  /* Core obsidian surfaces — cool charcoal matching Tahoe glass & app icon */
+  --background: #08090d;
+  --background-elevated: #0f121a;
+  --foreground: #f8fafc;
+  --foreground-muted: #94a0b8;
 
-  /* Primary accent - Electric Lime (memorable, tool-like) */
+  /* Signal accent — Electric Lime used deliberately on primary CTAs & active states */
   --accent: #BFFF00;
   --accent-dim: #9ACC00;
-  --accent-glow: rgba(191, 255, 0, 0.4);
+  --accent-glow: rgba(191, 255, 0, 0.32);
   --accent-subtle: rgba(191, 255, 0, 0.08);
 
-  /* Secondary accents for feature demos */
-  --cyan: #00FFE5;
-  --violet: #A855F7;
-  --coral: #FF6B6B;
-  --amber: #FFB800;
+  /* Subtle Tahoe ice / atmospheric tones for glass & icon harmony */
+  --ice: #93c5fd;
+  --ice-subtle: rgba(147, 197, 253, 0.09);
 
-  /* UI elements */
-  --card: rgba(17, 17, 20, 0.8);
-  --card-solid: #111114;
-  --card-border: rgba(255, 255, 255, 0.08);
-  --card-border-hover: rgba(255, 255, 255, 0.16);
+  /* Secondary demo accents (used sparingly inside UI details, not muddy washes) */
+  --cyan: #38bdf8;
+  --violet: #a78bfa;
+  --coral: #fb7185;
+  --amber: #fbbf24;
 
-  /* Blueprint/ultimate elements */
-  --ruler: rgba(255, 255, 255, 0.04);
-  --ruler-accent: rgba(191, 255, 0, 0.2);
-  --measurement: rgba(255, 255, 255, 0.3);
+  /* Liquid Glass cards & borders */
+  --card: rgba(15, 18, 27, 0.72);
+  --card-solid: #10131c;
+  --card-border: rgba(255, 255, 255, 0.09);
+  --card-border-hover: rgba(255, 255, 255, 0.18);
+  --card-specular: rgba(255, 255, 255, 0.11);
 
-  /* Standard scrollbar tokens (> 5:1 contrast against #0a0a0c) */
-  --scrollbar-thumb: #8e8e96;
+  /* Subtle blueprint texture (used very softly in Hero only) */
+  --ruler: rgba(255, 255, 255, 0.03);
+  --ruler-accent: rgba(191, 255, 0, 0.09);
+  --measurement: rgba(255, 255, 255, 0.22);
+
+  /* Scrollbar tokens (> 5:1 contrast against #08090d) */
+  --scrollbar-thumb: #64748b;
   --scrollbar-track: transparent;
 
   accent-color: var(--accent);
@@ -82,14 +87,25 @@
 }
 
 html {
-  scroll-padding-top: 80px;
+  scroll-padding-top: 88px;
 
   @media (prefers-reduced-motion: no-preference) {
     scroll-behavior: smooth;
   }
 }
 
-/* Skip link: off screen until it gets keyboard focus */
+/* Pointer affordance for all interactive buttons (Tailwind v4 defaults button to cursor: default) */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+summary {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Skip link: off screen until keyboard focus */
 .skip-link {
   position: fixed;
   top: 12px;
@@ -98,7 +114,7 @@ html {
   padding: 10px 16px;
   border-radius: 10px;
   background: var(--accent);
-  color: #0a0a0c;
+  color: #08090d;
   font-weight: 600;
   transform: translateY(-200%);
 }
@@ -107,7 +123,7 @@ html {
   transform: translateY(0);
 }
 
-/* "Pause animations" also stops CSS-driven loops */
+/* Global "Pause animations" also stops CSS-driven loops */
 [data-motion="paused"] *,
 [data-motion="paused"] *::before,
 [data-motion="paused"] *::after {
@@ -118,7 +134,7 @@ html {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -131,13 +147,12 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), system-ui, -apple-system, sans-serif;
-  min-height: 100vh;
-  /* clip prevents horizontal bleed without creating a scroll container that breaks sticky */
+  min-height: 100dvh;
   overflow-x: clip;
 }
 
 /* ============================================
-   TYPOGRAPHY & BALANCED LINE WRAPPING
+   TYPOGRAPHY & FLUID HEADING SCALE
    ============================================ */
 
 .font-display {
@@ -160,45 +175,36 @@ details.faq-item p {
   text-wrap: pretty;
 }
 
-/* Gradient text with electric lime */
-.gradient-text {
-  background: linear-gradient(135deg, var(--foreground) 0%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Consistent fluid H1 / H2 scales (max <= 2.5x min so 200% zoom always works per WCAG 1.4.4) */
+.heading-hero {
+  font-size: clamp(2.5rem, 1.85rem + 2.8vw, 4.35rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
 }
 
-.gradient-text-animated {
-  background: linear-gradient(
-    90deg,
-    var(--foreground) 0%,
-    var(--accent) 25%,
-    var(--foreground) 50%,
-    var(--accent) 75%,
-    var(--foreground) 100%
-  );
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: gradient-flow 8s linear infinite;
-  }
-}
-
-@keyframes gradient-flow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+.heading-section {
+  font-size: clamp(2rem, 1.55rem + 1.8vw, 3.15rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
 }
 
 /* ============================================
-   DEFERRED RENDERING FOR BELOW-THE-FOLD SECTIONS
+   DEFERRED RENDERING WITH SECTION-MATCHED HINTS
    ============================================ */
 
 .deferred-section {
   content-visibility: auto;
-  contain-intrinsic-size: auto 720px;
+  contain-intrinsic-size: auto 920px;
+}
+
+.deferred-section-lg {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1320px;
+}
+
+.deferred-section-sm {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
 }
 
 /* ============================================
@@ -215,7 +221,7 @@ details.faq-item > summary {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 20px 24px;
+  padding: 18px 22px;
   user-select: none;
   transition: color 0.2s ease, background-color 0.2s ease;
 }
@@ -225,7 +231,7 @@ details.faq-item > summary::-webkit-details-marker {
 }
 
 details.faq-item > summary:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(255, 255, 255, 0.025);
 }
 
 details.faq-item > summary .faq-chevron {
@@ -262,7 +268,7 @@ details.faq-item:not([open])::details-content {
 }
 
 /* ============================================
-   BACKGROUNDS & ATMOSPHERE
+   BACKGROUNDS, ATMOSPHERE & SEAMLESS DIVIDERS
    ============================================ */
 
 .blueprint-grid {
@@ -272,10 +278,12 @@ details.faq-item:not([open])::details-content {
     linear-gradient(var(--ruler-accent) 1px, transparent 1px),
     linear-gradient(90deg, var(--ruler-accent) 1px, transparent 1px);
   background-size:
-    20px 20px,
-    20px 20px,
-    100px 100px,
-    100px 100px;
+    24px 24px,
+    24px 24px,
+    120px 120px,
+    120px 120px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 20%, #000 0%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 20%, #000 0%, transparent 78%);
 }
 
 .dot-grid {
@@ -283,34 +291,72 @@ details.faq-item:not([open])::details-content {
   background-size: 24px 24px;
 }
 
-.radial-glow {
+/* Feathered hero aurora — blends seamlessly to #08090d with zero horizontal seam */
+.hero-atmosphere {
   background:
-    radial-gradient(ellipse 60% 40% at 50% 0%, var(--accent-subtle) 0%, transparent 60%),
+    radial-gradient(ellipse 68% 42% at 50% -6%, rgba(191, 255, 0, 0.085) 0%, transparent 66%),
+    radial-gradient(ellipse 52% 40% at 84% 26%, rgba(96, 165, 250, 0.075) 0%, transparent 64%),
+    radial-gradient(ellipse 48% 36% at 14% 34%, rgba(56, 189, 248, 0.05) 0%, transparent 64%),
     var(--background);
 }
 
+/* Soft ambient backdrop for secondary chapters (fully feathered so sections never show hard seams) */
 .atmosphere {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(191, 255, 0, 0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 80% 50%, rgba(0, 255, 229, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 64% 48% at 50% 0%, rgba(147, 197, 253, 0.06) 0%, transparent 68%),
     var(--background);
+}
+
+/* Hairline architectural divider between major chapters */
+.section-divider {
+  height: 1px;
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.09) 50%, transparent 100%);
+}
+
+/* Realistic macOS Tahoe midnight wallpaper for virtual desktop demos */
+.tahoe-wallpaper {
+  background:
+    radial-gradient(ellipse 75% 65% at 20% 18%, rgba(56, 189, 248, 0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 65% 60% at 82% 80%, rgba(99, 102, 241, 0.18) 0%, transparent 62%),
+    radial-gradient(ellipse 50% 45% at 62% 22%, rgba(191, 255, 0, 0.06) 0%, transparent 58%),
+    linear-gradient(160deg, #0f1728 0%, #0b101b 52%, #090c14 100%);
 }
 
 /* ============================================
-   CARDS & SURFACES
+   TAHOE LIQUID GLASS CARDS & SURFACES
    ============================================ */
 
 .card {
-  background: var(--card);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.012) 100%),
+    var(--card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--card-border);
-  border-radius: 16px;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 var(--card-specular),
+    0 18px 40px -18px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
   border-color: var(--card-border-hover);
+}
+
+.glass-nav-pill {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.02) 100%),
+    rgba(11, 14, 22, 0.8);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 14px 36px -10px rgba(0, 0, 0, 0.65);
 }
 
 .spotlight {
@@ -322,9 +368,9 @@ details.faq-item:not([open])::details-content {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(255, 255, 255, 0.04) 0%,
-    transparent 50%
+    380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.045) 0%,
+    transparent 52%
   );
   pointer-events: none;
   opacity: 0;
@@ -337,31 +383,39 @@ details.faq-item:not([open])::details-content {
 }
 
 /* ============================================
-   BUTTONS & INTERACTIVE
+   BUTTONS, EYEBROWS & INTERACTIVE CONTROLS
    ============================================ */
 
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 32px;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 26px;
+  min-height: 46px;
   background: var(--accent);
-  color: #0a0a0c;
+  color: #08090d;
   font-weight: 600;
   font-family: var(--font-display);
   border-radius: 12px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 10px 28px -8px rgba(191, 255, 0, 0.36);
   transition: box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 20px 40px -10px var(--accent-glow);
+  background: #cbff2e;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 18px 36px -10px rgba(191, 255, 0, 0.48);
 
   @media (prefers-reduced-motion: no-preference) {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }
 
@@ -373,11 +427,11 @@ details.faq-item:not([open])::details-content {
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.25) 50%,
       transparent 100%
     );
     transform: translateX(-100%);
-    transition: transform 0.5s ease;
+    transition: transform 0.55s ease;
   }
 
   .btn-primary:hover::after {
@@ -388,22 +442,63 @@ details.faq-item:not([open])::details-content {
 .btn-secondary {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 32px;
-  background: transparent;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 24px;
+  min-height: 46px;
+  background: rgba(255, 255, 255, 0.045);
   color: var(--foreground);
   font-weight: 500;
   font-family: var(--font-body);
   border-radius: 12px;
-  /* 3:1 against the page, so the button edge is visible */
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-secondary:hover {
-  border-color: var(--accent);
-  background: var(--accent-subtle);
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.tag:hover {
+  border-color: rgba(191, 255, 0, 0.45);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* ============================================
@@ -415,7 +510,7 @@ details.faq-item:not([open])::details-content {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: scroll()) {
+  @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
     @keyframes grow-scroll-progress {
       from { transform: scaleX(0); }
       to { transform: scaleX(1); }
@@ -428,51 +523,27 @@ details.faq-item:not([open])::details-content {
       left: 0;
       width: 100%;
       height: 2px;
-      background: var(--accent);
+      background: linear-gradient(90deg, rgba(147, 197, 253, 0.7) 0%, var(--accent) 100%);
       transform-origin: 0 50%;
       z-index: 100;
-      box-shadow: 0 0 20px var(--accent-glow);
       pointer-events: none;
       animation: grow-scroll-progress auto linear;
       animation-timeline: scroll(root block);
+      animation-range: 0% 100%;
     }
   }
 }
 
 /* ============================================
-   ANIMATIONS (OPT-IN TO MOTION)
-   ============================================ */
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px var(--accent-glow); }
-  50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-subtle); }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-  }
-}
-
-/* ============================================
-   NOISE & CURSOR EFFECTS
+   NOISE & SUBTLE CURSOR LIGHT
    ============================================ */
 
 .noise-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 100;
-  opacity: 0.02;
+  z-index: 90;
+  opacity: 0.018;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
@@ -480,65 +551,67 @@ details.faq-item:not([open])::details-content {
   position: fixed;
   top: 0;
   left: 0;
-  width: 300px;
-  height: 300px;
-  margin-left: -150px;
-  margin-top: -150px;
+  width: 340px;
+  height: 340px;
+  margin-left: -170px;
+  margin-top: -170px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(147, 197, 253, 0.24) 0%, rgba(191, 255, 0, 0.08) 38%, transparent 72%);
   pointer-events: none;
   z-index: 0;
   transition: opacity 0.3s ease;
 }
 
 /* ============================================
-   SELECTION & DEMO CHROME
+   SELECTION, DEMO CHROME & ICON BADGES
    ============================================ */
 
 ::selection {
   background: var(--accent);
-  color: #0a0a0c;
+  color: #08090d;
 }
 
 .demo-window {
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 24px 60px -12px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(255, 255, 255, 0.11);
 }
 
 .feature-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--accent-subtle);
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
   color: var(--accent);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.feature-icon:hover {
-  background: var(--accent);
-  color: #0a0a0c;
+.card:hover .feature-icon {
+  background: rgba(191, 255, 0, 0.12);
+  border-color: rgba(191, 255, 0, 0.32);
 }
 
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: var(--accent-subtle);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 100px;
-  border: 1px solid rgba(191, 255, 0, 0.25);
+/* Forced Colors Mode fallback (Windows High Contrast) */
+@media (forced-colors: active) {
+  .card,
+  .glass-nav-pill,
+  .btn-primary,
+  .btn-secondary,
+  .eyebrow-badge,
+  .tag {
+    border: 1px solid CanvasText;
+  }
 }
 
-/* Docs search: the block a result leads to flashes briefly */
+/* Docs search: briefly highlight target block */
 @media (prefers-reduced-motion: no-preference) {
   .docs-search-hit {
     animation: docs-search-hit 2s ease-out;
@@ -560,6 +633,6 @@ details.faq-item:not([open])::details-content {
 @media (max-width: 768px) {
   .btn-primary,
   .btn-secondary {
-    padding: 14px 24px;
+    padding: 12px 22px;
   }
 }

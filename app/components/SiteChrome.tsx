@@ -3,10 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import { Download, Menu, X } from "lucide-react";
+import { Download, Mail, Menu, X } from "lucide-react";
 
 import { GITHUB_REPO_URL } from "@/lib/links";
+import { HeaderPauseButton } from "../motion-pause";
 
 export function GitHubMark({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -17,31 +19,56 @@ export function GitHubMark({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 const navLinks = [
-  { href: "#why-rapto", label: "Why Rapto" },
-  { href: "#desktops-bar", label: "Desktops Bar" },
-  { href: "#modes", label: "Modes" },
-  { href: "#layouts", label: "Layouts" },
-  { href: "#workspaces", label: "Workspaces" },
-  { href: "#features", label: "Features" },
-  { href: "/docs", label: "Docs" },
-  { href: "/changelog", label: "Changelog" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#modes", sectionId: "modes", label: "Modes" },
+  { href: "/#window-flow", sectionId: "window-flow", label: "Window Flow" },
+  { href: "/#features", sectionId: "features", label: "Features" },
+  { href: "/docs", sectionId: null, label: "Docs" },
+  { href: "/changelog", sectionId: null, label: "Changelog" },
+  { href: "/#faq", sectionId: "faq", label: "FAQ" },
 ];
 
-export function Navigation() {
+export function Navigation({ showMotionToggle = false }: { showMotionToggle?: boolean }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      const next = window.scrollY > 50;
+      const next = window.scrollY > 36;
       setIsScrolled((prev) => (prev !== next ? next : prev));
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Track which major section is currently active on the home page
+  useEffect(() => {
+    if (!isHome) return;
+    const ids = ["modes", "window-flow", "features", "faq"];
+    const updateActive = () => {
+      const marker = window.innerHeight * 0.32;
+      let current: string | null = null;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= marker) {
+          current = id;
+        }
+      }
+      setActiveSection((prev) => (prev !== current ? current : prev));
+    };
+    updateActive();
+    window.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+    };
+  }, [isHome]);
 
   // Escape & outside pointer click close the mobile menu
   useEffect(() => {
@@ -62,100 +89,127 @@ export function Navigation() {
     };
   }, [isMobileMenuOpen]);
 
+  const isLinkActive = (link: (typeof navLinks)[number]) => {
+    if (link.sectionId) return isHome && activeSection === link.sectionId;
+    return pathname === link.href;
+  };
+
   return (
     <nav
       ref={navRef}
       aria-label="Primary"
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        isScrolled
-          ? "bg-[var(--background)]/90 backdrop-blur-xl border-b border-[var(--card-border)]"
-          : "bg-transparent"
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 pt-3 pointer-events-none"
     >
-      <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between gap-4">
+      <div
+        className={`pointer-events-auto max-w-6xl mx-auto px-3.5 sm:px-4 py-2 rounded-2xl flex items-center justify-between gap-3 transition-[background-color,border-color,box-shadow] duration-300 ${
+          isScrolled || isMobileMenuOpen
+            ? "glass-nav-pill"
+            : "bg-[#08090d]/45 backdrop-blur-md border border-white/[0.07]"
+        }`}
+      >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 shrink-0 group">
-          <Image src="/app-icon.png" alt="" width={36} height={36} priority />
-          <span className="font-display font-bold text-xl group-hover:text-[var(--accent)] transition-colors">
+        <Link href="/" className="flex items-center gap-2.5 shrink-0 min-h-9 pr-1 group">
+          <Image src="/app-icon.png" alt="" width={30} height={30} priority className="rounded-[7px]" />
+          <span className="font-display font-bold text-lg tracking-tight group-hover:text-[var(--accent)] transition-colors">
             Rapto
           </span>
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden xl:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors text-sm font-medium whitespace-nowrap"
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* Desktop Links — visible down to 1024px (lg) so split-screen MacBooks keep full nav */}
+        <div className="hidden lg:flex items-center gap-1">
+          {navLinks.map((link) => {
+            const active = isLinkActive(link);
+            const resolvedHref = isHome && link.sectionId ? `#${link.sectionId}` : link.href;
+            return (
+              <Link
+                key={link.href}
+                href={resolvedHref}
+                aria-current={active ? (link.sectionId ? "location" : "page") : undefined}
+                className={`min-h-9 px-3 rounded-xl inline-flex items-center text-sm font-medium whitespace-nowrap transition-colors ${
+                  active
+                    ? "text-[var(--foreground)] bg-white/[0.09] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
+                    : "text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-white/[0.04]"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Desktop Actions */}
-        <div className="hidden xl:flex items-center gap-3 shrink-0">
+        <div className="hidden lg:flex items-center gap-2 shrink-0">
+          {showMotionToggle && <HeaderPauseButton />}
           <a
             href={GITHUB_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-[var(--card-border-hover)] text-sm font-medium text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:border-white/30 transition-colors"
+            className="inline-flex items-center gap-2 min-h-9 px-3 rounded-xl border border-white/12 bg-white/[0.04] text-sm font-medium text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:border-white/25 transition-colors"
           >
             <GitHubMark className="w-4 h-4" />
             <span>GitHub</span>
           </a>
-          <Link href="/download" className="btn-primary !py-2 !px-4 text-sm">
+          <Link href="/download" className="btn-primary !min-h-9 !py-1.5 !px-3.5 text-sm !rounded-xl">
             <Download aria-hidden="true" className="w-4 h-4" />
             Download
           </Link>
         </div>
 
-        {/* Mobile / Tablet Menu Button */}
-        <button
-          type="button"
-          className="xl:hidden p-2.5 min-w-11 min-h-11 flex items-center justify-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] rounded-lg"
-          onClick={() => setIsMobileMenuOpen((open) => !open)}
-          aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMobileMenuOpen}
-          aria-controls="mobile-site-menu"
-        >
-          {isMobileMenuOpen ? (
-            <X aria-hidden="true" className="w-6 h-6" />
-          ) : (
-            <Menu aria-hidden="true" className="w-6 h-6" />
-          )}
-        </button>
+        {/* Tablet / Mobile right controls: keep Download visible + accessible menu trigger */}
+        <div className="flex lg:hidden items-center gap-1.5 shrink-0">
+          {showMotionToggle && <HeaderPauseButton className="!min-w-10 !min-h-10" />}
+          <Link href="/download" className="btn-primary !min-h-10 !py-1.5 !px-3.5 text-sm !rounded-xl">
+            <Download aria-hidden="true" className="w-4 h-4" />
+            <span>Download</span>
+          </Link>
+          <button
+            type="button"
+            className="p-2 min-w-11 min-h-11 flex items-center justify-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] rounded-xl hover:bg-white/[0.05] transition-colors"
+            onClick={() => setIsMobileMenuOpen((open) => !open)}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-site-menu"
+          >
+            {isMobileMenuOpen ? (
+              <X aria-hidden="true" className="w-5 h-5" />
+            ) : (
+              <Menu aria-hidden="true" className="w-5 h-5" />
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile / Tablet Menu */}
+      {/* Mobile / Tablet Dropdown */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
             id="mobile-site-menu"
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
-            className="xl:hidden bg-[var(--background)]/95 backdrop-blur-xl border-b border-[var(--card-border)] max-h-[calc(100dvh-4.5rem)] overflow-y-auto"
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.16 }}
+            className="pointer-events-auto lg:hidden max-w-6xl mx-auto mt-2 rounded-2xl glass-nav-pill max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain"
           >
-            <div className="px-6 py-4 flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors py-2.5 text-sm font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="pt-2 mt-1 border-t border-[var(--card-border)] flex flex-col sm:flex-row gap-3">
+            <div className="p-4 flex flex-col gap-1">
+              {navLinks.map((link) => {
+                const resolvedHref = isHome && link.sectionId ? `#${link.sectionId}` : link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={resolvedHref}
+                    className="text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:bg-white/[0.05] rounded-xl px-3 py-2.5 min-h-11 flex items-center text-sm font-medium transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+              <div className="pt-3 mt-2 border-t border-white/10 flex flex-col sm:flex-row gap-2.5">
                 <a
                   href={GITHUB_REPO_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-secondary justify-center !py-3 text-sm flex-1"
+                  className="btn-secondary !min-h-11 !py-2.5 text-sm flex-1"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <GitHubMark className="w-4 h-4" />
@@ -163,7 +217,7 @@ export function Navigation() {
                 </a>
                 <Link
                   href="/download"
-                  className="btn-primary justify-center !py-3 text-sm flex-1"
+                  className="btn-primary !min-h-11 !py-2.5 text-sm flex-1"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <Download aria-hidden="true" className="w-4 h-4" />
@@ -178,13 +232,97 @@ export function Navigation() {
   );
 }
 
-// Compositor-only cursor glow: updates MotionValues directly without triggering React re-renders
+export function SiteFooter() {
+  return (
+    <footer className="py-12 px-6 border-t border-white/[0.08] relative bg-[var(--background)]">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex items-center gap-3">
+          <Image src="/app-icon.png" alt="" width={30} height={30} className="rounded-[7px]" />
+          <span className="font-display font-semibold text-lg">Rapto</span>
+          <span className="text-[var(--foreground-muted)] text-sm">
+            © {new Date().getFullYear()} · GPL-3.0
+          </span>
+        </div>
+
+        <nav aria-label="Footer" className="flex items-center gap-x-5 gap-y-2 text-sm flex-wrap justify-center">
+          <Link
+            href="/#modes"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            Modes
+          </Link>
+          <Link
+            href="/#window-flow"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            Window Flow
+          </Link>
+          <Link
+            href="/#features"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            Features
+          </Link>
+          <Link
+            href="/#faq"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            FAQ
+          </Link>
+          <Link
+            href="/download"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            Download
+          </Link>
+          <Link
+            href="/docs"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            Docs
+          </Link>
+          <Link
+            href="/changelog"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            Changelog
+          </Link>
+          <Link
+            href="/privacy"
+            className="min-h-9 px-1 inline-flex items-center text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            Privacy
+          </Link>
+          <a
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="min-h-9 px-1 inline-flex items-center gap-1.5 text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
+          >
+            <GitHubMark className="w-4 h-4" />
+            GitHub
+          </a>
+        </nav>
+
+        <a
+          href="mailto:support@rapto.app"
+          className="min-h-9 text-sm text-[var(--foreground-muted)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-2"
+        >
+          <Mail aria-hidden="true" className="w-4 h-4" />
+          support@rapto.app
+        </a>
+      </div>
+    </footer>
+  );
+}
+
+// Compositor-only subtle cursor glow: updates MotionValues directly without triggering React re-renders
 export function CursorGlow() {
   const rawX = useMotionValue(-300);
   const rawY = useMotionValue(-300);
   const opacity = useMotionValue(0);
-  const x = useSpring(rawX, { damping: 30, stiffness: 200 });
-  const y = useSpring(rawY, { damping: 30, stiffness: 200 });
+  const x = useSpring(rawX, { damping: 32, stiffness: 180 });
+  const y = useSpring(rawY, { damping: 32, stiffness: 180 });
 
   useEffect(() => {
     const media = window.matchMedia("(hover: hover) and (min-width: 1024px)");
@@ -193,7 +331,7 @@ export function CursorGlow() {
     const handleMouseMove = (e: MouseEvent) => {
       rawX.set(e.clientX);
       rawY.set(e.clientY);
-      opacity.set(0.15);
+      opacity.set(0.14);
     };
     const handleMouseLeave = () => {
       opacity.set(0);

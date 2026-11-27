@@ -39,19 +39,28 @@ export function loopOr<T extends Record<string, unknown>>(stopped: boolean, targ
   return still as T;
 }
 
-export function PauseToggle() {
+// Compact toggle embedded in the sticky navigation bar so it is always reachable
+// without floating over interactive demos or mobile screens.
+// Per Modern Web Guidance (`motion`): when the label switches between "Pause" and "Play",
+// omit `aria-pressed` so screen readers do not announce a contradictory "Play, pressed".
+export function HeaderPauseButton({ className = "" }: { className?: string }) {
   const stopped = usePaused();
-  // Per Modern Web Guidance (`motion`): when the label switches between "Pause" and "Play",
-  // omit `aria-pressed` so screen readers do not announce a contradictory "Play, pressed".
+  const label = stopped ? "Play animations" : "Pause animations";
+
   return (
     <button
       type="button"
       onClick={() => setPaused(!stopped)}
-      className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 min-h-11 px-3.5 rounded-full border border-white/20 bg-[var(--background-elevated)]/90 backdrop-blur text-sm text-[var(--foreground)] shadow-lg hover:border-[var(--accent)] transition-colors"
+      aria-label={label}
+      title={label}
+      className={`inline-flex items-center justify-center min-w-9 min-h-9 px-2.5 rounded-xl border border-white/12 bg-white/[0.04] text-[var(--foreground-muted)] hover:text-[var(--foreground)] hover:border-white/25 transition-colors ${className}`}
     >
-      {stopped ? <Play aria-hidden="true" className="w-4 h-4" /> : <Pause aria-hidden="true" className="w-4 h-4" />}
-      <span className="hidden sm:inline">{stopped ? "Play animations" : "Pause animations"}</span>
-      <span className="sm:hidden sr-only">{stopped ? "Play animations" : "Pause animations"}</span>
+      {stopped ? <Play aria-hidden="true" className="w-3.5 h-3.5" /> : <Pause aria-hidden="true" className="w-3.5 h-3.5" />}
     </button>
   );
+}
+
+// Kept exported for backwards compatibility if referenced elsewhere.
+export function PauseToggle() {
+  return <HeaderPauseButton />;
 }

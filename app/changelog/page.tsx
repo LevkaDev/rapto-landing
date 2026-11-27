@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, History, Sparkles, Zap, Wrench } from "lucide-react";
 import { getReleaseNotes } from "@/lib/release-notes";
+import { Navigation, SiteFooter } from "../components/SiteChrome";
 
 const ACCENT = "#BFFF00";
 
@@ -44,11 +45,14 @@ export default function ChangelogPage() {
   const notes = getReleaseNotes();
 
   return (
-    <main className="min-h-screen bg-[var(--background)] relative overflow-hidden">
-      <div className="absolute inset-0 atmosphere" />
-      <div className="absolute inset-0 blueprint-grid opacity-10" />
+    <>
+      <header>
+        <Navigation />
+      </header>
+      <main className="min-h-dvh bg-[var(--background)] relative overflow-hidden">
+        <div aria-hidden="true" className="absolute inset-0 atmosphere" />
 
-      <div className="relative max-w-4xl mx-auto px-6 py-20">
+        <div className="relative max-w-4xl mx-auto px-6 pt-28 pb-20">
         <div className="mb-12">
           <Link
             href="/"
@@ -111,5 +115,7 @@ export default function ChangelogPage() {
         </div>
       </div>
     </main>
+      <SiteFooter />
+    </>
   );
 }
