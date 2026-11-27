@@ -65,7 +65,7 @@ function MeasurementLine({ width = 60 }: { width?: number }) {
 function Hero() {
   const stats = [
     { value: "4", label: "Per-Space modes" },
-    { value: "14+", label: "Built-in & custom layouts" },
+    { value: "13+", label: "Built-in & custom layouts" },
     { value: "40+", label: "Shortcuts + Vim preset" },
     { value: "0", label: "Accounts or telemetry" },
   ];
@@ -337,7 +337,7 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: "Can I create my own custom layouts?",
-    a: "Yes, in two ways. Press ⌃⌥G to open the layout overlay in Manual, Drag to Snap, or None, click “Custom”, and draw zones directly on screen — or click “Use Open Windows” inside the editor to create zones from the windows already open on that display. You can also choose “Create Layout from Windows” right from the Desktops Bar or Rapto menu.",
+    a: "Yes, in two ways. Press ⌃⌥G to open the layout overlay in Manual, Drag to Snap, or None, click “Custom”, and build zones on screen with edge snapping and one-click splits — or click “Use Open Windows” inside the editor to create zones from the windows already open on that display. You can also choose “Create Layout from Windows” right from the Desktops Bar or Rapto menu, and pin custom layouts to the top Drag to Snap bar.",
   },
   {
     q: "How do I exclude apps or pause hotkeys in specific apps?",

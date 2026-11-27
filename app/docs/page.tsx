@@ -393,7 +393,7 @@ export default function DocsPage() {
                     <li>• <strong>Bottom edge</strong> — the left, center or right third, depending on where you drop</li>
                   </ul>
                   <p className="text-[var(--foreground-muted)] mb-3">
-                    As soon as you start dragging, a panel with small layouts appears at the top of the screen: halves side by side, halves top and bottom, thirds, two thirds and one third (both ways), quarters, a half with two quarters, and full screen. Drop the window on any part of a layout to put it there.
+                    As soon as you start dragging, a panel with small layouts appears at the top of the screen: halves side by side, halves top and bottom, thirds, two thirds and one third (both ways), quarters, a half with two quarters, and full screen. You can also pin your own custom layouts to this panel in Settings → Behavior or by right-clicking a custom layout in the layout overlay. Drop the window on any part of a layout to put it there.
                   </p>
                   <p className="text-[var(--foreground-muted)] mb-3">
                     <strong>With a layout</strong>, its zones work as in Manual mode: all zones show up while you drag, and the window goes into the zone under the pointer, anywhere on the screen.
@@ -685,7 +685,7 @@ export default function DocsPage() {
                 ))}
               </div>
               <p className="text-sm text-[var(--foreground-muted)] mb-8">
-                …and 5 more, including 4 Columns, 2+1+2 and Center + Split Sides.
+                …and 4 more, including 4 Columns, Center + Left Split, Center + Right Split and Center + Split Sides.
               </p>
 
               <h3 className="font-display text-xl font-semibold mb-4">Creating Custom Templates</h3>
@@ -693,8 +693,8 @@ export default function DocsPage() {
               <ol className="list-decimal list-inside space-y-2 text-[var(--foreground-muted)] mb-4">
                 <li>Open the overlay (press <Shortcut keys={["⌃", "⌥", "G"]} />)</li>
                 <li>Click the &quot;Custom&quot; button in the template picker</li>
-                <li>Draw zones by clicking and dragging on the grid</li>
-                <li>Click a zone you already placed to move or resize it again. Double-click a zone to delete it</li>
+                <li>Resize or move the draft box to place a zone — edges snap to neighboring zones, screen edges, and 1/2, 1/3, and 1/4 guides (hold Option to place freely). Confirm to place it, then click + Add Zone or any empty area to add another</li>
+                <li>Click a zone you already placed to move, resize, or split it in half vertically or horizontally in one click. Double-click a zone to delete it</li>
                 <li>Or click <strong>Use Open Windows</strong> to make a zone from each window open on that display</li>
                 <li>Name your layout and click <strong>Save Layout</strong>. A note next to the button tells you what is still missing. Windows fill the zones in order: 1, 2, 3</li>
               </ol>
@@ -948,6 +948,7 @@ export default function DocsPage() {
                 <li>• <strong>Double-click Activation</strong> — Hold a modifier key (Option by default) and double-click a window to focus it. The key can be changed</li>
                 <li>• <strong>Floating Windows</strong> — Enable Option+Command+double-click to toggle floating windows. The key can be changed</li>
                 <li>• <strong>Manual Mode</strong> — Minimize Others and Snap Back</li>
+                <li>• <strong>Drag to Snap Top Bar</strong> — Choose which of your custom layouts appear in the layout panel at the top of the screen while dragging a window</li>
                 <li>• <strong>Auto-tiling</strong> — The layout for each number of windows and the maximum number of tiled windows (2-8), also per display</li>
               </ul>
 

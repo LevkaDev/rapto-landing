@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 6.3
+## Version 6.4
 
 ### New
 - 
@@ -10,6 +10,24 @@
 
 ### Fixes
 - 
+
+---
+
+## Version 6.3
+
+### Improvements
+- Custom layouts can now be pinned to the top Drag to Snap layout bar from Settings → Behavior or by right-clicking a custom layout in the Layout Overlay.
+- The custom layout editor now snaps zone edges to neighboring zones, screen edges, and 1/2, 1/3, and 1/4 guides (hold Option to place freely), lets you split any zone in half vertically or horizontally in one click, and hides the draft box once you place a zone so no extra box stays on screen (use Add Zone or click an empty spot when you want another).
+- Faster, smoother window arrangements, swaps, and mode switches, with less visual flicker.
+- Faster and more reliable moving of windows between desktops from the Desktops Bar or by shortcut.
+
+### Fixes
+- Changing Window Gap or Screen Edge Gap in Settings now updates snapped windows in Drag to Snap right away, and updates every connected display.
+- Removed the duplicate 2+1+2 layout from the layout list. Any desktop, workspace, shortcut, or setting that used it now opens Center + Split Sides automatically.
+- Switching from Auto-tiling to Manual mode now keeps your windows in place instead of reshuffling them.
+- Background apps sitting idle on another desktop (such as WhatsApp) now move cleanly when dragged in the Desktops Bar.
+- Switching back to an Auto-tiling desktop no longer reshuffles or swaps windows while an idle app (such as Maps) is waking up.
+- Windows moved or restored onto a Manual desktop now fill empty slots first, keep a matching slot when all slots are full, and no longer steal focus to background apps.
 
 ---
 

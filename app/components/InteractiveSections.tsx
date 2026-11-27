@@ -2732,7 +2732,7 @@ function Layouts() {
   }, [stageInView, paused, manual, frame, scene, pinned, current.frames.length, step.ms]);
 
   const highlights = [
-    { icon: LayoutGrid, title: "14 built-in layouts", text: "Halves, thirds, quarters, 1 + 2, center focus and more, ready to go." },
+    { icon: LayoutGrid, title: "13 built-in layouts", text: "Halves, thirds, quarters, 1 + 2, center focus and more, ready to go." },
     { icon: Undo2, title: "Save what you have", text: "Already arranged your windows? Create Layout from Windows in the menu — or Use Open Windows inside the custom editor — turns them into a layout." },
     { icon: Keyboard, title: "One key per layout", text: "Give any layout its own shortcut in Settings → Shortcuts → Template Shortcuts." },
   ];
